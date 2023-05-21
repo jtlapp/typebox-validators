@@ -1,6 +1,6 @@
 /**
- * TypeBox wrapper facilitating multitier validation. It provides safe
- * validation for the server and unsafe validation for the client.
+ * Abstract base class for validators, providing safe and unsafe validation
+ * and supporting custom error messages.
  *
  * Safe validation short-circuits at the first validation error and reports
  * only this error. TypeBox will test a `maxLength` constraint before testing
@@ -13,39 +13,20 @@
  */
 
 import type { TSchema } from '@sinclair/typebox';
-import { TypeCheck, TypeCompiler } from '@sinclair/typebox/compiler';
-
-import { ValidationException } from './validation-exception';
 
 /**
  * Class providing validation services for a TypeBox schema, offering both
  * safe and unsafe validation, supporting custom error messages.
  */
-export class LazyValidator<S extends TSchema> {
-  #compiledType?: TypeCheck<S>;
-
+export abstract class AbstractValidator<S extends TSchema> {
   /**
    * @param schema Schema against which to validate values. Include an
-   *  `errorMessage` key in a type's options to provide that messge instead
+   *  `errorMessage` key in a type's options to provide that message instead
    *  of the default TypeBox message when the key's value fails validation.
    *  When an object is validated, each occurrence of "{field}" within the
    *  message is replaced with the name of the field that failed validation.
    */
   constructor(readonly schema: S) {}
-
-  /**
-   * Returns the compiled TypeBox type for the schema. The method compiles
-   * the type on the first call and caches the result for subsequent calls.
-   * @returns Compiled TypeBox type for the schema.
-   */
-  get compiledType(): TypeCheck<S> {
-    if (this.#compiledType === undefined) {
-      this.#compiledType = TypeCompiler.Compile(this.schema);
-      // There's no benefit to nulling schema to free memory, because
-      // #compiledType holds a reference to it. TODO: keep this comment?
-    }
-    return this.#compiledType;
-  }
 
   /**
    * Safely validate a value against the schema. Short-circuits at the first
@@ -56,12 +37,7 @@ export class LazyValidator<S extends TSchema> {
    *    thrown. The exception also reports the details of the first error.
    * @throws ValidationException when the value is invalid.
    */
-  safeValidate(value: unknown, errorMessage: string): void {
-    if (!this.compiledType.Check(value)) {
-      const firstError = this.compiledType.Errors(value).First()!;
-      throw new ValidationException(errorMessage, [firstError]);
-    }
-  }
+  abstract safeValidate(value: unknown, errorMessage: string): void;
 
   /**
    * Unsafely validate a value against the schema, but have the validation
@@ -72,13 +48,7 @@ export class LazyValidator<S extends TSchema> {
    *    thrown. The exception also reports the details of all validation errors.
    * @throws ValidationException when the value is invalid.
    */
-  unsafeValidate(value: unknown, errorMessage: string): void {
-    if (!this.compiledType.Check(value)) {
-      throw new ValidationException(errorMessage, [
-        ...this.compiledType.Errors(value),
-      ]);
-    }
-  }
+  abstract unsafeValidate(value: unknown, errorMessage: string): void;
 
   /**
    * Safely or unsafely validates a value against a schema, as requested. Safe
