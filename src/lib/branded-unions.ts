@@ -26,15 +26,11 @@ export const KeyBrandedUnion = TypeSystem.Type<object, BrandedUnionOptions>(
     if (typeof subject !== 'object' || subject === null) {
       return false;
     }
-
-    for (const schema of options.schemas) {
-      const uniqueKey = schema.uniqueKey;
-      if (uniqueKey !== undefined && subject[uniqueKey] !== undefined) {
-        // TODO: can I precompile this?
-        return Value.Check(schema, subject);
-      }
+    const schema = _getKeyBrandedSchema(options, subject);
+    if (schema === null) {
+      return false;
     }
-    return false;
+    return Value.Check(schema, subject);
   }
 );
 
@@ -58,23 +54,47 @@ export interface ValueBrandedUnionOptions extends BrandedUnionOptions {
 export const ValueBrandedUnion = TypeSystem.Type<
   object,
   ValueBrandedUnionOptions
->('BrandedUnion', (options, subject: any) => {
+>('ValueBrandedUnion', (options, subject: any) => {
   if (typeof subject !== 'object' || subject === null) {
     return false;
   }
+  const schema = _getValueBrandedSchema(options, subject);
+  if (schema === null) {
+    return false;
+  }
+  // TODO: can I precompile this?
+  return Value.Check(schema, subject);
+});
 
+export function _getKeyBrandedSchema(
+  options: BrandedUnionOptions,
+  subject: any
+): TObject | null {
+  for (const schema of options.schemas) {
+    const uniqueKey = schema.uniqueKey;
+    if (uniqueKey !== undefined && subject[uniqueKey] !== undefined) {
+      // TODO: can I precompile this?
+      return schema;
+    }
+  }
+  return null;
+}
+
+export function _getValueBrandedSchema(
+  options: ValueBrandedUnionOptions,
+  subject: any
+): TObject | null {
   const brandKey = options.brandKey;
   const valueBrand = subject[brandKey];
   if (valueBrand === undefined) {
-    return false;
+    return null;
   }
 
   for (const schema of options.schemas) {
     const schemaBrand = schema.properties[brandKey];
     if (schemaBrand !== undefined && schemaBrand.const === valueBrand) {
-      // TODO: can I precompile this?
-      return Value.Check(schema, subject);
+      return schema;
     }
   }
-  return false;
-});
+  return null;
+}
