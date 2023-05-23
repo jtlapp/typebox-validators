@@ -25,8 +25,10 @@ export abstract class AbstractHeterogeneousUnionValidator<
     overallErrorMessage: string
   ): number {
     if (this.uniqueKeyByMemberIndex === undefined) {
+      // only incur cost of validator is actually used
       this.cacheUniqueKeys();
     }
+
     if (typeof subject === 'object' && subject !== null) {
       for (let i = 0; i < this.schema.anyOf.length; ++i) {
         const uniqueKey = this.uniqueKeyByMemberIndex![i];
@@ -68,6 +70,7 @@ export abstract class AbstractHeterogeneousUnionValidator<
       }
     }
     if (uniqueKeyCount < unionSize) {
+      this.uniqueKeyByMemberIndex = undefined; // reset for next attempt
       throw Error('Heterogeneous union has members lacking unique keys');
     }
   }
