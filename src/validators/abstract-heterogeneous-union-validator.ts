@@ -1,4 +1,8 @@
-import { TObject, TUnion } from '@sinclair/typebox';
+import {
+  TObject,
+  TUnion,
+  Modifier as TypeBoxModifier,
+} from '@sinclair/typebox';
 
 import { AbstractTypedUnionValidator } from './abstract-typed-union-validator';
 import { UnionTypeException } from '../lib/union-type-exception';
@@ -10,6 +14,8 @@ import { UnionTypeException } from '../lib/union-type-exception';
 export abstract class AbstractHeterogeneousUnionValidator<
   S extends TUnion<TObject[]>
 > extends AbstractTypedUnionValidator<S> {
+  protected uniqueKeyByMemberIndex?: string[];
+
   constructor(schema: S) {
     super(schema);
   }
@@ -18,11 +24,13 @@ export abstract class AbstractHeterogeneousUnionValidator<
     subject: any,
     overallErrorMessage: string
   ): number {
+    if (this.uniqueKeyByMemberIndex === undefined) {
+      this.cacheUniqueKeys();
+    }
     if (typeof subject === 'object' && subject !== null) {
       for (let i = 0; i < this.schema.anyOf.length; ++i) {
-        const memberSchema = this.schema.anyOf[i];
-        const uniqueKey = memberSchema.uniqueKey;
-        if (uniqueKey !== undefined && subject[uniqueKey] !== undefined) {
+        const uniqueKey = this.uniqueKeyByMemberIndex![i];
+        if (subject[uniqueKey] !== undefined) {
           return i;
         }
       }
@@ -30,11 +38,37 @@ export abstract class AbstractHeterogeneousUnionValidator<
     throw new UnionTypeException(this.schema, subject, overallErrorMessage);
   }
 
-  protected verifyUniqueKeys(): void {
-    for (const memberSchema of this.schema.anyOf) {
-      if (memberSchema.uniqueKey === undefined) {
-        throw Error("Each member schema must have a 'uniqueKey' property.");
+  protected cacheUniqueKeys(): void {
+    const keyToMemberIndexMap = new Map<string, number>();
+    const unionSize = this.schema.anyOf.length;
+
+    for (let i = 0; i < unionSize; ++i) {
+      const memberSchema = this.schema.anyOf[i];
+      for (const key in memberSchema.properties) {
+        if (!keyToMemberIndexMap.has(key)) {
+          const property = memberSchema.properties[key];
+          if (property[TypeBoxModifier] !== 'Optional') {
+            keyToMemberIndexMap.set(key, i);
+          }
+        } else {
+          keyToMemberIndexMap.set(key, -1);
+        }
       }
+    }
+
+    let uniqueKeyCount = 0;
+    this.uniqueKeyByMemberIndex = new Array<string>(unionSize);
+    for (const [uniqueKey, memberIndex] of keyToMemberIndexMap) {
+      if (
+        memberIndex >= 0 &&
+        this.uniqueKeyByMemberIndex[memberIndex] === undefined
+      ) {
+        this.uniqueKeyByMemberIndex[memberIndex] = uniqueKey;
+        ++uniqueKeyCount;
+      }
+    }
+    if (uniqueKeyCount < unionSize) {
+      throw Error('Heterogeneous union has members lacking unique keys');
     }
   }
 }
