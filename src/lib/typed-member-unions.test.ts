@@ -4,7 +4,7 @@ import { Value } from '@sinclair/typebox/value';
 import {
   HeterogeneousUnionUnion,
   DiscriminatedUnionUnion,
-} from './branded-unions';
+} from './typed-member-unions';
 
 describe('branded unions', () => {
   const vSchema = DiscriminatedUnionUnion({

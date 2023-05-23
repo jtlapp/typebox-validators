@@ -6,9 +6,9 @@ import { TObject, TUnion } from '@sinclair/typebox';
 export const DEFAULT_UNKNOWN_TYPE_MESSAGE = 'not a type the union recognizes';
 
 /**
- * Exception thrown when a value is not a member of a branded union.
+ * Exception thrown when a value is not a member of a typed member union.
  */
-export class BrandedTypeException extends ValidationException {
+export class UnionTypeException extends ValidationException {
   constructor(
     unionSchema: TUnion<TObject[]>,
     value: unknown,

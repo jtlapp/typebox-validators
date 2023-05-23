@@ -4,10 +4,10 @@ import { AbstractValidator } from './abstract-validator';
 import { CompilingStandardValidator } from './compiling-standard-validator';
 
 /**
- * Abstract lazily compiled validator for values that are branded unions,
+ * Abstract lazily compiled validator for values that are typed member unions,
  * providing safe and unsafe validation, supporting custom error messages.
  */
-export abstract class AbstractCompilingBrandedValidator<
+export abstract class AbstractCompilingTypedUnionValidator<
   S extends TUnion<TObject[]>
 > extends AbstractValidator<S> {
   protected memberValidators: CompilingStandardValidator<TObject>[];

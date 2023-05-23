@@ -6,7 +6,7 @@ import { CompilingDiscriminatedUnionValidator } from '../validators/compiling-di
 
 const OVERALL_MESSAGE = 'Bad union';
 
-describe('value branded validators', () => {
+describe('discriminated union validators', () => {
   const union = Type.Union(
     [
       Type.Object(
@@ -44,7 +44,7 @@ function testDiscriminatedUnionValidation(
   validator: AbstractValidator<TUnion<TObject[]>>
 ) {
   describe(description, () => {
-    it('accepts only valid value branded unions', () => {
+    it('accepts only valid discriminated unions', () => {
       // expect(Value.Check(vSchema, { type: 's', str1: 'hello' })).toBe(true);
       // expect(Value.Check(vSchema, { type: 'i', int1: 1 })).toBe(true);
 

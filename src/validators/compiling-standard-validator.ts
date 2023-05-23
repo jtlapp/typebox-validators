@@ -4,7 +4,7 @@ import { TypeCheck, TypeCompiler } from '@sinclair/typebox/compiler';
 import { AbstractValidator } from './abstract-validator';
 
 /**
- * Lazily compiled validator for values that are not branded unions,
+ * Lazily compiled validator for values that are not typed member unions,
  * providing safe and unsafe validation, supporting custom error messages.
  * List the more frequently used types earlier in the union to improve
  * performance.

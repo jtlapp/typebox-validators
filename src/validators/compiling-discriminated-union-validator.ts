@@ -1,7 +1,7 @@
 import { TObject, TUnion } from '@sinclair/typebox';
 
-import { AbstractCompilingBrandedValidator } from './abstract-compiling-branded-validator';
-import { findDiscriminatedUnionSchemaIndex } from '../lib/branded-unions';
+import { AbstractCompilingTypedUnionValidator } from './abstract-compiling-typed-union-validator';
+import { findDiscriminatedUnionSchemaIndex } from '../lib/typed-member-unions';
 
 /**
  * Lazily compiled validator for values that are discriminated-union unions,
@@ -9,7 +9,7 @@ import { findDiscriminatedUnionSchemaIndex } from '../lib/branded-unions';
  */
 export class CompilingDiscriminatedUnionValidator<
   S extends TUnion<TObject[]>
-> extends AbstractCompilingBrandedValidator<S> {
+> extends AbstractCompilingTypedUnionValidator<S> {
   /** @inheritdoc */
   constructor(schema: S) {
     super(schema);

@@ -1,6 +1,6 @@
 import * as typebox from '@sinclair/typebox';
 
-import { BrandedTypeException } from './branded-type-exception';
+import { UnionTypeException } from './union-type-exception';
 
 const DEFAULT_DISCRIMINANT_KEY = 'kind';
 
@@ -18,7 +18,7 @@ export function findHeterogeneousUnionSchemaIndex(
       }
     }
   }
-  throw new BrandedTypeException(unionSchema, subject, overallErrorMessage);
+  throw new UnionTypeException(unionSchema, subject, overallErrorMessage);
 }
 
 // TODO: prefix TypeBox types
@@ -31,15 +31,15 @@ export function findDiscriminatedUnionSchemaIndex(
   if (typeof subject === 'object' && subject !== null) {
     const discriminantKey =
       unionSchema.discriminator ?? DEFAULT_DISCRIMINANT_KEY;
-    const valueBrand = subject[discriminantKey];
-    if (valueBrand !== undefined) {
+    const subjectKind = subject[discriminantKey];
+    if (subjectKind !== undefined) {
       for (let i = 0; i < unionSchema.anyOf.length; ++i) {
-        const schemaBrand = unionSchema.anyOf[i].properties[discriminantKey];
-        if (schemaBrand !== undefined && schemaBrand.const === valueBrand) {
+        const memberKind = unionSchema.anyOf[i].properties[discriminantKey];
+        if (memberKind !== undefined && memberKind.const === subjectKind) {
           return i;
         }
       }
     }
   }
-  throw new BrandedTypeException(unionSchema, subject, overallErrorMessage);
+  throw new UnionTypeException(unionSchema, subject, overallErrorMessage);
 }

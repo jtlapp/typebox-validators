@@ -6,7 +6,7 @@ import { CompilingHeterogeneousUnionValidator } from '../validators/compiling-he
 
 const OVERALL_MESSAGE = 'Bad union';
 
-describe('key branded validators', () => {
+describe('heterogeneous union validators', () => {
   const union = Type.Union([
     Type.Object(
       {
@@ -41,7 +41,7 @@ function testHeterogeneousUnionValidation(
   validator: AbstractValidator<TUnion<TObject[]>>
 ) {
   describe(description, () => {
-    it('accepts only valid key branded unions', () => {
+    it('accepts only valid heterogeneous unions', () => {
       checkValidations(validator, { s: 'hello', str1: 'hello' }, true);
       checkValidations(validator, { i: 1, int1: 1 }, true);
 

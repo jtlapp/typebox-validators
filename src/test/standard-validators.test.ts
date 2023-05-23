@@ -9,18 +9,20 @@ import {
   ValidatorFactory,
 } from './test-wrappers';
 
-describe('StandardValidator', () => {
-  const validatorFactory = <S extends TSchema>(
-    schema: S
-  ): StandardValidator<S> => new StandardValidator(schema);
-  testSimpleValidation(validatorFactory);
-});
+describe('standard validators', () => {
+  describe('StandardValidator', () => {
+    const validatorFactory = <S extends TSchema>(
+      schema: S
+    ): StandardValidator<S> => new StandardValidator(schema);
+    testSimpleValidation(validatorFactory);
+  });
 
-describe('CompilingStandardValidator', () => {
-  const validatorFactory = <S extends TSchema>(
-    schema: S
-  ): StandardValidator<S> => new CompilingStandardValidator(schema);
-  testSimpleValidation(validatorFactory);
+  describe('CompilingStandardValidator', () => {
+    const validatorFactory = <S extends TSchema>(
+      schema: S
+    ): StandardValidator<S> => new CompilingStandardValidator(schema);
+    testSimpleValidation(validatorFactory);
+  });
 });
 
 function testSimpleValidation(validatorFactory: ValidatorFactory) {

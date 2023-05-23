@@ -1,7 +1,7 @@
 import { TObject, TUnion } from '@sinclair/typebox';
 
 import { AbstractValidator } from './abstract-validator';
-import { findHeterogeneousUnionSchemaIndex } from '../lib/branded-unions';
+import { findHeterogeneousUnionSchemaIndex } from '../lib/typed-member-unions';
 
 /**
  * Non-compiling validator for values that are heterogeneous-union unions, providing

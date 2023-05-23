@@ -3,8 +3,8 @@ import type { TSchema } from '@sinclair/typebox';
 import { AbstractValidator } from './abstract-validator';
 
 /**
- * Non-compiling validator for values that are not branded unions, providing
- * safe and unsafe validation, supporting custom error messages.
+ * Non-compiling validator for values that are not typed member unions,
+ * providing safe and unsafe validation, supporting custom error messages.
  */
 export class StandardValidator<S extends TSchema> extends AbstractValidator<S> {
   /** @inheritdoc */

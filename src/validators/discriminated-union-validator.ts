@@ -1,7 +1,7 @@
 import { TObject, TUnion } from '@sinclair/typebox';
 
 import { AbstractValidator } from './abstract-validator';
-import { findDiscriminatedUnionSchemaIndex } from '../lib/branded-unions';
+import { findDiscriminatedUnionSchemaIndex } from '../lib/typed-member-unions';
 
 /**
  * Non-compiling validator for values that are discriminated-union unions, providing
