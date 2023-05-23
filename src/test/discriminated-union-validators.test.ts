@@ -5,7 +5,7 @@ import { AbstractValidator } from '../validators/abstract-validator';
 import { CompilingDiscriminatedUnionValidator } from '../validators/compiling-discriminated-union-validator';
 import { ValidationException } from '../lib/validation-exception';
 
-const OVERALL_MESSAGE = 'Bad union';
+const OVERALL_MESSAGE = 'Invalid union value';
 
 describe('discriminated union validators', () => {
   const wellFormedUnion1 = Type.Union([
