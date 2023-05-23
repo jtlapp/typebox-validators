@@ -2,6 +2,7 @@ import { TObject, TUnion } from '@sinclair/typebox';
 
 import { AbstractValidator } from './abstract-validator';
 import { UnionTypeException } from '../lib/union-type-exception';
+import { CompilingStandardValidator } from './compiling-standard-validator';
 
 const DEFAULT_DISCRIMINANT_KEY = 'kind';
 
@@ -12,11 +13,20 @@ const DEFAULT_DISCRIMINANT_KEY = 'kind';
  * Abstract validator for values that are typed member unions, providing
  * safe and unsafe validation, supporting custom error messages.
  */
+// Provides functionality supporting both discriminated and heterogeneous
+// unions and compiling and non-compiling validators, for use by subclasses,
+// because TypeScript doesn't support multiple inheritance or mixins.
 export abstract class AbstractTypedUnionValidator<
   S extends TUnion<TObject[]>
 > extends AbstractValidator<S> {
   constructor(schema: S) {
     super(schema);
+  }
+
+  protected createMemberValidators(): CompilingStandardValidator<TObject>[] {
+    return this.schema.anyOf.map(
+      (memberSchema) => new CompilingStandardValidator(memberSchema)
+    );
   }
 
   protected findDiscriminatedUnionSchemaIndex(

@@ -1,6 +1,7 @@
 import { TObject, TUnion } from '@sinclair/typebox';
 
-import { AbstractCompilingTypedUnionValidator } from './abstract-compiling-typed-union-validator';
+import { AbstractTypedUnionValidator } from './abstract-typed-union-validator';
+import { CompilingStandardValidator } from './compiling-standard-validator';
 
 /**
  * Lazily compiled validator for values that are heterogeneous-union unions,
@@ -8,11 +9,14 @@ import { AbstractCompilingTypedUnionValidator } from './abstract-compiling-typed
  */
 export class CompilingHeterogeneousUnionValidator<
   S extends TUnion<TObject[]>
-> extends AbstractCompilingTypedUnionValidator<S> {
+> extends AbstractTypedUnionValidator<S> {
+  protected memberValidators: CompilingStandardValidator<TObject>[];
+
   /** @inheritdoc */
   constructor(schema: S) {
     super(schema);
     this.verifyUniqueKeys();
+    this.memberValidators = this.createMemberValidators();
   }
 
   /** @inheritdoc */
