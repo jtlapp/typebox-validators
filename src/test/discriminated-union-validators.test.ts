@@ -1,8 +1,8 @@
 import { TObject, TUnion, Type } from '@sinclair/typebox';
 
-import { ValueBrandedValidator } from '../validators/value-branded-validator';
+import { DiscriminatedUnionValidator } from '../validators/discriminated-union-validator';
 import { AbstractValidator } from '../validators/abstract-validator';
-import { CompilingValueBrandedValidator } from '../validators/compiling-value-branded-validator';
+import { CompilingDiscriminatedUnionValidator } from '../validators/compiling-discriminated-union-validator';
 
 const OVERALL_MESSAGE = 'Bad union';
 
@@ -29,17 +29,17 @@ describe('value branded validators', () => {
     { discriminantKey: 't' }
   );
 
-  testValueBrandedValidation(
-    'ValueBrandedValidator()',
-    new ValueBrandedValidator(union)
+  testDiscriminatedUnionValidation(
+    'DiscriminatedUnionValidator()',
+    new DiscriminatedUnionValidator(union)
   );
-  testValueBrandedValidation(
-    'CompilingValueBrandedValidator()',
-    new CompilingValueBrandedValidator(union)
+  testDiscriminatedUnionValidation(
+    'CompilingDiscriminatedUnionValidator()',
+    new CompilingDiscriminatedUnionValidator(union)
   );
 });
 
-function testValueBrandedValidation(
+function testDiscriminatedUnionValidation(
   description: string,
   validator: AbstractValidator<TUnion<TObject[]>>
 ) {

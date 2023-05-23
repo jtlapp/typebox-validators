@@ -1,10 +1,10 @@
 import { Type } from '@sinclair/typebox';
 import { Value } from '@sinclair/typebox/value';
 
-import { KeyBrandedUnion, ValueBrandedUnion } from './branded-unions';
+import { KeyBrandedUnion, DiscriminatedUnionUnion } from './branded-unions';
 
 describe('branded unions', () => {
-  const vSchema = ValueBrandedUnion({
+  const vSchema = DiscriminatedUnionUnion({
     discriminantKey: 'type',
     schemas: [
       Type.Object({
@@ -42,7 +42,7 @@ describe('branded unions', () => {
     ],
   });
 
-  it('ValueBrandedUnion accepts only valid values', () => {
+  it('DiscriminatedUnionUnion accepts only valid values', () => {
     expect(Value.Check(vSchema, { type: 's', str1: 'hello' })).toBe(true);
     expect(Value.Check(vSchema, { type: 'i', int1: 1 })).toBe(true);
 

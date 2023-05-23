@@ -23,7 +23,7 @@ export function findKeyBrandedSchemaIndex(
 
 // TODO: prefix TypeBox types
 
-export function findValueBrandedSchemaIndex(
+export function findDiscriminatedUnionSchemaIndex(
   unionSchema: typebox.TUnion<typebox.TObject[]>,
   subject: any,
   overallErrorMessage: string
