@@ -1,7 +1,6 @@
 import { TObject, TUnion } from '@sinclair/typebox';
 
 import { AbstractCompilingTypedUnionValidator } from './abstract-compiling-typed-union-validator';
-import { findDiscriminatedUnionSchemaIndex } from '../lib/typed-member-unions';
 
 /**
  * Lazily compiled validator for values that are discriminated-union unions,
@@ -17,21 +16,13 @@ export class CompilingDiscriminatedUnionValidator<
 
   /** @inheritdoc */
   safeValidate(value: unknown, errorMessage: string): void {
-    const i = findDiscriminatedUnionSchemaIndex(
-      this.schema,
-      value,
-      errorMessage
-    );
+    const i = this.findDiscriminatedUnionSchemaIndex(value, errorMessage);
     this.memberValidators[i].safeValidate(value, errorMessage);
   }
 
   /** @inheritdoc */
   unsafeValidate(value: unknown, errorMessage: string): void {
-    const i = findDiscriminatedUnionSchemaIndex(
-      this.schema,
-      value,
-      errorMessage
-    );
+    const i = this.findDiscriminatedUnionSchemaIndex(value, errorMessage);
     this.memberValidators[i].unsafeValidate(value, errorMessage);
   }
 }

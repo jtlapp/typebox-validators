@@ -1,6 +1,6 @@
 import { TObject, TUnion } from '@sinclair/typebox';
 
-import { AbstractValidator } from './abstract-validator';
+import { AbstractTypedUnionValidator } from './abstract-typed-union-validator';
 import { CompilingStandardValidator } from './compiling-standard-validator';
 
 /**
@@ -9,7 +9,7 @@ import { CompilingStandardValidator } from './compiling-standard-validator';
  */
 export abstract class AbstractCompilingTypedUnionValidator<
   S extends TUnion<TObject[]>
-> extends AbstractValidator<S> {
+> extends AbstractTypedUnionValidator<S> {
   protected memberValidators: CompilingStandardValidator<TObject>[];
 
   constructor(schema: S) {

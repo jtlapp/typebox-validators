@@ -1,7 +1,6 @@
 import { TObject, TUnion } from '@sinclair/typebox';
 
-import { AbstractValidator } from './abstract-validator';
-import { findHeterogeneousUnionSchemaIndex } from '../lib/typed-member-unions';
+import { AbstractTypedUnionValidator } from './abstract-typed-union-validator';
 
 /**
  * Non-compiling validator for values that are heterogeneous-union unions, providing
@@ -10,7 +9,7 @@ import { findHeterogeneousUnionSchemaIndex } from '../lib/typed-member-unions';
  */
 export class HeterogeneousUnionValidator<
   S extends TUnion<TObject[]>
-> extends AbstractValidator<S> {
+> extends AbstractTypedUnionValidator<S> {
   /** @inheritdoc */
   constructor(schema: S) {
     super(schema);
@@ -18,21 +17,13 @@ export class HeterogeneousUnionValidator<
 
   /** @inheritdoc */
   safeValidate(value: unknown, errorMessage: string): void {
-    const i = findHeterogeneousUnionSchemaIndex(
-      this.schema,
-      value,
-      errorMessage
-    );
+    const i = this.findHeterogeneousUnionSchemaIndex(value, errorMessage);
     this.uncompiledSafeValidate(this.schema.anyOf[i], value, errorMessage);
   }
 
   /** @inheritdoc */
   unsafeValidate(value: unknown, errorMessage: string): void {
-    const i = findHeterogeneousUnionSchemaIndex(
-      this.schema,
-      value,
-      errorMessage
-    );
+    const i = this.findHeterogeneousUnionSchemaIndex(value, errorMessage);
     this.uncompiledUnsafeValidate(this.schema.anyOf[i], value, errorMessage);
   }
 }
