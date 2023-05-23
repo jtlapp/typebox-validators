@@ -25,7 +25,7 @@ export abstract class AbstractHeterogeneousUnionValidator<
     overallErrorMessage: string
   ): number {
     if (this.uniqueKeyByMemberIndex === undefined) {
-      // only incur cost of validator is actually used
+      // only incur cost if validator is actually used
       this.cacheUniqueKeys();
     }
 

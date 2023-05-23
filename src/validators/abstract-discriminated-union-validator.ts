@@ -26,7 +26,7 @@ export abstract class AbstractDiscriminatedUnionValidator<
     overallErrorMessage: string
   ): number {
     if (!this.#unionIsWellformed) {
-      // only incur cost of validator is actually used
+      // only incur cost if validator is actually used
       for (const memberSchema of this.schema.anyOf) {
         if (memberSchema.properties[this.#discriminantKey] === undefined) {
           throw Error(
