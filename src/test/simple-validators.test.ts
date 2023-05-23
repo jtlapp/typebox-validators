@@ -1,13 +1,13 @@
 import { TSchema } from '@sinclair/typebox';
 
-import { SimpleValidator } from '../lib/simple-validator';
-import { CompilingSimpleValidator } from '../lib/compiling-simple-validator';
+import { SimpleValidator } from '../validators/simple-validator';
+import { CompilingSimpleValidator } from '../validators/compiling-simple-validator';
 import { ValidationException } from '../lib/validation-exception';
 import {
   SimpleWrapper1,
   SimpleWrapper2,
   ValidatorFactory,
-} from './util/test-wrappers';
+} from './test-wrappers';
 
 describe('SimpleValidator', () => {
   const validatorFactory = <S extends TSchema>(schema: S): SimpleValidator<S> =>

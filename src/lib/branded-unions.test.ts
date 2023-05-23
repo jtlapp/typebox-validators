@@ -5,7 +5,7 @@ import { KeyBrandedUnion, ValueBrandedUnion } from './branded-unions';
 
 describe('branded unions', () => {
   const vSchema = ValueBrandedUnion({
-    brandKey: 'type',
+    discriminantKey: 'type',
     schemas: [
       Type.Object({
         type: Type.Literal('s'),
@@ -19,6 +19,7 @@ describe('branded unions', () => {
       }),
     ],
   });
+  console.log('vSchema', vSchema);
 
   const kSchema = KeyBrandedUnion({
     schemas: [
@@ -65,6 +66,20 @@ describe('branded unions', () => {
     expect(Value.Check(vSchema, true)).toBe(false);
     expect(Value.Check(vSchema, 1)).toBe(false);
     expect(Value.Check(vSchema, 'hello')).toBe(false);
+  });
+
+  it('temp', () => {
+    const errors1 = Value.Errors(vSchema, { type: 's', str1: 1 });
+    console.log([...errors1]);
+
+    const nestedUnion = Type.Object({
+      union: vSchema,
+    });
+
+    const errors2 = Value.Errors(nestedUnion, {
+      union: { type: 's', str1: 1 },
+    });
+    console.log([...errors2]);
   });
 
   it('KeyBrandedUnion accepts only valid values', () => {

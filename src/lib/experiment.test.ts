@@ -21,23 +21,26 @@ const IntegerString = TypeSystem.Type<
 });
 
 test('IntegerString', () => {
-  const schema = Type.Object({
-    literal: Type.Literal('exact'),
-    host: Type.String({
-      description: 'hostname or IP address of database server',
-      minLength: 1,
-    }),
-    port: IntegerString({
-      description: 'port number of database server at host',
-      minimum: 0,
-      maximum: 65535,
-      errorMessage: 'port must be an integer >= 0 and <= 65535',
-    }),
-    maxConnections: Type.Integer({
-      description: 'maximum number of connections to allow',
-      minimum: 10,
-    }),
-  });
+  const schema = Type.Object(
+    {
+      literal: Type.Literal('exact'),
+      host: Type.String({
+        description: 'hostname or IP address of database server',
+        minLength: 1,
+      }),
+      port: IntegerString({
+        description: 'port number of database server at host',
+        minimum: 0,
+        maximum: 65535,
+        errorMessage: 'port must be an integer >= 0 and <= 65535',
+      }),
+      maxConnections: Type.Integer({
+        description: 'maximum number of connections to allow',
+        minimum: 10,
+      }),
+    },
+    { foobar: 123 }
+  );
 
   const compiledType = TypeCompiler.Compile(schema);
   console.log(compiledType.Code());

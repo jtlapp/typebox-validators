@@ -2,11 +2,12 @@ import type { TSchema } from '@sinclair/typebox';
 import { TypeCheck, TypeCompiler } from '@sinclair/typebox/compiler';
 
 import { AbstractValidator } from './abstract-validator';
-import { ValidationException } from './validation-exception';
 
 /**
  * Lazily compiled validator for values that are not branded unions,
  * providing safe and unsafe validation, supporting custom error messages.
+ * List the more frequently used types earlier in the union to improve
+ * performance.
  */
 export class CompilingSimpleValidator<
   S extends TSchema
@@ -21,20 +22,13 @@ export class CompilingSimpleValidator<
   /** @inheritdoc */
   safeValidate(value: unknown, errorMessage: string): void {
     const compiledType = this.getCompiledType();
-    if (!compiledType.Check(value)) {
-      const firstError = compiledType.Errors(value).First()!;
-      throw new ValidationException(errorMessage, [firstError]);
-    }
+    this.compiledSafeValidate(compiledType, value, errorMessage);
   }
 
   /** @inheritdoc */
   unsafeValidate(value: unknown, errorMessage: string): void {
     const compiledType = this.getCompiledType();
-    if (!compiledType.Check(value)) {
-      throw new ValidationException(errorMessage, [
-        ...compiledType.Errors(value),
-      ]);
-    }
+    this.compiledUnsafeValidate(compiledType, value, errorMessage);
   }
 
   /**

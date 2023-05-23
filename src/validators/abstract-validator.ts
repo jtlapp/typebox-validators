@@ -13,6 +13,9 @@
  */
 
 import type { TSchema } from '@sinclair/typebox';
+import { Value } from '@sinclair/typebox/value';
+import { ValidationException } from '../lib/validation-exception';
+import { TypeCheck } from '@sinclair/typebox/compiler';
 
 /**
  * Class providing validation services for a TypeBox schema, offering both
@@ -67,5 +70,51 @@ export abstract class AbstractValidator<S extends TSchema> {
     safely
       ? this.safeValidate(value, errorMessage)
       : this.unsafeValidate(value, errorMessage);
+  }
+
+  protected compiledSafeValidate(
+    compiledType: TypeCheck<S>,
+    value: unknown,
+    errorMessage: string
+  ): void {
+    if (!compiledType.Check(value)) {
+      const firstError = compiledType.Errors(value).First()!;
+      throw new ValidationException(errorMessage, [firstError]);
+    }
+  }
+
+  protected compiledUnsafeValidate(
+    compiledType: TypeCheck<S>,
+    value: unknown,
+    errorMessage: string
+  ): void {
+    if (!compiledType.Check(value)) {
+      throw new ValidationException(errorMessage, [
+        ...compiledType.Errors(value),
+      ]);
+    }
+  }
+
+  protected uncompiledSafeValidate(
+    schema: TSchema,
+    value: unknown,
+    errorMessage: string
+  ): void {
+    if (!Value.Check(schema, value)) {
+      const firstError = Value.Errors(schema, value).First()!;
+      throw new ValidationException(errorMessage, [firstError]);
+    }
+  }
+
+  protected uncompiledUnsafeValidate(
+    schema: TSchema,
+    value: unknown,
+    errorMessage: string
+  ): void {
+    if (!Value.Check(schema, value)) {
+      throw new ValidationException(errorMessage, [
+        ...Value.Errors(schema, value),
+      ]);
+    }
   }
 }

@@ -1,38 +1,33 @@
 /**
- * Classes supporting LazyValidator validation errors.
+ * Classes representing the validation errors of a single value.
  */
 
-import type { ValueError } from '@sinclair/typebox/compiler';
+import { ValueError } from '@sinclair/typebox/value';
 import ExtendableError from 'es6-error';
-import { ErrorSchemaOptions } from './error-schema-options';
-import { TSchema } from '@sinclair/typebox';
+
+import { ValidationErrorDetail } from './validation-error-detail';
 
 /**
  * Reports the occurrence of one or more validation errors.
  */
 export class ValidationException extends ExtendableError {
   /**
-   * Details of the individual validation errors
+   * @param overallErrorMessage Overall error message
+   * @param details The individual validation errors
    */
-  readonly details: InvalidValueDetail[];
-
-  /**
-   * Constructor
-   *
-   * @param message Error message
-   * @param errors Validation errors as reported by TypeBox
-   *
-   */
-  constructor(message: string, errors: ValueError[] = []) {
-    super(message);
-    this.details = errors.map((err) => new InvalidValueDetail(err));
+  constructor(overallErrorMessage: string, public details: ValueError[] = []) {
+    super(overallErrorMessage);
+    this.details = details.map((detail) => new ValidationErrorDetail(detail));
   }
 
   /**
-   * Returns a string representation of the error.
-   *
+   * Returns a string representation of the error. Provides the overall
+   * error message, optionally followed by detailed error messages. If
+   * there is only one error, the format is "{overall message}: {detail}".
+   * If there are multiple errors, the overall message is on the first
+   * line and the details are dash-bulleted on subsequent lines.
    * @param includeDetails Whether to append to the error message
-   *    descriptions of the individual validation errors
+   *  descriptions of the individual validation errors
    * @returns a string representation of the error.
    */
   override toString(includeDetails = true): string {
@@ -48,47 +43,5 @@ export class ValidationException extends ExtendableError {
       }
     }
     return message;
-  }
-}
-
-/**
- * Class representing a single validation error. Encapsulates TypeBox
- * error details in order to be able to give them string representations.
- */
-export class InvalidValueDetail {
-  /**
-   * Associated TypeBox `ValueError` providing details of the error. If the
-   * schema assigned a custom message to the error, that message will appear
-   * verbatim within the key `error.schema.errorMessage`.
-   */
-  readonly error: ValueError;
-
-  /**
-   * Constructor
-   *
-   * @param error TypeBox detailed characterization of the error
-   */
-  constructor(error: ValueError) {
-    this.error = error;
-  }
-
-  /**
-   * Returns a string representation of the a TypeBox validation error.
-   * If the schema assigned a custom message to the error, and if the
-   * validated value was an object, the string "{field}" will be replaced
-   * with the key of the object that failed validation.
-   *
-   * @returns a string representation of the a TypeBox validation error
-   */
-  toString(): string {
-    const error = this.error;
-    const schema: TSchema & ErrorSchemaOptions = error.schema;
-    if (schema.errorMessage !== undefined) {
-      const field = error.path ? error.path.substring(1) : '';
-      return schema.errorMessage.replace('{field}', field);
-    }
-    return error.path
-      ? `${error.path.substring(1)}: ${error.message}`
-      : error.message;
   }
 }

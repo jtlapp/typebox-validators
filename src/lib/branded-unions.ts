@@ -1,100 +1,45 @@
-import { TObject } from '@sinclair/typebox';
-import { Value } from '@sinclair/typebox/value';
-import { TypeSystem } from '@sinclair/typebox/system';
+import * as typebox from '@sinclair/typebox';
 
-import { ErrorSchemaOptions } from './error-schema-options';
+import { BrandedTypeException } from './branded-type-exception';
 
-/**
- * Options for a KeyBrandedUnion.
- */
-export interface BrandedUnionOptions extends ErrorSchemaOptions {
-  /**
-   * Array of object schemas any one of which an object could match.
-   */
-  schemas: TObject[];
+const DEFAULT_DISCRIMINANT_KEY = 'kind';
+
+export function findKeyBrandedSchemaIndex(
+  unionSchema: typebox.TUnion<typebox.TObject[]>,
+  subject: any,
+  overallErrorMessage: string
+): number {
+  if (typeof subject === 'object' && subject !== null) {
+    for (let i = 0; i < unionSchema.anyOf.length; ++i) {
+      const memberSchema = unionSchema.anyOf[i];
+      const uniqueKey = memberSchema.uniqueKey;
+      if (uniqueKey !== undefined && subject[uniqueKey] !== undefined) {
+        return i;
+      }
+    }
+  }
+  throw new BrandedTypeException(unionSchema, subject, overallErrorMessage);
 }
 
-/**
- * Type representing a union of TypeBox types, where the schemas each have at
- * least one property not found in any other schema. Each schema provides a
- * `uniqueKey` option specifying the name of one of its unique properties.
- * The values of these properties can have any type.
- */
-export const KeyBrandedUnion = TypeSystem.Type<object, BrandedUnionOptions>(
-  'KeyBrandedUnion',
-  (options, subject: any) => {
-    if (typeof subject !== 'object' || subject === null) {
-      return false;
-    }
-    const schema = _getKeyBrandedSchema(options, subject);
-    if (schema === null) {
-      return false;
-    }
-    return Value.Check(schema, subject);
-  }
-);
+// TODO: prefix TypeBox types
 
-/**
- * Options for a ValueBrandedUnion.
- */
-export interface ValueBrandedUnionOptions extends BrandedUnionOptions {
-  /**
-   * Name of the property found in all schemas whose literal value uniquely
-   * identifies the type.
-   */
-  brandKey: string;
-}
-
-/**
- * Type representing a union of TypeBox types, where the schemas all have a
- * property of the same name whose value uniquely identifies the type. The
- * `brandKey` option on the union schema specifies the name of this property,
- * which must be a literal type.
- */
-export const ValueBrandedUnion = TypeSystem.Type<
-  object,
-  ValueBrandedUnionOptions
->('ValueBrandedUnion', (options, subject: any) => {
-  if (typeof subject !== 'object' || subject === null) {
-    return false;
-  }
-  const schema = _getValueBrandedSchema(options, subject);
-  if (schema === null) {
-    return false;
-  }
-  // TODO: can I precompile this?
-  return Value.Check(schema, subject);
-});
-
-export function _getKeyBrandedSchema(
-  options: BrandedUnionOptions,
-  subject: any
-): TObject | null {
-  for (const schema of options.schemas) {
-    const uniqueKey = schema.uniqueKey;
-    if (uniqueKey !== undefined && subject[uniqueKey] !== undefined) {
-      // TODO: can I precompile this?
-      return schema;
+export function findValueBrandedSchemaIndex(
+  unionSchema: typebox.TUnion<typebox.TObject[]>,
+  subject: any,
+  overallErrorMessage: string
+): number {
+  if (typeof subject === 'object' && subject !== null) {
+    const discriminantKey =
+      unionSchema.discriminator ?? DEFAULT_DISCRIMINANT_KEY;
+    const valueBrand = subject[discriminantKey];
+    if (valueBrand !== undefined) {
+      for (let i = 0; i < unionSchema.anyOf.length; ++i) {
+        const schemaBrand = unionSchema.anyOf[i].properties[discriminantKey];
+        if (schemaBrand !== undefined && schemaBrand.const === valueBrand) {
+          return i;
+        }
+      }
     }
   }
-  return null;
-}
-
-export function _getValueBrandedSchema(
-  options: ValueBrandedUnionOptions,
-  subject: any
-): TObject | null {
-  const brandKey = options.brandKey;
-  const valueBrand = subject[brandKey];
-  if (valueBrand === undefined) {
-    return null;
-  }
-
-  for (const schema of options.schemas) {
-    const schemaBrand = schema.properties[brandKey];
-    if (schemaBrand !== undefined && schemaBrand.const === valueBrand) {
-      return schema;
-    }
-  }
-  return null;
+  throw new BrandedTypeException(unionSchema, subject, overallErrorMessage);
 }

@@ -1,6 +1,6 @@
 import { TSchema, Type } from '@sinclair/typebox';
 
-import { AbstractValidator } from '../../lib/abstract-validator';
+import { AbstractValidator } from '../validators/abstract-validator';
 
 export type ValidatorFactory = <S extends TSchema>(
   schema: S
