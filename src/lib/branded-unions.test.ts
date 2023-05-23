@@ -1,7 +1,10 @@
 import { Type } from '@sinclair/typebox';
 import { Value } from '@sinclair/typebox/value';
 
-import { KeyBrandedUnion, DiscriminatedUnionUnion } from './branded-unions';
+import {
+  HeterogeneousUnionUnion,
+  DiscriminatedUnionUnion,
+} from './branded-unions';
 
 describe('branded unions', () => {
   const vSchema = DiscriminatedUnionUnion({
@@ -21,7 +24,7 @@ describe('branded unions', () => {
   });
   console.log('vSchema', vSchema);
 
-  const kSchema = KeyBrandedUnion({
+  const kSchema = HeterogeneousUnionUnion({
     schemas: [
       Type.Object(
         {
@@ -82,7 +85,7 @@ describe('branded unions', () => {
     console.log([...errors2]);
   });
 
-  it('KeyBrandedUnion accepts only valid values', () => {
+  it('HeterogeneousUnionUnion accepts only valid values', () => {
     expect(Value.Check(kSchema, { s: 'hello', str1: 'hello' })).toBe(true);
     expect(Value.Check(kSchema, { i: 1, int1: 1 })).toBe(true);
 

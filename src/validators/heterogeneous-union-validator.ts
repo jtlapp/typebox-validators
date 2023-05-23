@@ -1,14 +1,14 @@
 import { TObject, TUnion } from '@sinclair/typebox';
 
 import { AbstractValidator } from './abstract-validator';
-import { findKeyBrandedSchemaIndex } from '../lib/branded-unions';
+import { findHeterogeneousUnionSchemaIndex } from '../lib/branded-unions';
 
 /**
- * Non-compiling validator for values that are key-branded unions, providing
+ * Non-compiling validator for values that are heterogeneous-union unions, providing
  * safe and unsafe validation, supporting custom error messages. List the
  * more frequently used types earlier in the union to improve performance.
  */
-export class KeyBrandedValidator<
+export class HeterogeneousUnionValidator<
   S extends TUnion<TObject[]>
 > extends AbstractValidator<S> {
   /** @inheritdoc */
@@ -18,13 +18,21 @@ export class KeyBrandedValidator<
 
   /** @inheritdoc */
   safeValidate(value: unknown, errorMessage: string): void {
-    const i = findKeyBrandedSchemaIndex(this.schema, value, errorMessage);
+    const i = findHeterogeneousUnionSchemaIndex(
+      this.schema,
+      value,
+      errorMessage
+    );
     this.uncompiledSafeValidate(this.schema.anyOf[i], value, errorMessage);
   }
 
   /** @inheritdoc */
   unsafeValidate(value: unknown, errorMessage: string): void {
-    const i = findKeyBrandedSchemaIndex(this.schema, value, errorMessage);
+    const i = findHeterogeneousUnionSchemaIndex(
+      this.schema,
+      value,
+      errorMessage
+    );
     this.uncompiledUnsafeValidate(this.schema.anyOf[i], value, errorMessage);
   }
 }

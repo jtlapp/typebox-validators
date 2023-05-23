@@ -1,8 +1,8 @@
 import { TObject, TUnion, Type } from '@sinclair/typebox';
 
-import { KeyBrandedValidator } from '../validators/key-branded-validator';
+import { HeterogeneousUnionValidator } from '../validators/heterogeneous-union-validator';
 import { AbstractValidator } from '../validators/abstract-validator';
-import { CompilingKeyBrandedValidator } from '../validators/compiling-key-branded-validator';
+import { CompilingHeterogeneousUnionValidator } from '../validators/compiling-heterogeneous-union-validator';
 
 const OVERALL_MESSAGE = 'Bad union';
 
@@ -26,17 +26,17 @@ describe('key branded validators', () => {
     ),
   ]);
 
-  testKeyBrandedValidation(
-    'KeyBrandedValidator()',
-    new KeyBrandedValidator(union)
+  testHeterogeneousUnionValidation(
+    'HeterogeneousUnionValidator()',
+    new HeterogeneousUnionValidator(union)
   );
-  testKeyBrandedValidation(
-    'CompilingKeyBrandedValidator()',
-    new CompilingKeyBrandedValidator(union)
+  testHeterogeneousUnionValidation(
+    'CompilingHeterogeneousUnionValidator()',
+    new CompilingHeterogeneousUnionValidator(union)
   );
 });
 
-function testKeyBrandedValidation(
+function testHeterogeneousUnionValidation(
   description: string,
   validator: AbstractValidator<TUnion<TObject[]>>
 ) {

@@ -4,7 +4,7 @@ import { BrandedTypeException } from './branded-type-exception';
 
 const DEFAULT_DISCRIMINANT_KEY = 'kind';
 
-export function findKeyBrandedSchemaIndex(
+export function findHeterogeneousUnionSchemaIndex(
   unionSchema: typebox.TUnion<typebox.TObject[]>,
   subject: any,
   overallErrorMessage: string
