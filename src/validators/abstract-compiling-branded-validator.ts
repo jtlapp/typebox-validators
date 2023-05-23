@@ -1,7 +1,7 @@
 import { TObject, TUnion } from '@sinclair/typebox';
 
 import { AbstractValidator } from './abstract-validator';
-import { CompilingSimpleValidator } from './compiling-simple-validator';
+import { CompilingStandardValidator } from './compiling-standard-validator';
 
 /**
  * Abstract lazily compiled validator for values that are branded unions,
@@ -10,12 +10,12 @@ import { CompilingSimpleValidator } from './compiling-simple-validator';
 export abstract class AbstractCompilingBrandedValidator<
   S extends TUnion<TObject[]>
 > extends AbstractValidator<S> {
-  protected memberValidators: CompilingSimpleValidator<TObject>[];
+  protected memberValidators: CompilingStandardValidator<TObject>[];
 
   constructor(schema: S) {
     super(schema);
     this.memberValidators = this.schema.anyOf.map(
-      (memberSchema) => new CompilingSimpleValidator(memberSchema)
+      (memberSchema) => new CompilingStandardValidator(memberSchema)
     );
   }
 }

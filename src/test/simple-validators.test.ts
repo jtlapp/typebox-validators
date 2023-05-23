@@ -1,7 +1,7 @@
 import { TSchema } from '@sinclair/typebox';
 
-import { SimpleValidator } from '../validators/simple-validator';
-import { CompilingSimpleValidator } from '../validators/compiling-simple-validator';
+import { StandardValidator } from '../validators/standard-validator';
+import { CompilingStandardValidator } from '../validators/compiling-standard-validator';
 import { ValidationException } from '../lib/validation-exception';
 import {
   SimpleWrapper1,
@@ -9,15 +9,17 @@ import {
   ValidatorFactory,
 } from './test-wrappers';
 
-describe('SimpleValidator', () => {
-  const validatorFactory = <S extends TSchema>(schema: S): SimpleValidator<S> =>
-    new SimpleValidator(schema);
+describe('StandardValidator', () => {
+  const validatorFactory = <S extends TSchema>(
+    schema: S
+  ): StandardValidator<S> => new StandardValidator(schema);
   testSimpleValidation(validatorFactory);
 });
 
-describe('CompilingSimpleValidator', () => {
-  const validatorFactory = <S extends TSchema>(schema: S): SimpleValidator<S> =>
-    new CompilingSimpleValidator(schema);
+describe('CompilingStandardValidator', () => {
+  const validatorFactory = <S extends TSchema>(
+    schema: S
+  ): StandardValidator<S> => new CompilingStandardValidator(schema);
   testSimpleValidation(validatorFactory);
 });
 
