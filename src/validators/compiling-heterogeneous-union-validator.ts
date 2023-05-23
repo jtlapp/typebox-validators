@@ -12,6 +12,7 @@ export class CompilingHeterogeneousUnionValidator<
   /** @inheritdoc */
   constructor(schema: S) {
     super(schema);
+    this.verifyUniqueKeys();
   }
 
   /** @inheritdoc */
