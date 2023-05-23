@@ -5,7 +5,7 @@ import { AbstractValidator } from '../validators/abstract-validator';
 import { CompilingDiscriminatedUnionValidator } from '../validators/compiling-discriminated-union-validator';
 import { ValidationException } from '../lib/validation-exception';
 
-const OVERALL_MESSAGE = 'Invalid union value';
+import { OVERALL_MESSAGE, checkValidations } from './test-util';
 
 describe('discriminated union validators', () => {
   const wellFormedUnion1 = Type.Union([
@@ -73,61 +73,66 @@ function testDiscriminatedUnionValidation(
 ) {
   describe(description, () => {
     it("uses 'kind' as the default discriminant key", () => {
-      checkValidations(goodValidator1, { kind: 's', str1: 'hello' }, true);
-      checkValidations(goodValidator1, { kind: 'i', int1: 1 }, true);
+      checkValidations(goodValidator1, 0, { kind: 's', str1: 'hello' }, true);
+      checkValidations(goodValidator1, 1, { kind: 'i', int1: 1 }, true);
       checkValidations(
         goodValidator1,
+        0,
         { kind: 's', str1: 'hello', int1: 1 },
         true
       );
       checkValidations(
         goodValidator1,
+        1,
         { kind: 'i', str1: 'hello', int1: 1 },
         true
       );
 
-      checkValidations(goodValidator1, { kind: 's', int1: 1 }, false);
-      checkValidations(goodValidator1, { kind: 'i', str1: 'hello' }, false);
-      checkValidations(goodValidator1, { kind: 'x', str1: 'hello' }, false);
-      checkValidations(goodValidator1, { str1: 'hello', int1: 1 }, false);
-      checkValidations(goodValidator1, {}, false);
+      checkValidations(goodValidator1, 0, { kind: 's', int1: 1 }, false);
+      checkValidations(goodValidator1, 1, { kind: 'i', str1: 'hello' }, false);
+      checkValidations(goodValidator1, 0, { kind: 'x', str1: 'hello' }, false);
+      checkValidations(goodValidator1, 0, { str1: 'hello', int1: 1 }, false);
+      checkValidations(goodValidator1, 0, {}, false);
 
-      checkValidations(goodValidator1, undefined, false);
-      checkValidations(goodValidator1, null, false);
-      checkValidations(goodValidator1, true, false);
-      checkValidations(goodValidator1, 1, false);
-      checkValidations(goodValidator1, 'hello', false);
+      checkValidations(goodValidator1, 0, undefined, false);
+      checkValidations(goodValidator1, 0, null, false);
+      checkValidations(goodValidator1, 0, true, false);
+      checkValidations(goodValidator1, 0, 1, false);
+      checkValidations(goodValidator1, 0, 'hello', false);
     });
 
     it('accepts only valid discriminated unions', () => {
-      checkValidations(goodValidator2, { t: 's', str1: 'hello' }, true);
-      checkValidations(goodValidator2, { t: 'i', int1: 1 }, true);
+      checkValidations(goodValidator2, 0, { t: 's', str1: 'hello' }, true);
+      checkValidations(goodValidator2, 1, { t: 'i', int1: 1 }, true);
       checkValidations(
         goodValidator2,
+        0,
         { t: 's', str1: 'hello', int1: 1 },
         true
       );
       checkValidations(
         goodValidator2,
+        1,
         { t: 'i', str1: 'hello', int1: 1 },
         true
       );
 
-      checkValidations(goodValidator2, { t: 's', int1: 1 }, false);
-      checkValidations(goodValidator2, { t: 'i', str1: 'hello' }, false);
+      checkValidations(goodValidator2, 0, { t: 's', int1: 1 }, false);
+      checkValidations(goodValidator2, 1, { t: 'i', str1: 'hello' }, false);
       checkValidations(
         goodValidator2,
+        0,
         { t: 'x', str1: 'hello', int1: 1 },
         false
       );
-      checkValidations(goodValidator2, { str1: 'hello', int1: 1 }, false);
-      checkValidations(goodValidator2, {}, false);
+      checkValidations(goodValidator2, 0, { str1: 'hello', int1: 1 }, false);
+      checkValidations(goodValidator2, 0, {}, false);
 
-      checkValidations(goodValidator2, undefined, false);
-      checkValidations(goodValidator2, null, false);
-      checkValidations(goodValidator2, true, false);
-      checkValidations(goodValidator2, 1, false);
-      checkValidations(goodValidator2, 'hello', false);
+      checkValidations(goodValidator2, 0, undefined, false);
+      checkValidations(goodValidator2, 0, null, false);
+      checkValidations(goodValidator2, 0, true, false);
+      checkValidations(goodValidator2, 0, 1, false);
+      checkValidations(goodValidator2, 0, 'hello', false);
     });
 
     it('reports unrecognized discriminant value', () => {
@@ -223,6 +228,31 @@ function testDiscriminatedUnionValidation(
       }
     });
 
+    it('safeValidateAndClean() cleans object on successful validation', () => {
+      const validObject = { t: 's', str1: 'hello', misc: 'foo' };
+      const [schema, cleanedObject] = goodValidator2.safeValidateAndClean(
+        validObject,
+        OVERALL_MESSAGE
+      );
+      expect(schema).toEqual(goodValidator2.schema.anyOf[0]);
+      expect(cleanedObject).toEqual({ t: 's', str1: 'hello' });
+    });
+
+    it('safeValidateAndClean() fails on invalid object', () => {
+      expect.assertions(4);
+      try {
+        const invalidObject = { t: 's', str1: 1, str2: 2 };
+        goodValidator2.safeValidateAndClean(invalidObject, OVERALL_MESSAGE);
+      } catch (err: unknown) {
+        if (!(err instanceof ValidationException)) throw err;
+        expect(err.details.length).toEqual(1);
+        const detail = 'str1: Expected string';
+        expect(err.message).toEqual(OVERALL_MESSAGE);
+        expect(err.details[0].toString()).toEqual(detail);
+        expect(err.toString()).toEqual(`${OVERALL_MESSAGE}: ${detail}`);
+      }
+    });
+
     it('reports all errors with unsafe validation', () => {
       expect.assertions(5);
       try {
@@ -258,24 +288,4 @@ function testDiscriminatedUnionValidation(
       );
     });
   });
-}
-
-function checkValidations(
-  validator: AbstractValidator<TUnion<TObject[]>>,
-  value: any,
-  valid: boolean
-): void {
-  tryValidation(valid, () => validator.safeValidate(value, OVERALL_MESSAGE));
-  tryValidation(valid, () => validator.validate(value, OVERALL_MESSAGE, true));
-
-  tryValidation(valid, () => validator.unsafeValidate(value, OVERALL_MESSAGE));
-  tryValidation(valid, () => validator.validate(value, OVERALL_MESSAGE, false));
-}
-
-function tryValidation(valid: boolean, validate: () => void): void {
-  if (valid) {
-    expect(validate).not.toThrow();
-  } else {
-    expect(validate).toThrow(OVERALL_MESSAGE);
-  }
 }

@@ -55,11 +55,15 @@ class SimpleWrapper1 extends SimpleWrapper {
   }
 
   safeValidate() {
-    this.validator.safeValidate(this, 'Bad SimpleWrapper1');
+    return this.validator.safeValidate(this, 'Bad SimpleWrapper1');
+  }
+
+  safeValidateAndClean() {
+    return this.validator.safeValidateAndClean(this, 'Bad SimpleWrapper1');
   }
 
   unsafeValidate() {
-    this.validator.unsafeValidate(this, 'Bad SimpleWrapper1');
+    return this.validator.unsafeValidate(this, 'Bad SimpleWrapper1');
   }
 
   validate(safely: boolean) {
@@ -91,23 +95,36 @@ class SimpleWrapper2 extends SimpleWrapper {
   }
 
   safeValidate() {
-    this.validator.safeValidate(this, 'Bad SimpleWrapper2');
+    return this.validator.safeValidate(this, 'Bad SimpleWrapper2');
+  }
+
+  safeValidateAndClean() {
+    return this.validator.safeValidateAndClean(this, 'Bad SimpleWrapper2');
   }
 
   unsafeValidate() {
-    this.validator.unsafeValidate(this, 'Bad SimpleWrapper2');
+    return this.validator.unsafeValidate(this, 'Bad SimpleWrapper2');
   }
 }
 
 function testSimpleValidation(validatorFactory: ValidatorFactory) {
   describe('safeValidate()', () => {
-    it('accepts valid objects', () => {
-      expect(
-        () => new SimpleWrapper1(validatorFactory, 0, 1, 'ABCDE')
-      ).not.toThrow();
-      expect(
-        () => new SimpleWrapper1(validatorFactory, -5, 125, 'ABCDEDEFGH')
-      ).not.toThrow();
+    it('accepts valid values', () => {
+      let schema = new SimpleWrapper1(
+        validatorFactory,
+        0,
+        1,
+        'ABCDE'
+      ).safeValidate();
+      expect(schema).toBe(SimpleWrapper1.schema);
+
+      schema = new SimpleWrapper1(
+        validatorFactory,
+        -5,
+        125,
+        'ABCDEDEFGH'
+      ).safeValidate();
+      expect(schema).toBe(SimpleWrapper1.schema);
     });
 
     it('rejects objects with single invalid fields reporting a single error', () => {
@@ -165,7 +182,67 @@ function testSimpleValidation(validatorFactory: ValidatorFactory) {
     });
   });
 
+  describe('safeValidateAndClean()', () => {
+    it('validates on valid objects and returns schema and cleaned value', () => {
+      let [schema, value] = new SimpleWrapper1(
+        validatorFactory,
+        0,
+        1,
+        'ABCDE'
+      ).safeValidateAndClean();
+      expect(schema).toBe(SimpleWrapper1.schema);
+      expect(value).toEqual({ delta: 0, count: 1, name: 'ABCDE' });
+
+      [schema, value] = new SimpleWrapper1(
+        validatorFactory,
+        -5,
+        125,
+        'ABCDEDEFGH'
+      ).safeValidateAndClean();
+      expect(schema).toBe(SimpleWrapper1.schema);
+      expect(value).toEqual({ delta: -5, count: 125, name: 'ABCDEDEFGH' });
+    });
+
+    it('fails to validate on invalid objects', () => {
+      expect.assertions(4);
+      try {
+        new SimpleWrapper1(
+          validatorFactory,
+          0.5,
+          1,
+          'ABCDE'
+        ).safeValidateAndClean();
+      } catch (err: unknown) {
+        if (!(err instanceof ValidationException)) throw err;
+        expect(err.details.length).toEqual(1);
+        const message = 'Bad SimpleWrapper1';
+        const detail = 'delta: Expected integer';
+        expect(err.message).toEqual(message);
+        expect(err.details[0].toString()).toEqual(detail);
+        expect(err.toString()).toEqual(`${message}: ${detail}`);
+      }
+    });
+  });
+
   describe('unsafeValidate()', () => {
+    it('accepts valid values', () => {
+      let schema = new SimpleWrapper1(
+        validatorFactory,
+        0,
+        1,
+        'ABCDE'
+      ).unsafeValidate();
+      expect(schema).toBe(SimpleWrapper1.schema);
+
+      schema = new SimpleWrapper1(
+        validatorFactory,
+        -5,
+        125,
+        'ABCDEDEFGH'
+      ).unsafeValidate();
+      expect(schema).toBe(SimpleWrapper1.schema);
+    });
+
     it('rejects objects with single invalid field reporting a single error', () => {
       expect.assertions(3);
       try {

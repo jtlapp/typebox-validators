@@ -1,27 +1,28 @@
 import type { TSchema } from '@sinclair/typebox';
 
-import { AbstractValidator } from './abstract-validator';
-
-// TODO: safe validation should remove unknown properties; investigate
-// removeUnevaluatedProperties and unevaluatedProperties of JSON Schema.
+import { AbstractStandardValidator } from './abstract-standard-validator';
 
 /**
  * Non-compiling validator for standard TypeBox values, providing safe
  * and unsafe validation, supporting custom error messages.
  */
-export class StandardValidator<S extends TSchema> extends AbstractValidator<S> {
+export class StandardValidator<
+  S extends TSchema
+> extends AbstractStandardValidator<S> {
   /** @inheritdoc */
   constructor(schema: S) {
     super(schema);
   }
 
   /** @inheritdoc */
-  safeValidate(value: unknown, errorMessage: string): void {
+  override safeValidate(value: unknown, errorMessage: string): S {
     this.uncompiledSafeValidate(this.schema, value, errorMessage);
+    return this.schema;
   }
 
   /** @inheritdoc */
-  unsafeValidate(value: unknown, errorMessage: string): void {
+  override unsafeValidate(value: unknown, errorMessage: string): S {
     this.uncompiledUnsafeValidate(this.schema, value, errorMessage);
+    return this.schema;
   }
 }

@@ -1,7 +1,7 @@
 import type { TSchema } from '@sinclair/typebox';
 import { TypeCheck, TypeCompiler } from '@sinclair/typebox/compiler';
 
-import { AbstractValidator } from './abstract-validator';
+import { AbstractStandardValidator } from './abstract-standard-validator';
 
 /**
  * Lazily compiled validator for standard TypeBox values, providing safe
@@ -9,7 +9,7 @@ import { AbstractValidator } from './abstract-validator';
  */
 export class CompilingStandardValidator<
   S extends TSchema
-> extends AbstractValidator<S> {
+> extends AbstractStandardValidator<S> {
   #compiledType?: TypeCheck<S>;
 
   /** @inheritdoc */
@@ -18,15 +18,17 @@ export class CompilingStandardValidator<
   }
 
   /** @inheritdoc */
-  safeValidate(value: unknown, errorMessage: string): void {
+  override safeValidate(value: unknown, errorMessage: string): S {
     const compiledType = this.getCompiledType();
     this.compiledSafeValidate(compiledType, value, errorMessage);
+    return this.schema;
   }
 
   /** @inheritdoc */
-  unsafeValidate(value: unknown, errorMessage: string): void {
+  override unsafeValidate(value: unknown, errorMessage: string): S {
     const compiledType = this.getCompiledType();
     this.compiledUnsafeValidate(compiledType, value, errorMessage);
+    return this.schema;
   }
 
   /**

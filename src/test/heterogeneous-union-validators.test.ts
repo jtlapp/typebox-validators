@@ -5,7 +5,7 @@ import { AbstractValidator } from '../validators/abstract-validator';
 import { CompilingHeterogeneousUnionValidator } from '../validators/compiling-heterogeneous-union-validator';
 import { ValidationException } from '../lib/validation-exception';
 
-const OVERALL_MESSAGE = 'Invalid union value';
+import { OVERALL_MESSAGE, checkValidations } from './test-util';
 
 describe('heterogeneous union validators', () => {
   const wellFormedUnion1 = Type.Union([
@@ -71,36 +71,44 @@ function testHeterogeneousUnionValidation(
 ) {
   describe(description, () => {
     it('accepts only valid heterogeneous unions', () => {
-      checkValidations(goodValidator1, { s: 'hello', str1: 'hello' }, true);
-      checkValidations(goodValidator1, { i: 1, int1: 1 }, true);
+      checkValidations(goodValidator1, 0, { s: 'hello', str1: 'hello' }, true);
+      checkValidations(goodValidator1, 1, { i: 1, int1: 1 }, true);
 
       checkValidations(
         goodValidator1,
+        0,
         { s: 'hello', str1: 'hello', int1: 1 },
         true
       );
-      checkValidations(goodValidator1, { i: 1, str1: 'hello', int1: 1 }, true);
-
-      checkValidations(goodValidator1, { s: 'hello', int1: 1 }, false);
-      checkValidations(goodValidator1, { i: 1, str1: 'hello' }, false);
       checkValidations(
         goodValidator1,
+        1,
+        { i: 1, str1: 'hello', int1: 1 },
+        true
+      );
+
+      checkValidations(goodValidator1, 0, { s: 'hello', int1: 1 }, false);
+      checkValidations(goodValidator1, 1, { i: 1, str1: 'hello' }, false);
+      checkValidations(
+        goodValidator1,
+        0,
         { x: 'hello', str1: 'hello', int1: 1 },
         false
       );
-      checkValidations(goodValidator1, { str1: 'hello', int1: 1 }, false);
-      checkValidations(goodValidator1, {}, false);
+      checkValidations(goodValidator1, 0, { str1: 'hello', int1: 1 }, false);
+      checkValidations(goodValidator1, 0, {}, false);
 
-      checkValidations(goodValidator1, undefined, false);
-      checkValidations(goodValidator1, null, false);
-      checkValidations(goodValidator1, true, false);
-      checkValidations(goodValidator1, 1, false);
-      checkValidations(goodValidator1, 'hello', false);
+      checkValidations(goodValidator1, 0, undefined, false);
+      checkValidations(goodValidator1, 0, null, false);
+      checkValidations(goodValidator1, 0, true, false);
+      checkValidations(goodValidator1, 0, 1, false);
+      checkValidations(goodValidator1, 0, 'hello', false);
     });
 
     it('properly selects unique members keys', () => {
       checkValidations(
         goodValidator2,
+        0,
         {
           str1: 'hello',
           str2: 'hello',
@@ -112,6 +120,7 @@ function testHeterogeneousUnionValidation(
       );
       checkValidations(
         goodValidator2,
+        0,
         {
           str1: 'hello',
           str2: 'hello',
@@ -124,6 +133,7 @@ function testHeterogeneousUnionValidation(
 
       checkValidations(
         goodValidator2,
+        1,
         {
           str1: 'hello',
           s2: 'hello',
@@ -134,6 +144,7 @@ function testHeterogeneousUnionValidation(
       );
       checkValidations(
         goodValidator2,
+        1,
         {
           str1: 'hello',
           s2: 'hello',
@@ -198,6 +209,31 @@ function testHeterogeneousUnionValidation(
       }
     });
 
+    it('safeValidateAndClean() cleans object on successful validation', () => {
+      const validObject = { s: 'hello', str1: 'hello', misc: 'foo' };
+      const [schema, cleanObject] = goodValidator1.safeValidateAndClean(
+        validObject,
+        OVERALL_MESSAGE
+      );
+      expect(schema).toEqual(goodValidator1.schema.anyOf[0]);
+      expect(cleanObject).toEqual({ s: 'hello', str1: 'hello' });
+    });
+
+    it('safeValidateAndClean() fails on invalid object', () => {
+      expect.assertions(4);
+      try {
+        const invalidObject = { s: 's', str1: 1, str2: 2 };
+        goodValidator1.safeValidateAndClean(invalidObject, OVERALL_MESSAGE);
+      } catch (err: unknown) {
+        if (!(err instanceof ValidationException)) throw err;
+        expect(err.details.length).toEqual(1);
+        const detail = 'str1: Expected string';
+        expect(err.message).toEqual(OVERALL_MESSAGE);
+        expect(err.details[0].toString()).toEqual(detail);
+        expect(err.toString()).toEqual(`${OVERALL_MESSAGE}: ${detail}`);
+      }
+    });
+
     it('reports all errors with unsafe validation', () => {
       expect.assertions(5);
       try {
@@ -229,24 +265,4 @@ function testHeterogeneousUnionValidation(
       ).toThrow('Heterogeneous union has members lacking unique keys');
     });
   });
-}
-
-function checkValidations(
-  validator: AbstractValidator<TUnion<TObject[]>>,
-  value: any,
-  valid: boolean
-): void {
-  tryValidation(valid, () => validator.safeValidate(value, OVERALL_MESSAGE));
-  tryValidation(valid, () => validator.validate(value, OVERALL_MESSAGE, true));
-
-  tryValidation(valid, () => validator.unsafeValidate(value, OVERALL_MESSAGE));
-  tryValidation(valid, () => validator.validate(value, OVERALL_MESSAGE, false));
-}
-
-function tryValidation(valid: boolean, validate: () => void): void {
-  if (valid) {
-    expect(validate).not.toThrow();
-  } else {
-    expect(validate).toThrow(OVERALL_MESSAGE);
-  }
 }

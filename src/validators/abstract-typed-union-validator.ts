@@ -1,4 +1,4 @@
-import { TObject, TUnion } from '@sinclair/typebox';
+import { Static, TObject, TUnion } from '@sinclair/typebox';
 
 import { AbstractValidator } from './abstract-validator';
 import { CompilingStandardValidator } from './compiling-standard-validator';
@@ -12,6 +12,15 @@ export abstract class AbstractTypedUnionValidator<
 > extends AbstractValidator<S> {
   constructor(schema: S) {
     super(schema);
+  }
+
+  /** @inheritdoc */
+  override safeValidateAndClean(
+    value: unknown,
+    errorMessage: string
+  ): [TObject, Static<S>] {
+    const schema = this.safeValidate(value, errorMessage) as TObject;
+    return [schema, this.cleanValue(schema, value)];
   }
 
   protected createMemberValidators(): CompilingStandardValidator<TObject>[] {

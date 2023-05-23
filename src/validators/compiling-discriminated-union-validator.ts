@@ -20,14 +20,18 @@ export class CompilingDiscriminatedUnionValidator<
   }
 
   /** @inheritdoc */
-  safeValidate(value: unknown, errorMessage: string): void {
+  override safeValidate(value: unknown, errorMessage: string): TObject {
     const i = this.findDiscriminatedUnionSchemaIndex(value, errorMessage);
+    const schema = this.schema.anyOf[i] as TObject;
     this.memberValidators[i].safeValidate(value, errorMessage);
+    return schema;
   }
 
   /** @inheritdoc */
-  unsafeValidate(value: unknown, errorMessage: string): void {
+  override unsafeValidate(value: unknown, errorMessage: string): TObject {
     const i = this.findDiscriminatedUnionSchemaIndex(value, errorMessage);
+    const schema = this.schema.anyOf[i] as TObject;
     this.memberValidators[i].unsafeValidate(value, errorMessage);
+    return schema;
   }
 }
