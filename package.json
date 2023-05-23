@@ -1,12 +1,12 @@
 {
-  "name": "typebox-errors",
+  "name": "typebox-validators",
   "version": "0.1.0",
   "author": "Joseph T. Lapp <arachnojoe@gmail.com>",
   "license": "MIT",
-  "description": "TypeBox validation with custom errors and safe multi-tier error handling",
+  "description": "TypeBox validators with custom errors, discriminated unions, and safe multi-tier error handling",
   "repository": {
     "type": "git",
-    "url": "https://github.com/jtlapp/typebox-errors"
+    "url": "https://github.com/jtlapp/typebox-validators"
   },
   "keywords": [
     "typebox",
