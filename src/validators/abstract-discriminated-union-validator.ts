@@ -5,9 +5,6 @@ import { UnionTypeException } from '../lib/union-type-exception';
 
 const DEFAULT_DISCRIMINANT_KEY = 'kind';
 
-// TODO: investigate removeUnevaluatedProperties and unevaluatedProperties
-// of JSON Schema.
-
 /**
  * Abstract validator for discriminated unions, providing safe
  * and unsafe validation, supporting custom error messages.

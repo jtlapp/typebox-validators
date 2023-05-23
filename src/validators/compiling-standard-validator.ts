@@ -4,10 +4,8 @@ import { TypeCheck, TypeCompiler } from '@sinclair/typebox/compiler';
 import { AbstractValidator } from './abstract-validator';
 
 /**
- * Lazily compiled validator for values that are not typed member unions,
- * providing safe and unsafe validation, supporting custom error messages.
- * List the more frequently used types earlier in the union to improve
- * performance.
+ * Lazily compiled validator for standard TypeBox values, providing safe
+ * and unsafe validation, supporting custom error messages.
  */
 export class CompilingStandardValidator<
   S extends TSchema
@@ -39,8 +37,6 @@ export class CompilingStandardValidator<
   private getCompiledType(): TypeCheck<S> {
     if (this.#compiledType === undefined) {
       this.#compiledType = TypeCompiler.Compile(this.schema);
-      // There's no benefit to nulling schema to free memory, because
-      // #compiledType holds a reference to it. TODO: keep this comment?
     }
     return this.#compiledType;
   }

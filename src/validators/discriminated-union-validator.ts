@@ -3,9 +3,9 @@ import { TObject, TUnion } from '@sinclair/typebox';
 import { AbstractDiscriminatedUnionValidator } from './abstract-discriminated-union-validator';
 
 /**
- * Non-compiling validator for values that are discriminated-union unions, providing
- * safe and unsafe validation, supporting custom error messages. List the
- * more frequently used types earlier in the union to improve performance.
+ * Non-compiling validator for discriminated unions, providing safe and
+ * unsafe validation, supporting custom error messages. List the more
+ * frequently used types earlier in the union to improve performance.
  */
 export class DiscriminatedUnionValidator<
   S extends TUnion<TObject[]>

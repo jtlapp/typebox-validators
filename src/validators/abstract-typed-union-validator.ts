@@ -3,9 +3,6 @@ import { TObject, TUnion } from '@sinclair/typebox';
 import { AbstractValidator } from './abstract-validator';
 import { CompilingStandardValidator } from './compiling-standard-validator';
 
-// TODO: investigate removeUnevaluatedProperties and unevaluatedProperties
-// of JSON Schema.
-
 /**
  * Abstract validator for values that are typed member unions, providing
  * safe and unsafe validation, supporting custom error messages.

@@ -3,9 +3,8 @@ import { TObject, TUnion } from '@sinclair/typebox';
 import { AbstractHeterogeneousUnionValidator } from './abstract-heterogeneous-union-validator';
 
 /**
- * Non-compiling validator for values that are heterogeneous-union unions, providing
- * safe and unsafe validation, supporting custom error messages. List the
- * more frequently used types earlier in the union to improve performance.
+ * Non-compiling validator for heterogeneous unions, providing safe
+ * and unsafe validation, supporting custom error messages
  */
 export class HeterogeneousUnionValidator<
   S extends TUnion<TObject[]>

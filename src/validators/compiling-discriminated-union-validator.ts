@@ -4,8 +4,9 @@ import { AbstractDiscriminatedUnionValidator } from './abstract-discriminated-un
 import { CompilingStandardValidator } from './compiling-standard-validator';
 
 /**
- * Lazily compiled validator for values that are discriminated-union unions,
- * providing safe and unsafe validation, supporting custom error messages.
+ * Lazily compiled validator for discriminated-union unions, providing
+ * safe and unsafe validation, supporting custom error messages. List the
+ * more frequently used types earlier in the union to improve performance.
  */
 export class CompilingDiscriminatedUnionValidator<
   S extends TUnion<TObject[]>

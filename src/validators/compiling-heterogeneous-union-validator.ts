@@ -4,8 +4,8 @@ import { AbstractHeterogeneousUnionValidator } from './abstract-heterogeneous-un
 import { CompilingStandardValidator } from './compiling-standard-validator';
 
 /**
- * Lazily compiled validator for values that are heterogeneous-union unions,
- * providing safe and unsafe validation, supporting custom error messages.
+ * Lazily compiled validator for heterogeneous unions, providing
+ * safe and unsafe validation, supporting custom error messages.
  */
 export class CompilingHeterogeneousUnionValidator<
   S extends TUnion<TObject[]>
