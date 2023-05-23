@@ -9,22 +9,16 @@ const OVERALL_MESSAGE = 'Bad union';
 describe('discriminated union validators', () => {
   const union = Type.Union(
     [
-      Type.Object(
-        {
-          t: Type.Literal('t1'),
-          str1: Type.String(),
-          str2: Type.Optional(Type.String()),
-        },
-        { uniqueKey: 's' }
-      ),
-      Type.Object(
-        {
-          t: Type.Literal('t2'),
-          int1: Type.Integer(),
-          int2: Type.Optional(Type.Integer()),
-        },
-        { uniqueKey: 'i' }
-      ),
+      Type.Object({
+        t: Type.Literal('s'),
+        str1: Type.String(),
+        str2: Type.Optional(Type.String()),
+      }),
+      Type.Object({
+        t: Type.Literal('i'),
+        int1: Type.Integer(),
+        int2: Type.Optional(Type.Integer()),
+      }),
     ],
     { discriminantKey: 't' }
   );
@@ -45,43 +39,14 @@ function testDiscriminatedUnionValidation(
 ) {
   describe(description, () => {
     it('accepts only valid discriminated unions', () => {
-      // expect(Value.Check(vSchema, { type: 's', str1: 'hello' })).toBe(true);
-      // expect(Value.Check(vSchema, { type: 'i', int1: 1 })).toBe(true);
+      checkValidations(validator, { t: 's', str1: 'hello' }, true);
+      checkValidations(validator, { t: 'i', int1: 1 }, true);
+      checkValidations(validator, { t: 's', str1: 'hello', int1: 1 }, true);
+      checkValidations(validator, { t: 'i', str1: 'hello', int1: 1 }, true);
 
-      // expect(Value.Check(vSchema, { type: 's', str1: 'hello', int1: 1 })).toBe(
-      //   true
-      // );
-      // expect(Value.Check(vSchema, { type: 'i', str1: 'hello', int1: 1 })).toBe(
-      //   true
-      // );
-
-      // expect(Value.Check(vSchema, { type: 's', int1: 1 })).toBe(false);
-      // expect(Value.Check(vSchema, { type: 'i', str1: 'hello' })).toBe(false);
-      // expect(Value.Check(vSchema, { type: 'x', str1: 'hello', int1: 1 })).toBe(
-      //   false
-      // );
-      // expect(Value.Check(vSchema, { str1: 'hello', int1: 1 })).toBe(false);
-      // expect(Value.Check(vSchema, {})).toBe(false);
-
-      // expect(Value.Check(vSchema, undefined)).toBe(false);
-      // expect(Value.Check(vSchema, null)).toBe(false);
-      // expect(Value.Check(vSchema, true)).toBe(false);
-      // expect(Value.Check(vSchema, 1)).toBe(false);
-      // expect(Value.Check(vSchema, 'hello')).toBe(false);
-
-      checkValidations(validator, { s: 'hello', str1: 'hello' }, true);
-      checkValidations(validator, { i: 1, int1: 1 }, true);
-
-      checkValidations(validator, { s: 'hello', str1: 'hello', int1: 1 }, true);
-      checkValidations(validator, { i: 1, str1: 'hello', int1: 1 }, true);
-
-      checkValidations(validator, { s: 'hello', int1: 1 }, false);
-      checkValidations(validator, { i: 1, str1: 'hello' }, false);
-      checkValidations(
-        validator,
-        { x: 'hello', str1: 'hello', int1: 1 },
-        false
-      );
+      checkValidations(validator, { t: 's', int1: 1 }, false);
+      checkValidations(validator, { t: 'i', str1: 'hello' }, false);
+      checkValidations(validator, { t: 'x', str1: 'hello', int1: 1 }, false);
       checkValidations(validator, { str1: 'hello', int1: 1 }, false);
       checkValidations(validator, {}, false);
 

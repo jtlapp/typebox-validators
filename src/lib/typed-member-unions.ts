@@ -30,7 +30,7 @@ export function findDiscriminatedUnionSchemaIndex(
 ): number {
   if (typeof subject === 'object' && subject !== null) {
     const discriminantKey =
-      unionSchema.discriminator ?? DEFAULT_DISCRIMINANT_KEY;
+      unionSchema.discriminantKey ?? DEFAULT_DISCRIMINANT_KEY;
     const subjectKind = subject[discriminantKey];
     if (subjectKind !== undefined) {
       for (let i = 0; i < unionSchema.anyOf.length; ++i) {

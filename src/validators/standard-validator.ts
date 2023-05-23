@@ -2,6 +2,8 @@ import type { TSchema } from '@sinclair/typebox';
 
 import { AbstractValidator } from './abstract-validator';
 
+// TODO: implement removeAddtional
+
 /**
  * Non-compiling validator for values that are not typed member unions,
  * providing safe and unsafe validation, supporting custom error messages.
