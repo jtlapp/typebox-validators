@@ -13,7 +13,8 @@
  */
 
 import type { TSchema } from '@sinclair/typebox';
-import { Value } from '@sinclair/typebox/value';
+import { Value as TypeBoxValue } from '@sinclair/typebox/value';
+
 import { ValidationException } from '../lib/validation-exception';
 import { TypeCheck } from '@sinclair/typebox/compiler';
 
@@ -100,8 +101,8 @@ export abstract class AbstractValidator<S extends TSchema> {
     value: unknown,
     errorMessage: string
   ): void {
-    if (!Value.Check(schema, value)) {
-      const firstError = Value.Errors(schema, value).First()!;
+    if (!TypeBoxValue.Check(schema, value)) {
+      const firstError = TypeBoxValue.Errors(schema, value).First()!;
       throw new ValidationException(errorMessage, [firstError]);
     }
   }
@@ -111,9 +112,9 @@ export abstract class AbstractValidator<S extends TSchema> {
     value: unknown,
     errorMessage: string
   ): void {
-    if (!Value.Check(schema, value)) {
+    if (!TypeBoxValue.Check(schema, value)) {
       throw new ValidationException(errorMessage, [
-        ...Value.Errors(schema, value),
+        ...TypeBoxValue.Errors(schema, value),
       ]);
     }
   }

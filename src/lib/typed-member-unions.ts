@@ -1,11 +1,11 @@
-import * as typebox from '@sinclair/typebox';
+import { TObject, TUnion } from '@sinclair/typebox';
 
 import { UnionTypeException } from './union-type-exception';
 
 const DEFAULT_DISCRIMINANT_KEY = 'kind';
 
 export function findHeterogeneousUnionSchemaIndex(
-  unionSchema: typebox.TUnion<typebox.TObject[]>,
+  unionSchema: TUnion<TObject[]>,
   subject: any,
   overallErrorMessage: string
 ): number {
@@ -24,7 +24,7 @@ export function findHeterogeneousUnionSchemaIndex(
 // TODO: prefix TypeBox types
 
 export function findDiscriminatedUnionSchemaIndex(
-  unionSchema: typebox.TUnion<typebox.TObject[]>,
+  unionSchema: TUnion<TObject[]>,
   subject: any,
   overallErrorMessage: string
 ): number {
