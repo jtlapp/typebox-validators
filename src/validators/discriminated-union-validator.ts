@@ -1,6 +1,6 @@
 import { TObject, TUnion } from '@sinclair/typebox';
 
-import { AbstractTypedUnionValidator } from './abstract-typed-union-validator';
+import { AbstractDiscriminatedUnionValidator } from './abstract-discriminated-union-validator';
 
 /**
  * Non-compiling validator for values that are discriminated-union unions, providing
@@ -9,7 +9,7 @@ import { AbstractTypedUnionValidator } from './abstract-typed-union-validator';
  */
 export class DiscriminatedUnionValidator<
   S extends TUnion<TObject[]>
-> extends AbstractTypedUnionValidator<S> {
+> extends AbstractDiscriminatedUnionValidator<S> {
   /** @inheritdoc */
   constructor(schema: S) {
     super(schema);

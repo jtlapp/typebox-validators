@@ -1,6 +1,6 @@
 import { TObject, TUnion } from '@sinclair/typebox';
 
-import { AbstractTypedUnionValidator } from './abstract-typed-union-validator';
+import { AbstractHeterogeneousUnionValidator } from './abstract-heterogeneous-union-validator';
 
 /**
  * Non-compiling validator for values that are heterogeneous-union unions, providing
@@ -9,7 +9,7 @@ import { AbstractTypedUnionValidator } from './abstract-typed-union-validator';
  */
 export class HeterogeneousUnionValidator<
   S extends TUnion<TObject[]>
-> extends AbstractTypedUnionValidator<S> {
+> extends AbstractHeterogeneousUnionValidator<S> {
   /** @inheritdoc */
   constructor(schema: S) {
     super(schema);
