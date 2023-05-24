@@ -12,11 +12,11 @@ import { ValidationErrorDetail } from './validation-error-detail';
  */
 export class ValidationException extends ExtendableError {
   /**
-   * @param overallErrorMessage Overall error message
+   * @param overallError Overall error message
    * @param details The individual validation errors
    */
-  constructor(overallErrorMessage: string, public details: ValueError[] = []) {
-    super(overallErrorMessage);
+  constructor(overallError: string, public details: ValueError[] = []) {
+    super(overallError);
     this.details = details.map((detail) => new ValidationErrorDetail(detail));
   }
 

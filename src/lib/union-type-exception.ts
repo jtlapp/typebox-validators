@@ -12,9 +12,9 @@ export class UnionTypeException extends ValidationException {
   constructor(
     unionSchema: TUnion<TObject[]>,
     value: unknown,
-    overallErrorMessage: string
+    overallError: string
   ) {
-    super(overallErrorMessage, [
+    super(overallError, [
       {
         type: ValueErrorType.Union,
         path: '',

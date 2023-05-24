@@ -23,7 +23,7 @@ export abstract class AbstractDiscriminatedUnionValidator<
 
   protected findDiscriminatedUnionSchemaIndex(
     subject: any,
-    overallErrorMessage: string
+    overallError: string
   ): number {
     if (!this.#unionIsWellformed) {
       // only incur cost if validator is actually used
@@ -51,6 +51,6 @@ export abstract class AbstractDiscriminatedUnionValidator<
         }
       }
     }
-    throw new UnionTypeException(this.schema, subject, overallErrorMessage);
+    throw new UnionTypeException(this.schema, subject, overallError);
   }
 }

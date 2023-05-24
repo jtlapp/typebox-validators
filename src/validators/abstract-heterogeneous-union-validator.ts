@@ -22,7 +22,7 @@ export abstract class AbstractHeterogeneousUnionValidator<
 
   protected findHeterogeneousUnionSchemaIndex(
     subject: any,
-    overallErrorMessage: string
+    overallError: string
   ): number {
     if (this.uniqueKeyByMemberIndex === undefined) {
       // only incur cost if validator is actually used
@@ -37,7 +37,7 @@ export abstract class AbstractHeterogeneousUnionValidator<
         }
       }
     }
-    throw new UnionTypeException(this.schema, subject, overallErrorMessage);
+    throw new UnionTypeException(this.schema, subject, overallError);
   }
 
   protected cacheUniqueKeys(): void {
