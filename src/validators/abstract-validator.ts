@@ -12,8 +12,6 @@
  * separately retrievable, allowing custom presentation of the details.
  */
 
-// TODO: revisit meaning of root most errorMessage
-
 import type { TSchema, Static } from '@sinclair/typebox';
 import { Value as TypeBoxValue } from '@sinclair/typebox/value';
 
