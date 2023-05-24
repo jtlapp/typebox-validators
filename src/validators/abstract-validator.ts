@@ -47,21 +47,22 @@ export abstract class AbstractValidator<S extends TSchema> {
   abstract safeValidate(value: unknown, errorMessage: string): TSchema;
 
   /**
-   * Safely validate a value against the schema and return the value with all
-   * unrecognized properties of objects removed. Short-circuits at the first \
-   * validation error, reporting only this error.
+   * Safely validate a value against the schema and return a copy of the value
+   * with all unrecognized properties of objects removed. Short-circuits at the
+   * first validation error, reporting only this error.
    *
    * @param value Value to validate against the schema.
    * @param errorMessage Error message to use in the ValidationException when
    *    thrown. The exception also reports the details of the first error.
    * @returns The pair [<schema>, <value>], where <schema> is the most specific
    *  schema against which the value was validated, and <value> is the provided
-   *  value, with an object value having all unrecognized properties removed.
-   *  Standard validators return their provided schema, while typed union
-   *  validators return the schema of the matching member of the union.
+   *  value, if it is not an object. If the value is an object, <value> is a copy
+   *  of the object with all unrecognized properties removed. Standard validators
+   *  return their provided schema, while typed union validators return the
+   *  schema of the matching member of the union.
    * @throws ValidationException when the value is invalid.
    */
-  abstract safeValidateAndClean(
+  abstract safeValidateAndCleanCopy(
     value: unknown,
     errorMessage: string
   ): [TSchema, Static<S>];

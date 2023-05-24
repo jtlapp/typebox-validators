@@ -15,7 +15,7 @@ export abstract class AbstractStandardValidator<
   }
 
   /** @inheritdoc */
-  override safeValidateAndClean(
+  override safeValidateAndCleanCopy(
     value: unknown,
     errorMessage: string
   ): [S, Static<S>] {

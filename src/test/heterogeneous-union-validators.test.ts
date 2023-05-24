@@ -209,9 +209,9 @@ function testHeterogeneousUnionValidation(
       }
     });
 
-    it('safeValidateAndClean() cleans object on successful validation', () => {
+    it('safeValidateAndCleanCopy() cleans object on successful validation', () => {
       const validObject = { s: 'hello', str1: 'hello', misc: 'foo' };
-      const [schema, cleanObject] = goodValidator1.safeValidateAndClean(
+      const [schema, cleanObject] = goodValidator1.safeValidateAndCleanCopy(
         validObject,
         OVERALL_MESSAGE
       );
@@ -219,11 +219,11 @@ function testHeterogeneousUnionValidation(
       expect(cleanObject).toEqual({ s: 'hello', str1: 'hello' });
     });
 
-    it('safeValidateAndClean() fails on invalid object', () => {
+    it('safeValidateAndCleanCopy() fails on invalid object', () => {
       expect.assertions(4);
       try {
         const invalidObject = { s: 's', str1: 1, str2: 2 };
-        goodValidator1.safeValidateAndClean(invalidObject, OVERALL_MESSAGE);
+        goodValidator1.safeValidateAndCleanCopy(invalidObject, OVERALL_MESSAGE);
       } catch (err: unknown) {
         if (!(err instanceof ValidationException)) throw err;
         expect(err.details.length).toEqual(1);

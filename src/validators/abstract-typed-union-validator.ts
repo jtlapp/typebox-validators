@@ -15,7 +15,7 @@ export abstract class AbstractTypedUnionValidator<
   }
 
   /** @inheritdoc */
-  override safeValidateAndClean(
+  override safeValidateAndCleanCopy(
     value: unknown,
     errorMessage: string
   ): [TObject, Static<S>] {

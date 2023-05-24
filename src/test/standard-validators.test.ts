@@ -58,8 +58,8 @@ class SimpleWrapper1 extends SimpleWrapper {
     return this.validator.safeValidate(this, 'Bad SimpleWrapper1');
   }
 
-  safeValidateAndClean() {
-    return this.validator.safeValidateAndClean(this, 'Bad SimpleWrapper1');
+  safeValidateAndCleanCopy() {
+    return this.validator.safeValidateAndCleanCopy(this, 'Bad SimpleWrapper1');
   }
 
   unsafeValidate() {
@@ -98,8 +98,8 @@ class SimpleWrapper2 extends SimpleWrapper {
     return this.validator.safeValidate(this, 'Bad SimpleWrapper2');
   }
 
-  safeValidateAndClean() {
-    return this.validator.safeValidateAndClean(this, 'Bad SimpleWrapper2');
+  safeValidateAndCleanCopy() {
+    return this.validator.safeValidateAndCleanCopy(this, 'Bad SimpleWrapper2');
   }
 
   unsafeValidate() {
@@ -182,14 +182,14 @@ function testSimpleValidation(validatorFactory: ValidatorFactory) {
     });
   });
 
-  describe('safeValidateAndClean()', () => {
+  describe('safeValidateAndCleanCopy()', () => {
     it('validates on valid objects and returns schema and cleaned value', () => {
       let [schema, value] = new SimpleWrapper1(
         validatorFactory,
         0,
         1,
         'ABCDE'
-      ).safeValidateAndClean();
+      ).safeValidateAndCleanCopy();
       expect(schema).toBe(SimpleWrapper1.schema);
       expect(value).toEqual({ delta: 0, count: 1, name: 'ABCDE' });
 
@@ -198,7 +198,7 @@ function testSimpleValidation(validatorFactory: ValidatorFactory) {
         -5,
         125,
         'ABCDEDEFGH'
-      ).safeValidateAndClean();
+      ).safeValidateAndCleanCopy();
       expect(schema).toBe(SimpleWrapper1.schema);
       expect(value).toEqual({ delta: -5, count: 125, name: 'ABCDEDEFGH' });
     });
@@ -211,7 +211,7 @@ function testSimpleValidation(validatorFactory: ValidatorFactory) {
           0.5,
           1,
           'ABCDE'
-        ).safeValidateAndClean();
+        ).safeValidateAndCleanCopy();
       } catch (err: unknown) {
         if (!(err instanceof ValidationException)) throw err;
         expect(err.details.length).toEqual(1);
