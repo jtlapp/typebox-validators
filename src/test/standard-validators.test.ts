@@ -281,41 +281,5 @@ function testStandardValidation(
         }
       });
     });
-
-    describe('validate()', () => {
-      it('performs safe or unsafe validation as requested', () => {
-        expect.assertions(8);
-
-        // test safe validation
-        try {
-          const invalidObject = { delta: 0.5, count: 1, name: 'ABCDE' };
-          validator1.validate(invalidObject, OVERALL_MESSAGE, true);
-        } catch (err: unknown) {
-          if (!(err instanceof ValidationException)) throw err;
-          expect(err.specifics.length).toEqual(1);
-          const message1 = 'delta: Expected integer';
-          expect(err.specifics[0].toString()).toEqual(message1);
-          expect(err.toString()).toEqual(`${OVERALL_MESSAGE}: ${message1}`);
-        }
-
-        // test unsafe validation
-        try {
-          const invalidObject = { delta: 0.5, count: 0, name: 'ABCDEGHIJKLMN' };
-          validator1.validate(invalidObject, OVERALL_MESSAGE, false);
-        } catch (err: unknown) {
-          if (!(err instanceof ValidationException)) throw err;
-          expect(err.specifics.length).toEqual(3);
-          const message1 = 'delta: Expected integer';
-          const message2 = 'count: Expected integer to be greater than 0';
-          const message3 = 'name should consist of 5-10 letters';
-          expect(err.specifics[0].toString()).toEqual(message1);
-          expect(err.specifics[1].toString()).toEqual(message2);
-          expect(err.specifics[2].toString()).toEqual(message3);
-          expect(err.toString()).toEqual(
-            `${OVERALL_MESSAGE}:\n- ${message1}\n- ${message2}\n- ${message3}`
-          );
-        }
-      });
-    });
   });
 }

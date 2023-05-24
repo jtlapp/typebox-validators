@@ -15,14 +15,7 @@ export function checkValidations(
     validator.safeValidate(value, OVERALL_MESSAGE)
   );
   tryValidation(valid, expectedSchema, () =>
-    validator.validate(value, OVERALL_MESSAGE, true)
-  );
-
-  tryValidation(valid, expectedSchema, () =>
     validator.unsafeValidate(value, OVERALL_MESSAGE)
-  );
-  tryValidation(valid, expectedSchema, () =>
-    validator.validate(value, OVERALL_MESSAGE, false)
   );
 }
 

@@ -105,29 +105,6 @@ export abstract class AbstractValidator<S extends TSchema> {
    */
   abstract unsafeValidate(value: unknown, specificError?: string): TSchema;
 
-  /**
-   * Safely or unsafely validates a value against a schema, as requested. Safe
-   * validation short-circuits at the first validation error and reports only
-   * this error. Unsafe validation reports all detectable validation errors.
-   *
-   * This alternative method exists for the caller's convenience, helping to
-   * minimize the amount of validation code.
-   *
-   * @param value Value to validate against the schema.
-   * @param specificError Error message to use in the ValidationException when
-   *    thrown. The exception also reports specific validation errors.
-   * @returns The most specific schema against which the value was validated.
-   *  Standard validators return their provided schema, while typed union
-   *  validators return the schema of the matching member of the union.
-   * @throws ValidationException when the value is invalid.
-   */
-  // TODO: I'm thinking this needs to go away so user can choose right method.
-  validate(value: unknown, specificError: string, safely = true): TSchema {
-    return safely
-      ? this.safeValidate(value, specificError)
-      : this.unsafeValidate(value, specificError);
-  }
-
   protected cleanCopyOfValue<VS extends TSchema>(
     schema: VS,
     value: unknown
