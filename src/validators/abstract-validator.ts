@@ -56,9 +56,9 @@ export abstract class AbstractValidator<S extends TSchema> {
    * @param value Value to validate against the schema.
    * @param errorMessage Error message to use in the ValidationException when
    *    thrown. The exception also reports the details of the first error.
-   * @returns The pair [<schema>, <value>], where <schema> is the most specific
-   *  schema against which the value was validated, and <value> is the provided
-   *  value, if it is not an object. If the value is an object, <value> is a copy
+   * @returns The pair [`schema`, `value`], where `schema` is the most specific
+   *  schema against which the value was validated, and `value` is the provided
+   *  value, if it is not an object. If the value is an object, `value` is a copy
    *  of the object with all unrecognized properties removed. Standard validators
    *  return their provided schema, while typed union validators return the
    *  schema of the matching member of the union.
@@ -88,7 +88,7 @@ export abstract class AbstractValidator<S extends TSchema> {
   ): TSchema;
 
   /**
-   * Unsafely validates a value against the schema, but have the validation
+   * Unsafely validates a value against the schema, having the validation
    * exception report all detectable validation errors.
    *
    * @param value Value to validate against the schema.
@@ -112,6 +112,9 @@ export abstract class AbstractValidator<S extends TSchema> {
    * @param value Value to validate against the schema.
    * @param errorMessage Error message to use in the ValidationException when
    *    thrown. The exception also reports validation error details.
+   * @returns The most specific schema against which the value was validated.
+   *  Standard validators return their provided schema, while typed union
+   *  validators return the schema of the matching member of the union.
    * @throws ValidationException when the value is invalid.
    */
   validate(value: unknown, errorMessage: string, safely = true): TSchema {
