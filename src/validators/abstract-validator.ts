@@ -18,6 +18,8 @@ import { Value as TypeBoxValue } from '@sinclair/typebox/value';
 import { ValidationException } from '../lib/validation-exception';
 import { TypeCheck } from '@sinclair/typebox/compiler';
 
+const DEFAULT_OVERALL_ERROR = 'Invalid value';
+
 /**
  * Class providing validation services for a TypeBox schema, offering both
  * safe and unsafe validation, supporting custom error messages.
@@ -34,55 +36,58 @@ export abstract class AbstractValidator<S extends TSchema> {
 
   /**
    * Safely validates a value against the schema. Short-circuits at the first
-   * validation error, reporting only this error.
+   * specific validation error, reporting only this error.
    *
    * @param value Value to validate against the schema.
-   * @param specificError Error message to use in the ValidationException when
-   *    thrown. The exception also reports the first specific error.
+   * @param specificError Error message to use when the error occurs as a
+   *  specific error of a ValidationException.
    * @returns The most specific schema against which the value was validated.
    *  Standard validators return their provided schema, while typed union
    *  validators return the schema of the matching member of the union.
-   * @throws ValidationException when the value is invalid.
+   * @throws ValidationException when the value is invalid, detecting and
+   *  reporting only the first specific error.
    */
-  abstract safeValidate(value: unknown, specificError: string): TSchema;
+  abstract safeValidate(value: unknown, specificError?: string): TSchema;
 
   /**
    * Safely validates a value against the schema and returns a copy of the value
    * with all unrecognized properties of objects removed. Short-circuits at the
-   * first validation error, reporting only this error.
+   * first specific validation error, reporting only this error.
    *
    * @param value Value to validate against the schema.
-   * @param specificError Error message to use in the ValidationException when
-   *    thrown. The exception also reports (only) the first specific error.
+   * @param specificError Error message to use when the error occurs as a
+   *  specific error of a ValidationException.
    * @returns The pair [`schema`, `value`], where `schema` is the most specific
    *  schema against which the value was validated, and `value` is the provided
    *  value, if it is not an object. If the value is an object, `value` is a copy
    *  of the object with all unrecognized properties removed. Standard validators
    *  return their provided schema, while typed union validators return the
    *  schema of the matching member of the union.
-   * @throws ValidationException when the value is invalid.
+   * @throws ValidationException when the value is invalid, detecting and
+   *  reporting only the first specific error.
    */
   abstract safeValidateAndCleanCopy(
     value: unknown,
-    specificError: string
+    specificError?: string
   ): [TSchema, Static<S>];
 
   /**
    * Safely validates a value against the schema and returns the value with all
    * unrecognized properties of objects removed. Short-circuits at the first
-   * validation error, reporting only this error.
+   * specific validation error, reporting only this error.
    *
    * @param value Value to validate against the schema and then clean.
-   * @param specificError Error message to use in the ValidationException when
-   *    thrown. The exception also reports (only) the first specific error.
+   * @param specificError Error message to use when the error occurs as a
+   *  specific error of a ValidationException.
    * @returns The most specific schema against which the value was validated.
    *  Standard validators return their provided schema, while typed union
    *  validators return the schema of the matching member of the union.
-   * @throws ValidationException when the value is invalid.
+   * @throws ValidationException when the value is invalid, detecting and
+   *  reporting only the first specific error.
    */
   abstract safeValidateAndCleanOriginal(
     value: unknown,
-    specificError: string
+    specificError?: string
   ): TSchema;
 
   /**
@@ -90,14 +95,15 @@ export abstract class AbstractValidator<S extends TSchema> {
    * exception report all detectable validation errors.
    *
    * @param value Value to validate against the schema.
-   * @param specificError Error message to use in the ValidationException when
-   *    thrown. The exception also reports all specific validation errors.
+   * @param specificError Error message to use when the error occurs as a
+   *  specific error of a ValidationException.
    * @returns The most specific schema against which the value was validated.
    *  Standard validators return their provided schema, while typed union
    *  validators return the schema of the matching member of the union.
-   * @throws ValidationException when the value is invalid.
+   * @throws ValidationException when the value is invalid, detecting and
+   *  reporting all specific validation errors.
    */
-  abstract unsafeValidate(value: unknown, specificError: string): TSchema;
+  abstract unsafeValidate(value: unknown, specificError?: string): TSchema;
 
   /**
    * Safely or unsafely validates a value against a schema, as requested. Safe
@@ -152,21 +158,23 @@ export abstract class AbstractValidator<S extends TSchema> {
   protected compiledSafeValidate(
     compiledType: TypeCheck<S>,
     value: unknown,
-    specificError: string
+    specificError?: string
   ): void {
     if (!compiledType.Check(value)) {
       const firstError = compiledType.Errors(value).First()!;
-      throw new ValidationException(specificError, [firstError]);
+      throw new ValidationException(specificError ?? DEFAULT_OVERALL_ERROR, [
+        firstError,
+      ]);
     }
   }
 
   protected compiledUnsafeValidate(
     compiledType: TypeCheck<S>,
     value: unknown,
-    specificError: string
+    specificError?: string
   ): void {
     if (!compiledType.Check(value)) {
-      throw new ValidationException(specificError, [
+      throw new ValidationException(specificError ?? DEFAULT_OVERALL_ERROR, [
         ...compiledType.Errors(value),
       ]);
     }
@@ -175,21 +183,23 @@ export abstract class AbstractValidator<S extends TSchema> {
   protected uncompiledSafeValidate(
     schema: TSchema,
     value: unknown,
-    specificError: string
+    specificError?: string
   ): void {
     if (!TypeBoxValue.Check(schema, value)) {
       const firstError = TypeBoxValue.Errors(schema, value).First()!;
-      throw new ValidationException(specificError, [firstError]);
+      throw new ValidationException(specificError ?? DEFAULT_OVERALL_ERROR, [
+        firstError,
+      ]);
     }
   }
 
   protected uncompiledUnsafeValidate(
     schema: TSchema,
     value: unknown,
-    specificError: string
+    specificError?: string
   ): void {
     if (!TypeBoxValue.Check(schema, value)) {
-      throw new ValidationException(specificError, [
+      throw new ValidationException(specificError ?? DEFAULT_OVERALL_ERROR, [
         ...TypeBoxValue.Errors(schema, value),
       ]);
     }

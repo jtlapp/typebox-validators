@@ -17,7 +17,7 @@ export abstract class AbstractTypedUnionValidator<
   /** @inheritdoc */
   override safeValidateAndCleanCopy(
     value: unknown,
-    specificError: string
+    specificError?: string
   ): [TObject, Static<S>] {
     const schema = this.safeValidate(value, specificError) as TObject;
     return [schema, this.cleanCopyOfValue(schema, value)];
@@ -26,7 +26,7 @@ export abstract class AbstractTypedUnionValidator<
   /** @inheritdoc */
   override safeValidateAndCleanOriginal(
     value: unknown,
-    specificError: string
+    specificError?: string
   ): TObject {
     const schema = this.safeValidate(value, specificError) as TObject;
     this.cleanOriginalValue(schema, value);
