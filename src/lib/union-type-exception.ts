@@ -3,7 +3,7 @@ import { ValueErrorType } from '@sinclair/typebox/errors';
 import { ValidationException } from './validation-exception';
 import { TObject, TUnion } from '@sinclair/typebox';
 
-export const DEFAULT_UNKNOWN_TYPE_MESSAGE = 'not a type the union recognizes';
+const DEFAULT_UNKNOWN_TYPE_MESSAGE = 'not a type the union recognizes';
 
 /**
  * Exception thrown when a value is not a member of a typed member union.
