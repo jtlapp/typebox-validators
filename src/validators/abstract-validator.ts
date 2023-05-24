@@ -9,7 +9,7 @@
  * from wasting clock cycles on bad data.
  *
  * Unsafe validation reports all validation errors, making each error
- * separately retrievable, allowing custom presentation of the details.
+ * separately retrievable, allowing custom presentation of the specifics.
  */
 
 import type { TSchema, Static } from '@sinclair/typebox';
@@ -38,7 +38,7 @@ export abstract class AbstractValidator<S extends TSchema> {
    *
    * @param value Value to validate against the schema.
    * @param errorMessage Error message to use in the ValidationException when
-   *    thrown. The exception also reports the details of the first error.
+   *    thrown. The exception also reports the first specific error.
    * @returns The most specific schema against which the value was validated.
    *  Standard validators return their provided schema, while typed union
    *  validators return the schema of the matching member of the union.
@@ -53,7 +53,7 @@ export abstract class AbstractValidator<S extends TSchema> {
    *
    * @param value Value to validate against the schema.
    * @param errorMessage Error message to use in the ValidationException when
-   *    thrown. The exception also reports the details of the first error.
+   *    thrown. The exception also reports (only) the first specific error.
    * @returns The pair [`schema`, `value`], where `schema` is the most specific
    *  schema against which the value was validated, and `value` is the provided
    *  value, if it is not an object. If the value is an object, `value` is a copy
@@ -74,7 +74,7 @@ export abstract class AbstractValidator<S extends TSchema> {
    *
    * @param value Value to validate against the schema and then clean.
    * @param errorMessage Error message to use in the ValidationException when
-   *    thrown. The exception also reports the details of the first error.
+   *    thrown. The exception also reports (only) the first specific error.
    * @returns The most specific schema against which the value was validated.
    *  Standard validators return their provided schema, while typed union
    *  validators return the schema of the matching member of the union.
@@ -91,7 +91,7 @@ export abstract class AbstractValidator<S extends TSchema> {
    *
    * @param value Value to validate against the schema.
    * @param errorMessage Error message to use in the ValidationException when
-   *    thrown. The exception also reports the details of all validation errors.
+   *    thrown. The exception also reports all specific validation errors.
    * @returns The most specific schema against which the value was validated.
    *  Standard validators return their provided schema, while typed union
    *  validators return the schema of the matching member of the union.
@@ -109,12 +109,13 @@ export abstract class AbstractValidator<S extends TSchema> {
    *
    * @param value Value to validate against the schema.
    * @param errorMessage Error message to use in the ValidationException when
-   *    thrown. The exception also reports validation error details.
+   *    thrown. The exception also reports specific validation errors.
    * @returns The most specific schema against which the value was validated.
    *  Standard validators return their provided schema, while typed union
    *  validators return the schema of the matching member of the union.
    * @throws ValidationException when the value is invalid.
    */
+  // TODO: I'm thinking this needs to go away so user can choose right method.
   validate(value: unknown, errorMessage: string, safely = true): TSchema {
     return safely
       ? this.safeValidate(value, errorMessage)

@@ -7,5 +7,5 @@ export * from './validators/heterogeneous-union-validator';
 export * from './validators/standard-validator';
 
 export * from './lib/union-type-exception';
-export * from './lib/validation-error-detail';
+export * from './lib/specific-validation-error';
 export * from './lib/validation-exception';

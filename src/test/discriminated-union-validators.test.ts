@@ -155,9 +155,9 @@ function testDiscriminatedUnionValidation(
           trial.validator.safeValidate(invalidObject, OVERALL_MESSAGE);
         } catch (err: unknown) {
           if (!(err instanceof ValidationException)) throw err;
-          expect(err.details.length).toEqual(1);
+          expect(err.specifics.length).toEqual(1);
           expect(err.message).toEqual(OVERALL_MESSAGE);
-          expect(err.details[0].toString()).toEqual(trial.detail);
+          expect(err.specifics[0].toString()).toEqual(trial.detail);
           expect(err.toString()).toEqual(`${OVERALL_MESSAGE}: ${trial.detail}`);
         }
 
@@ -166,9 +166,9 @@ function testDiscriminatedUnionValidation(
           trial.validator.unsafeValidate(invalidObject, OVERALL_MESSAGE);
         } catch (err: unknown) {
           if (!(err instanceof ValidationException)) throw err;
-          expect(err.details.length).toEqual(1);
+          expect(err.specifics.length).toEqual(1);
           expect(err.message).toEqual(OVERALL_MESSAGE);
-          expect(err.details[0].toString()).toEqual(trial.detail);
+          expect(err.specifics[0].toString()).toEqual(trial.detail);
           expect(err.toString()).toEqual(`${OVERALL_MESSAGE}: ${trial.detail}`);
         }
       }
@@ -194,9 +194,9 @@ function testDiscriminatedUnionValidation(
           trial.validator.safeValidate(invalidObject, OVERALL_MESSAGE);
         } catch (err: unknown) {
           if (!(err instanceof ValidationException)) throw err;
-          expect(err.details.length).toEqual(1);
+          expect(err.specifics.length).toEqual(1);
           expect(err.message).toEqual(OVERALL_MESSAGE);
-          expect(err.details[0].toString()).toEqual(trial.detail);
+          expect(err.specifics[0].toString()).toEqual(trial.detail);
           expect(err.toString()).toEqual(`${OVERALL_MESSAGE}: ${trial.detail}`);
         }
 
@@ -205,9 +205,9 @@ function testDiscriminatedUnionValidation(
           trial.validator.unsafeValidate(invalidObject, OVERALL_MESSAGE);
         } catch (err: unknown) {
           if (!(err instanceof ValidationException)) throw err;
-          expect(err.details.length).toEqual(1);
+          expect(err.specifics.length).toEqual(1);
           expect(err.message).toEqual(OVERALL_MESSAGE);
-          expect(err.details[0].toString()).toEqual(trial.detail);
+          expect(err.specifics[0].toString()).toEqual(trial.detail);
           expect(err.toString()).toEqual(`${OVERALL_MESSAGE}: ${trial.detail}`);
         }
       }
@@ -220,10 +220,10 @@ function testDiscriminatedUnionValidation(
         goodValidator2.safeValidate(invalidObject, OVERALL_MESSAGE);
       } catch (err: unknown) {
         if (!(err instanceof ValidationException)) throw err;
-        expect(err.details.length).toEqual(1);
+        expect(err.specifics.length).toEqual(1);
         const detail = 'str1: Expected string';
         expect(err.message).toEqual(OVERALL_MESSAGE);
-        expect(err.details[0].toString()).toEqual(detail);
+        expect(err.specifics[0].toString()).toEqual(detail);
         expect(err.toString()).toEqual(`${OVERALL_MESSAGE}: ${detail}`);
       }
     });
@@ -246,10 +246,10 @@ function testDiscriminatedUnionValidation(
         goodValidator2.safeValidateAndCleanCopy(invalidObject, OVERALL_MESSAGE);
       } catch (err: unknown) {
         if (!(err instanceof ValidationException)) throw err;
-        expect(err.details.length).toEqual(1);
+        expect(err.specifics.length).toEqual(1);
         const detail = 'str1: Expected string';
         expect(err.message).toEqual(OVERALL_MESSAGE);
-        expect(err.details[0].toString()).toEqual(detail);
+        expect(err.specifics[0].toString()).toEqual(detail);
         expect(err.toString()).toEqual(`${OVERALL_MESSAGE}: ${detail}`);
       }
     });
@@ -274,10 +274,10 @@ function testDiscriminatedUnionValidation(
         );
       } catch (err: unknown) {
         if (!(err instanceof ValidationException)) throw err;
-        expect(err.details.length).toEqual(1);
+        expect(err.specifics.length).toEqual(1);
         const detail = 'str1: Expected string';
         expect(err.message).toEqual(OVERALL_MESSAGE);
-        expect(err.details[0].toString()).toEqual(detail);
+        expect(err.specifics[0].toString()).toEqual(detail);
         expect(err.toString()).toEqual(`${OVERALL_MESSAGE}: ${detail}`);
       }
     });
@@ -289,12 +289,12 @@ function testDiscriminatedUnionValidation(
         goodValidator2.unsafeValidate(invalidObject, OVERALL_MESSAGE);
       } catch (err: unknown) {
         if (!(err instanceof ValidationException)) throw err;
-        expect(err.details.length).toEqual(2);
+        expect(err.specifics.length).toEqual(2);
         const detail1 = 'str1: Expected string';
         const detail2 = 'str2: Expected string';
         expect(err.message).toEqual(OVERALL_MESSAGE);
-        expect(err.details[0].toString()).toEqual(detail1);
-        expect(err.details[1].toString()).toEqual(detail2);
+        expect(err.specifics[0].toString()).toEqual(detail1);
+        expect(err.specifics[1].toString()).toEqual(detail2);
         expect(err.toString()).toEqual(
           `${OVERALL_MESSAGE}:\n- ${detail1}\n- ${detail2}`
         );

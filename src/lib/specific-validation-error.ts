@@ -5,7 +5,7 @@ import { ValueError, ValueErrorType } from '@sinclair/typebox/value';
  * Class representing a single validation error, corresponding to an
  * instance of `ValueError` from TypeBox.
  */
-export class ValidationErrorDetail implements ValueError {
+export class SpecificValidationError implements ValueError {
   type: ValueErrorType;
   path: string;
   schema: TSchema;

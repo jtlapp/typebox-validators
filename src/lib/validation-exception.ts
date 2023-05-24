@@ -5,7 +5,7 @@
 import { ValueError } from '@sinclair/typebox/value';
 import ExtendableError from 'es6-error';
 
-import { ValidationErrorDetail } from './validation-error-detail';
+import { SpecificValidationError } from './specific-validation-error';
 
 /**
  * Exception reporting the occurrence of one or more validation errors.
@@ -13,11 +13,13 @@ import { ValidationErrorDetail } from './validation-error-detail';
 export class ValidationException extends ExtendableError {
   /**
    * @param overallError Overall error message
-   * @param details The individual validation errors
+   * @param specifics The individual specific validation errors
    */
-  constructor(overallError: string, public details: ValueError[] = []) {
+  constructor(overallError: string, public specifics: ValueError[] = []) {
     super(overallError);
-    this.details = details.map((detail) => new ValidationErrorDetail(detail));
+    this.specifics = specifics.map(
+      (detail) => new SpecificValidationError(detail)
+    );
   }
 
   /**
@@ -25,19 +27,19 @@ export class ValidationException extends ExtendableError {
    * error message, optionally followed by detailed error messages. If
    * there is only one error, the format is "{overall message}: {detail}".
    * If there are multiple errors, the overall message is on the first
-   * line and the details are dash-bulleted on subsequent lines.
-   * @param includeDetails Whether to append to the error message
-   *  descriptions of the individual validation errors
+   * line and the specifics are dash-bulleted on subsequent lines.
+   * @param includeSpecifics Whether to append to the error message
+   *  descriptions of the specific validation errors
    * @returns a string representation of the error.
    */
-  override toString(includeDetails = true): string {
+  override toString(includeSpecifics = true): string {
     let message = this.message;
-    if (includeDetails && this.details.length > 0) {
-      if (this.details.length == 1) {
-        message += ': ' + this.details[0].toString();
+    if (includeSpecifics && this.specifics.length > 0) {
+      if (this.specifics.length == 1) {
+        message += ': ' + this.specifics[0].toString();
       } else {
         message += ':';
-        for (const detail of this.details) {
+        for (const detail of this.specifics) {
           message += '\n- ' + detail.toString();
         }
       }
