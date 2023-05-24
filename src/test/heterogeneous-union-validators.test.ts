@@ -224,7 +224,23 @@ function testHeterogeneousUnionValidation(
       expect(cleanObject).not.toBe(validObject);
     });
 
-    it('safeValidateAndCleanCopy() fails on invalid object', () => {
+    it('safeValidateAndCleanCopy() fails on invalid object (default message)', () => {
+      expect.assertions(4);
+      try {
+        const invalidObject = { s: 's', str1: 1, str2: 2 };
+        goodValidator1.safeValidateAndCleanCopy(invalidObject);
+      } catch (err: unknown) {
+        if (!(err instanceof ValidationException)) throw err;
+        const message = 'Invalid value';
+        const specific = 'str1: Expected string';
+        expect(err.specifics.length).toEqual(1);
+        expect(err.message).toEqual(message);
+        expect(err.specifics[0].toString()).toEqual(specific);
+        expect(err.toString()).toEqual(`${message}: ${specific}`);
+      }
+    });
+
+    it('safeValidateAndCleanCopy() fails on invalid object (custom message)', () => {
       expect.assertions(4);
       try {
         const invalidObject = { s: 's', str1: 1, str2: 2 };
@@ -249,7 +265,23 @@ function testHeterogeneousUnionValidation(
       expect(value).toEqual({ s: 'hello', str1: 'hello' });
     });
 
-    it('safeValidateAndCleanOriginal() fails on invalid object', () => {
+    it('safeValidateAndCleanOriginal() fails on invalid object (default message)', () => {
+      expect.assertions(4);
+      try {
+        const invalidObject = { s: 's', str1: 1, str2: 2 };
+        goodValidator1.safeValidateAndCleanOriginal(invalidObject);
+      } catch (err: unknown) {
+        if (!(err instanceof ValidationException)) throw err;
+        const message = 'Invalid value';
+        const specific = 'str1: Expected string';
+        expect(err.specifics.length).toEqual(1);
+        expect(err.message).toEqual(message);
+        expect(err.specifics[0].toString()).toEqual(specific);
+        expect(err.toString()).toEqual(`${message}: ${specific}`);
+      }
+    });
+
+    it('safeValidateAndCleanOriginal() fails on invalid object (custom message)', () => {
       expect.assertions(4);
       try {
         const invalidObject = { s: 's', str1: 1, str2: 2 };

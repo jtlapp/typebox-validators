@@ -247,15 +247,31 @@ function testDiscriminatedUnionValidation(
       expect(cleanedObject).not.toBe(validObject);
     });
 
-    it('safeValidateAndCleanCopy() fails on invalid object', () => {
+    it('safeValidateAndCleanCopy() fails on invalid object (default message)', () => {
+      expect.assertions(4);
+      try {
+        const invalidObject = { t: 's', str1: 1, str2: 2 };
+        goodValidator2.safeValidateAndCleanCopy(invalidObject);
+      } catch (err: unknown) {
+        if (!(err instanceof ValidationException)) throw err;
+        expect(err.specifics.length).toEqual(1);
+        const message = 'Invalid value';
+        const specific = 'str1: Expected string';
+        expect(err.message).toEqual(message);
+        expect(err.specifics[0].toString()).toEqual(specific);
+        expect(err.toString()).toEqual(`${message}: ${specific}`);
+      }
+    });
+
+    it('safeValidateAndCleanCopy() fails on invalid object (custom message)', () => {
       expect.assertions(4);
       try {
         const invalidObject = { t: 's', str1: 1, str2: 2 };
         goodValidator2.safeValidateAndCleanCopy(invalidObject, OVERALL_MESSAGE);
       } catch (err: unknown) {
         if (!(err instanceof ValidationException)) throw err;
-        expect(err.specifics.length).toEqual(1);
         const specific = 'str1: Expected string';
+        expect(err.specifics.length).toEqual(1);
         expect(err.message).toEqual(OVERALL_MESSAGE);
         expect(err.specifics[0].toString()).toEqual(specific);
         expect(err.toString()).toEqual(`${OVERALL_MESSAGE}: ${specific}`);
@@ -272,7 +288,23 @@ function testDiscriminatedUnionValidation(
       expect(value).toEqual({ t: 's', str1: 'hello' });
     });
 
-    it('safeValidateAndCleanOriginal() fails on invalid object', () => {
+    it('safeValidateAndCleanOriginal() fails on invalid object (default message)', () => {
+      expect.assertions(4);
+      try {
+        const invalidObject = { t: 's', str1: 1, str2: 2 };
+        goodValidator2.safeValidateAndCleanOriginal(invalidObject);
+      } catch (err: unknown) {
+        if (!(err instanceof ValidationException)) throw err;
+        const message = 'Invalid value';
+        const specific = 'str1: Expected string';
+        expect(err.specifics.length).toEqual(1);
+        expect(err.message).toEqual(message);
+        expect(err.specifics[0].toString()).toEqual(specific);
+        expect(err.toString()).toEqual(`${message}: ${specific}`);
+      }
+    });
+
+    it('safeValidateAndCleanOriginal() fails on invalid object (custom message)', () => {
       expect.assertions(4);
       try {
         const invalidObject = { t: 's', str1: 1, str2: 2 };
@@ -282,8 +314,8 @@ function testDiscriminatedUnionValidation(
         );
       } catch (err: unknown) {
         if (!(err instanceof ValidationException)) throw err;
-        expect(err.specifics.length).toEqual(1);
         const specific = 'str1: Expected string';
+        expect(err.specifics.length).toEqual(1);
         expect(err.message).toEqual(OVERALL_MESSAGE);
         expect(err.specifics[0].toString()).toEqual(specific);
         expect(err.toString()).toEqual(`${OVERALL_MESSAGE}: ${specific}`);

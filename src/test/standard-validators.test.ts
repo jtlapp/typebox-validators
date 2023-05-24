@@ -133,7 +133,23 @@ function testStandardValidation(
         expect(value).not.toBe(validObject);
       });
 
-      it('fails to validate on invalid objects', () => {
+      it('fails to validate on invalid objects (default message)', () => {
+        expect.assertions(4);
+        try {
+          const invalidObject = { delta: 0.5, count: 1, name: 'ABCDE' };
+          validator1.safeValidateAndCleanCopy(invalidObject);
+        } catch (err: unknown) {
+          if (!(err instanceof ValidationException)) throw err;
+          expect(err.specifics.length).toEqual(1);
+          const message = 'Invalid value';
+          const specific = 'delta: Expected integer';
+          expect(err.message).toEqual(message);
+          expect(err.specifics[0].toString()).toEqual(specific);
+          expect(err.toString()).toEqual(`${message}: ${specific}`);
+        }
+      });
+
+      it('fails to validate on invalid objects (custom message)', () => {
         expect.assertions(4);
         try {
           const invalidObject = { delta: 0.5, count: 1, name: 'ABCDE' };
@@ -169,7 +185,23 @@ function testStandardValidation(
         expect(value).toEqual({ delta: -5, count: 125, name: 'ABCDEDEFGH' });
       });
 
-      it('fails to validate on invalid objects', () => {
+      it('fails to validate on invalid objects (default message)', () => {
+        expect.assertions(4);
+        try {
+          const invalidObject = { delta: 0.5, count: 1, name: 'ABCDE' };
+          validator1.safeValidateAndCleanOriginal(invalidObject);
+        } catch (err: unknown) {
+          if (!(err instanceof ValidationException)) throw err;
+          expect(err.specifics.length).toEqual(1);
+          const message = 'Invalid value';
+          const specific = 'delta: Expected integer';
+          expect(err.message).toEqual(message);
+          expect(err.specifics[0].toString()).toEqual(specific);
+          expect(err.toString()).toEqual(`${message}: ${specific}`);
+        }
+      });
+
+      it('fails to validate on invalid objects (custom message)', () => {
         expect.assertions(4);
         try {
           const invalidObject = { delta: 0.5, count: 1, name: 'ABCDE' };

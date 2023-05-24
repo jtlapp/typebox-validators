@@ -11,10 +11,17 @@ export function checkValidations(
 ): void {
   const expectedSchema = validator.schema.anyOf[schemaIndex];
 
-  tryValidation(valid, expectedSchema, () =>
+  tryValidation(valid, expectedSchema, 'Invalid value', () =>
+    validator.safeValidate(value)
+  );
+  tryValidation(valid, expectedSchema, OVERALL_MESSAGE, () =>
     validator.safeValidate(value, OVERALL_MESSAGE)
   );
-  tryValidation(valid, expectedSchema, () =>
+
+  tryValidation(valid, expectedSchema, 'Invalid value', () =>
+    validator.unsafeValidate(value)
+  );
+  tryValidation(valid, expectedSchema, OVERALL_MESSAGE, () =>
     validator.unsafeValidate(value, OVERALL_MESSAGE)
   );
 }
@@ -22,12 +29,13 @@ export function checkValidations(
 function tryValidation(
   valid: boolean,
   expectedSchema: TSchema,
+  expectedMessage: string,
   validate: () => void
 ): void {
   if (valid) {
     const actualSchema = validate();
     expect(actualSchema).toBe(expectedSchema);
   } else {
-    expect(validate).toThrow(OVERALL_MESSAGE);
+    expect(validate).toThrow(expectedMessage);
   }
 }
