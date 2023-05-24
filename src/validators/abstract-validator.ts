@@ -35,7 +35,7 @@ export abstract class AbstractValidator<S extends TSchema> {
   constructor(readonly schema: S) {}
 
   /**
-   * Safely validate a value against the schema. Short-circuits at the first
+   * Safely validates a value against the schema. Short-circuits at the first
    * validation error, reporting only this error.
    *
    * @param value Value to validate against the schema.
@@ -49,7 +49,7 @@ export abstract class AbstractValidator<S extends TSchema> {
   abstract safeValidate(value: unknown, errorMessage: string): TSchema;
 
   /**
-   * Safely validate a value against the schema and return a copy of the value
+   * Safely validates a value against the schema and return a copy of the value
    * with all unrecognized properties of objects removed. Short-circuits at the
    * first validation error, reporting only this error.
    *
@@ -70,7 +70,7 @@ export abstract class AbstractValidator<S extends TSchema> {
   ): [TSchema, Static<S>];
 
   /**
-   * Safely validate a value against the schema and return the value with all
+   * Safely validates a value against the schema and return the value with all
    * unrecognized properties of objects removed. Short-circuits at the first
    * validation error, reporting only this error.
    *
@@ -88,7 +88,7 @@ export abstract class AbstractValidator<S extends TSchema> {
   ): TSchema;
 
   /**
-   * Unsafely validate a value against the schema, but have the validation
+   * Unsafely validates a value against the schema, but have the validation
    * exception report all detectable validation errors.
    *
    * @param value Value to validate against the schema.
