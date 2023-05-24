@@ -141,38 +141,42 @@ function testDiscriminatedUnionValidation(
       const trials = [
         {
           validator: goodValidator1,
+          overallError: undefined,
           specific: 'not a type the union recognizes',
         },
         {
           validator: goodValidator2,
+          overallError: OVERALL_MESSAGE,
           specific: 'Unknown type',
         },
       ];
 
       for (const trial of trials) {
+        const expectedOverall = trial.overallError ?? 'Invalid value';
+
         // safeValidate()
         try {
-          trial.validator.safeValidate(invalidObject, OVERALL_MESSAGE);
+          trial.validator.safeValidate(invalidObject, trial.overallError);
         } catch (err: unknown) {
           if (!(err instanceof ValidationException)) throw err;
           expect(err.specifics.length).toEqual(1);
-          expect(err.message).toEqual(OVERALL_MESSAGE);
+          expect(err.message).toEqual(expectedOverall);
           expect(err.specifics[0].toString()).toEqual(trial.specific);
           expect(err.toString()).toEqual(
-            `${OVERALL_MESSAGE}: ${trial.specific}`
+            `${expectedOverall}: ${trial.specific}`
           );
         }
 
         // unsafeValidate()
         try {
-          trial.validator.unsafeValidate(invalidObject, OVERALL_MESSAGE);
+          trial.validator.unsafeValidate(invalidObject, trial.overallError);
         } catch (err: unknown) {
           if (!(err instanceof ValidationException)) throw err;
           expect(err.specifics.length).toEqual(1);
-          expect(err.message).toEqual(OVERALL_MESSAGE);
+          expect(err.message).toEqual(expectedOverall);
           expect(err.specifics[0].toString()).toEqual(trial.specific);
           expect(err.toString()).toEqual(
-            `${OVERALL_MESSAGE}: ${trial.specific}`
+            `${expectedOverall}: ${trial.specific}`
           );
         }
       }
@@ -184,38 +188,42 @@ function testDiscriminatedUnionValidation(
       const trials = [
         {
           validator: goodValidator1,
+          overallError: undefined,
           specific: 'not a type the union recognizes',
         },
         {
           validator: goodValidator2,
+          overallError: OVERALL_MESSAGE,
           specific: 'Unknown type',
         },
       ];
 
       for (const trial of trials) {
+        const expectedOverall = trial.overallError ?? 'Invalid value';
+
         // safeValidate()
         try {
-          trial.validator.safeValidate(invalidObject, OVERALL_MESSAGE);
+          trial.validator.safeValidate(invalidObject, trial.overallError);
         } catch (err: unknown) {
           if (!(err instanceof ValidationException)) throw err;
           expect(err.specifics.length).toEqual(1);
-          expect(err.message).toEqual(OVERALL_MESSAGE);
+          expect(err.message).toEqual(expectedOverall);
           expect(err.specifics[0].toString()).toEqual(trial.specific);
           expect(err.toString()).toEqual(
-            `${OVERALL_MESSAGE}: ${trial.specific}`
+            `${expectedOverall}: ${trial.specific}`
           );
         }
 
         // unsafeValidate()
         try {
-          trial.validator.unsafeValidate(invalidObject, OVERALL_MESSAGE);
+          trial.validator.unsafeValidate(invalidObject, trial.overallError);
         } catch (err: unknown) {
           if (!(err instanceof ValidationException)) throw err;
           expect(err.specifics.length).toEqual(1);
-          expect(err.message).toEqual(OVERALL_MESSAGE);
+          expect(err.message).toEqual(expectedOverall);
           expect(err.specifics[0].toString()).toEqual(trial.specific);
           expect(err.toString()).toEqual(
-            `${OVERALL_MESSAGE}: ${trial.specific}`
+            `${expectedOverall}: ${trial.specific}`
           );
         }
       }
@@ -225,14 +233,15 @@ function testDiscriminatedUnionValidation(
       expect.assertions(4);
       try {
         const invalidObject = { t: 's', str1: 1, str2: 2 };
-        goodValidator2.safeValidate(invalidObject, OVERALL_MESSAGE);
+        goodValidator2.safeValidate(invalidObject);
       } catch (err: unknown) {
         if (!(err instanceof ValidationException)) throw err;
-        expect(err.specifics.length).toEqual(1);
+        const overallError = 'Invalid value';
         const specific = 'str1: Expected string';
-        expect(err.message).toEqual(OVERALL_MESSAGE);
+        expect(err.specifics.length).toEqual(1);
+        expect(err.message).toEqual(overallError);
         expect(err.specifics[0].toString()).toEqual(specific);
-        expect(err.toString()).toEqual(`${OVERALL_MESSAGE}: ${specific}`);
+        expect(err.toString()).toEqual(`${overallError}: ${specific}`);
       }
     });
 
@@ -344,15 +353,11 @@ function testDiscriminatedUnionValidation(
     it('throws when there is no consistent discriminant key', () => {
       const validObject = { t: 's', str1: 'hello' };
 
-      expect(() =>
-        badValidator.safeValidate(validObject, OVERALL_MESSAGE)
-      ).toThrow(
+      expect(() => badValidator.safeValidate(validObject)).toThrow(
         "Discriminant key 't' not present in all members of discriminated union"
       );
 
-      expect(() =>
-        badValidator.unsafeValidate(validObject, OVERALL_MESSAGE)
-      ).toThrow(
+      expect(() => badValidator.unsafeValidate(validObject)).toThrow(
         "Discriminant key 't' not present in all members of discriminated union"
       );
     });

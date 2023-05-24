@@ -161,38 +161,42 @@ function testHeterogeneousUnionValidation(
       const trials = [
         {
           validator: goodValidator1,
+          overallError: undefined,
           specific: 'not a type the union recognizes',
         },
         {
           validator: goodValidator2,
+          overallError: OVERALL_MESSAGE,
           specific: 'Unknown type',
         },
       ];
 
       for (const trial of trials) {
+        const expectedOverall = trial.overallError ?? 'Invalid value';
+
         // safeValidate()
         try {
-          trial.validator.safeValidate(invalidObject, OVERALL_MESSAGE);
+          trial.validator.safeValidate(invalidObject, trial.overallError);
         } catch (err: unknown) {
           if (!(err instanceof ValidationException)) throw err;
           expect(err.specifics.length).toEqual(1);
-          expect(err.message).toEqual(OVERALL_MESSAGE);
+          expect(err.message).toEqual(expectedOverall);
           expect(err.specifics[0].toString()).toEqual(trial.specific);
           expect(err.toString()).toEqual(
-            `${OVERALL_MESSAGE}: ${trial.specific}`
+            `${expectedOverall}: ${trial.specific}`
           );
         }
 
         // unsafeValidate()
         try {
-          trial.validator.unsafeValidate(invalidObject, OVERALL_MESSAGE);
+          trial.validator.unsafeValidate(invalidObject, trial.overallError);
         } catch (err: unknown) {
           if (!(err instanceof ValidationException)) throw err;
           expect(err.specifics.length).toEqual(1);
-          expect(err.message).toEqual(OVERALL_MESSAGE);
+          expect(err.message).toEqual(expectedOverall);
           expect(err.specifics[0].toString()).toEqual(trial.specific);
           expect(err.toString()).toEqual(
-            `${OVERALL_MESSAGE}: ${trial.specific}`
+            `${expectedOverall}: ${trial.specific}`
           );
         }
       }
@@ -202,14 +206,15 @@ function testHeterogeneousUnionValidation(
       expect.assertions(4);
       try {
         const invalidObject = { s: 's', str1: 1, str2: 2 };
-        goodValidator1.safeValidate(invalidObject, OVERALL_MESSAGE);
+        goodValidator1.safeValidate(invalidObject);
       } catch (err: unknown) {
         if (!(err instanceof ValidationException)) throw err;
-        expect(err.specifics.length).toEqual(1);
+        const overall = 'Invalid value';
         const specific = 'str1: Expected string';
-        expect(err.message).toEqual(OVERALL_MESSAGE);
+        expect(err.specifics.length).toEqual(1);
+        expect(err.message).toEqual(overall);
         expect(err.specifics[0].toString()).toEqual(specific);
-        expect(err.toString()).toEqual(`${OVERALL_MESSAGE}: ${specific}`);
+        expect(err.toString()).toEqual(`${overall}: ${specific}`);
       }
     });
 
@@ -321,13 +326,13 @@ function testHeterogeneousUnionValidation(
     it("rejects unions whose members aren't all unique", () => {
       const validObject = { s: 'hello', str1: 'hello' };
 
-      expect(() =>
-        badValidator.safeValidate(validObject, OVERALL_MESSAGE)
-      ).toThrow('Heterogeneous union has members lacking unique keys');
+      expect(() => badValidator.safeValidate(validObject)).toThrow(
+        'Heterogeneous union has members lacking unique keys'
+      );
 
-      expect(() =>
-        badValidator.unsafeValidate(validObject, OVERALL_MESSAGE)
-      ).toThrow('Heterogeneous union has members lacking unique keys');
+      expect(() => badValidator.unsafeValidate(validObject)).toThrow(
+        'Heterogeneous union has members lacking unique keys'
+      );
     });
   });
 }

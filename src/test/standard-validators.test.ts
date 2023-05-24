@@ -45,11 +45,11 @@ function testStandardValidation(
     describe('safeValidate()', () => {
       it('accepts valid values', () => {
         let validObject = { delta: 0, count: 1, name: 'ABCDE' };
-        let schema = validator1.safeValidate(validObject, OVERALL_MESSAGE);
+        let schema = validator1.safeValidate(validObject);
         expect(schema).toBe(validator1.schema);
 
         validObject = { delta: -5, count: 125, name: 'ABCDEDEFGH' };
-        schema = validator1.safeValidate(validObject, OVERALL_MESSAGE);
+        schema = validator1.safeValidate(validObject);
         expect(schema).toBe(validator1.schema);
       });
 
@@ -57,11 +57,11 @@ function testStandardValidation(
         expect.assertions(4);
         try {
           const invalidObject = { delta: 0.5, count: 1, name: 'ABCDE' };
-          validator1.safeValidate(invalidObject, OVERALL_MESSAGE);
+          validator1.safeValidate(invalidObject);
         } catch (err: unknown) {
           if (!(err instanceof ValidationException)) throw err;
           expect(err.specifics.length).toEqual(1);
-          const message = OVERALL_MESSAGE;
+          const message = 'Invalid value';
           const specific = 'delta: Expected integer';
           expect(err.message).toEqual(message);
           expect(err.specifics[0].toString()).toEqual(specific);
@@ -87,13 +87,13 @@ function testStandardValidation(
         expect.assertions(3);
         try {
           const invalidObject = { int1: 1, int2: 1, alpha: 'ABCDE' };
-          validator2.safeValidate(invalidObject, OVERALL_MESSAGE);
+          validator2.safeValidate(invalidObject);
         } catch (err: unknown) {
           if (!(err instanceof ValidationException)) throw err;
           expect(err.specifics.length).toEqual(1);
           const message = 'alpha: Expected string length less or equal to 4';
           expect(err.specifics[0].toString()).toEqual(message);
-          expect(err.toString()).toEqual(`${OVERALL_MESSAGE}: ` + message);
+          expect(err.toString()).toEqual(`Invalid value: ` + message);
         }
       });
 
@@ -101,13 +101,13 @@ function testStandardValidation(
         expect.assertions(3);
         try {
           const invalidObject = { delta: 1, count: 1, name: '12345' };
-          validator1.safeValidate(invalidObject, OVERALL_MESSAGE);
+          validator1.safeValidate(invalidObject);
         } catch (err: unknown) {
           if (!(err instanceof ValidationException)) throw err;
           expect(err.specifics.length).toEqual(1);
           const message = 'name should consist of 5-10 letters';
           expect(err.specifics[0].toString()).toEqual(message);
-          expect(err.toString()).toEqual(`${OVERALL_MESSAGE}: ` + message);
+          expect(err.toString()).toEqual(`Invalid value: ` + message);
         }
       });
     });
@@ -236,13 +236,13 @@ function testStandardValidation(
         expect.assertions(3);
         try {
           const invalidObject = { delta: 0.5, count: 1, name: 'ABCDE' };
-          validator1.unsafeValidate(invalidObject, OVERALL_MESSAGE);
+          validator1.unsafeValidate(invalidObject);
         } catch (err: unknown) {
           if (!(err instanceof ValidationException)) throw err;
           expect(err.specifics.length).toEqual(1);
           const message = 'delta: Expected integer';
           expect(err.specifics[0].toString()).toEqual(message);
-          expect(err.toString()).toEqual(`${OVERALL_MESSAGE}: ` + message);
+          expect(err.toString()).toEqual(`Invalid value: ` + message);
         }
       });
 
@@ -270,7 +270,7 @@ function testStandardValidation(
         expect.assertions(4);
         try {
           const invalidObject = { int1: 1, int2: 1, alpha: '12345' };
-          validator2.unsafeValidate(invalidObject, OVERALL_MESSAGE);
+          validator2.unsafeValidate(invalidObject);
         } catch (err: unknown) {
           if (!(err instanceof ValidationException)) throw err;
           expect(err.specifics.length).toEqual(2);
@@ -279,7 +279,7 @@ function testStandardValidation(
           expect(err.specifics[0].toString()).toEqual(message1);
           expect(err.specifics[1].toString()).toEqual(message2);
           expect(err.toString()).toEqual(
-            `${OVERALL_MESSAGE}:\n- ${message1}\n- ${message2}`
+            `Invalid value:\n- ${message1}\n- ${message2}`
           );
         }
       });
@@ -288,7 +288,7 @@ function testStandardValidation(
         expect.assertions(4);
         try {
           const invalidObject = { int1: 0.5, int2: 0.5, alpha: 'ABCD' };
-          validator2.unsafeValidate(invalidObject, OVERALL_MESSAGE);
+          validator2.unsafeValidate(invalidObject);
         } catch (err: unknown) {
           if (!(err instanceof ValidationException)) throw err;
           expect(err.specifics.length).toEqual(2);
@@ -297,7 +297,7 @@ function testStandardValidation(
           expect(err.specifics[0].toString()).toEqual(message1);
           expect(err.specifics[1].toString()).toEqual(message2);
           expect(err.toString()).toEqual(
-            `${OVERALL_MESSAGE}:\n- ${message1}\n- ${message2}`
+            `Invalid value:\n- ${message1}\n- ${message2}`
           );
         }
       });
