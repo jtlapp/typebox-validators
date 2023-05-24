@@ -18,16 +18,16 @@ export class ValidationException extends ExtendableError {
   constructor(overallError: string, public specifics: ValueError[] = []) {
     super(overallError);
     this.specifics = specifics.map(
-      (detail) => new SpecificValidationError(detail)
+      (specific) => new SpecificValidationError(specific)
     );
   }
 
   /**
-   * Returns a string representation of the error. Provides the overall
-   * error message, optionally followed by detailed error messages. If
-   * there is only one error, the format is "{overall message}: {detail}".
-   * If there are multiple errors, the overall message is on the first
-   * line and the specifics are dash-bulleted on subsequent lines.
+   * Returns a string representation of the error. Provides the overall error
+   * message, optionally followed by specific error messages. If there is only
+   * one error, the format is "{overall message}: {specific}". If there are
+   * multiple errors, the overall message is on the first line and the
+   * specifics are dash-bulleted on subsequent lines.
    * @param includeSpecifics Whether to append to the error message
    *  descriptions of the specific validation errors
    * @returns a string representation of the error.
@@ -39,8 +39,8 @@ export class ValidationException extends ExtendableError {
         message += ': ' + this.specifics[0].toString();
       } else {
         message += ':';
-        for (const detail of this.specifics) {
-          message += '\n- ' + detail.toString();
+        for (const specific of this.specifics) {
+          message += '\n- ' + specific.toString();
         }
       }
     }

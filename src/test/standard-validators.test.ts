@@ -62,10 +62,10 @@ function testStandardValidation(
           if (!(err instanceof ValidationException)) throw err;
           expect(err.specifics.length).toEqual(1);
           const message = OVERALL_MESSAGE;
-          const detail = 'delta: Expected integer';
+          const specific = 'delta: Expected integer';
           expect(err.message).toEqual(message);
-          expect(err.specifics[0].toString()).toEqual(detail);
-          expect(err.toString()).toEqual(`${message}: ${detail}`);
+          expect(err.specifics[0].toString()).toEqual(specific);
+          expect(err.toString()).toEqual(`${message}: ${specific}`);
         }
       });
 
@@ -142,10 +142,10 @@ function testStandardValidation(
           if (!(err instanceof ValidationException)) throw err;
           expect(err.specifics.length).toEqual(1);
           const message = OVERALL_MESSAGE;
-          const detail = 'delta: Expected integer';
+          const specific = 'delta: Expected integer';
           expect(err.message).toEqual(message);
-          expect(err.specifics[0].toString()).toEqual(detail);
-          expect(err.toString()).toEqual(`${message}: ${detail}`);
+          expect(err.specifics[0].toString()).toEqual(specific);
+          expect(err.toString()).toEqual(`${message}: ${specific}`);
         }
       });
     });
@@ -181,10 +181,10 @@ function testStandardValidation(
           if (!(err instanceof ValidationException)) throw err;
           expect(err.specifics.length).toEqual(1);
           const message = OVERALL_MESSAGE;
-          const detail = 'delta: Expected integer';
+          const specific = 'delta: Expected integer';
           expect(err.message).toEqual(message);
-          expect(err.specifics[0].toString()).toEqual(detail);
-          expect(err.toString()).toEqual(`${message}: ${detail}`);
+          expect(err.specifics[0].toString()).toEqual(specific);
+          expect(err.toString()).toEqual(`${message}: ${specific}`);
         }
       });
     });

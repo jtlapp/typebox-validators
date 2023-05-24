@@ -161,11 +161,11 @@ function testHeterogeneousUnionValidation(
       const trials = [
         {
           validator: goodValidator1,
-          detail: 'not a type the union recognizes',
+          specific: 'not a type the union recognizes',
         },
         {
           validator: goodValidator2,
-          detail: 'Unknown type',
+          specific: 'Unknown type',
         },
       ];
 
@@ -177,8 +177,10 @@ function testHeterogeneousUnionValidation(
           if (!(err instanceof ValidationException)) throw err;
           expect(err.specifics.length).toEqual(1);
           expect(err.message).toEqual(OVERALL_MESSAGE);
-          expect(err.specifics[0].toString()).toEqual(trial.detail);
-          expect(err.toString()).toEqual(`${OVERALL_MESSAGE}: ${trial.detail}`);
+          expect(err.specifics[0].toString()).toEqual(trial.specific);
+          expect(err.toString()).toEqual(
+            `${OVERALL_MESSAGE}: ${trial.specific}`
+          );
         }
 
         // unsafeValidate()
@@ -188,8 +190,10 @@ function testHeterogeneousUnionValidation(
           if (!(err instanceof ValidationException)) throw err;
           expect(err.specifics.length).toEqual(1);
           expect(err.message).toEqual(OVERALL_MESSAGE);
-          expect(err.specifics[0].toString()).toEqual(trial.detail);
-          expect(err.toString()).toEqual(`${OVERALL_MESSAGE}: ${trial.detail}`);
+          expect(err.specifics[0].toString()).toEqual(trial.specific);
+          expect(err.toString()).toEqual(
+            `${OVERALL_MESSAGE}: ${trial.specific}`
+          );
         }
       }
     });
@@ -202,10 +206,10 @@ function testHeterogeneousUnionValidation(
       } catch (err: unknown) {
         if (!(err instanceof ValidationException)) throw err;
         expect(err.specifics.length).toEqual(1);
-        const detail = 'str1: Expected string';
+        const specific = 'str1: Expected string';
         expect(err.message).toEqual(OVERALL_MESSAGE);
-        expect(err.specifics[0].toString()).toEqual(detail);
-        expect(err.toString()).toEqual(`${OVERALL_MESSAGE}: ${detail}`);
+        expect(err.specifics[0].toString()).toEqual(specific);
+        expect(err.toString()).toEqual(`${OVERALL_MESSAGE}: ${specific}`);
       }
     });
 
@@ -228,10 +232,10 @@ function testHeterogeneousUnionValidation(
       } catch (err: unknown) {
         if (!(err instanceof ValidationException)) throw err;
         expect(err.specifics.length).toEqual(1);
-        const detail = 'str1: Expected string';
+        const specific = 'str1: Expected string';
         expect(err.message).toEqual(OVERALL_MESSAGE);
-        expect(err.specifics[0].toString()).toEqual(detail);
-        expect(err.toString()).toEqual(`${OVERALL_MESSAGE}: ${detail}`);
+        expect(err.specifics[0].toString()).toEqual(specific);
+        expect(err.toString()).toEqual(`${OVERALL_MESSAGE}: ${specific}`);
       }
     });
 
@@ -256,10 +260,10 @@ function testHeterogeneousUnionValidation(
       } catch (err: unknown) {
         if (!(err instanceof ValidationException)) throw err;
         expect(err.specifics.length).toEqual(1);
-        const detail = 'str1: Expected string';
+        const specific = 'str1: Expected string';
         expect(err.message).toEqual(OVERALL_MESSAGE);
-        expect(err.specifics[0].toString()).toEqual(detail);
-        expect(err.toString()).toEqual(`${OVERALL_MESSAGE}: ${detail}`);
+        expect(err.specifics[0].toString()).toEqual(specific);
+        expect(err.toString()).toEqual(`${OVERALL_MESSAGE}: ${specific}`);
       }
     });
 
@@ -271,13 +275,13 @@ function testHeterogeneousUnionValidation(
       } catch (err: unknown) {
         if (!(err instanceof ValidationException)) throw err;
         expect(err.specifics.length).toEqual(2);
-        const detail1 = 'str1: Expected string';
-        const detail2 = 'str2: Expected string';
+        const specific1 = 'str1: Expected string';
+        const specific2 = 'str2: Expected string';
         expect(err.message).toEqual(OVERALL_MESSAGE);
-        expect(err.specifics[0].toString()).toEqual(detail1);
-        expect(err.specifics[1].toString()).toEqual(detail2);
+        expect(err.specifics[0].toString()).toEqual(specific1);
+        expect(err.specifics[1].toString()).toEqual(specific2);
         expect(err.toString()).toEqual(
-          `${OVERALL_MESSAGE}:\n- ${detail1}\n- ${detail2}`
+          `${OVERALL_MESSAGE}:\n- ${specific1}\n- ${specific2}`
         );
       }
     });

@@ -21,7 +21,7 @@ export class SpecificValidationError implements ValueError {
   }
 
   /**
-   * Returns a string representation of the error detail at the indicated
+   * Returns a string representation of the specific error at the indicated
    * index. If the error is for a schema that provided an `errorMessage`
    * property, the string is the value of that property. In this case, if the
    * value is a property of an object, the substring "{field}" (when present)
