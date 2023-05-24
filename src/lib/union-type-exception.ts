@@ -20,7 +20,7 @@ export class UnionTypeException extends ValidationException {
         path: '',
         schema: unionSchema,
         value,
-        message: unionSchema.errorMessage ?? DEFAULT_UNKNOWN_TYPE_MESSAGE,
+        message: unionSchema.specificError ?? DEFAULT_UNKNOWN_TYPE_MESSAGE,
       },
     ]);
   }

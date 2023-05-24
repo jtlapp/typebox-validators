@@ -17,18 +17,18 @@ export abstract class AbstractStandardValidator<
   /** @inheritdoc */
   override safeValidateAndCleanCopy(
     value: unknown,
-    errorMessage: string
+    specificError: string
   ): [S, Static<S>] {
-    this.safeValidate(value, errorMessage);
+    this.safeValidate(value, specificError);
     return [this.schema, this.cleanCopyOfValue(this.schema, value)];
   }
 
   /** @inheritdoc */
   override safeValidateAndCleanOriginal(
     value: unknown,
-    errorMessage: string
+    specificError: string
   ): S {
-    this.safeValidate(value, errorMessage);
+    this.safeValidate(value, specificError);
     this.cleanOriginalValue(this.schema, value);
     return this.schema;
   }

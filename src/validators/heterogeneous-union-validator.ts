@@ -15,18 +15,18 @@ export class HeterogeneousUnionValidator<
   }
 
   /** @inheritdoc */
-  override safeValidate(value: unknown, errorMessage: string): TObject {
-    const i = this.findHeterogeneousUnionSchemaIndex(value, errorMessage);
+  override safeValidate(value: unknown, specificError: string): TObject {
+    const i = this.findHeterogeneousUnionSchemaIndex(value, specificError);
     const schema = this.schema.anyOf[i] as TObject;
-    this.uncompiledSafeValidate(schema, value, errorMessage);
+    this.uncompiledSafeValidate(schema, value, specificError);
     return schema;
   }
 
   /** @inheritdoc */
-  override unsafeValidate(value: unknown, errorMessage: string): TObject {
-    const i = this.findHeterogeneousUnionSchemaIndex(value, errorMessage);
+  override unsafeValidate(value: unknown, specificError: string): TObject {
+    const i = this.findHeterogeneousUnionSchemaIndex(value, specificError);
     const schema = this.schema.anyOf[i] as TObject;
-    this.uncompiledUnsafeValidate(schema, value, errorMessage);
+    this.uncompiledUnsafeValidate(schema, value, specificError);
     return schema;
   }
 }

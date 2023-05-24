@@ -14,13 +14,13 @@ describe('standard validators', () => {
     name: Type.RegEx(/[a-zA-Z]+/, {
       minLength: 5,
       maxLength: 10,
-      errorMessage: 'name should consist of 5-10 letters',
+      specificError: 'name should consist of 5-10 letters',
     }),
   });
 
   const schema2 = Type.Object({
-    int1: Type.Integer({ errorMessage: '{field} must be an integer' }),
-    int2: Type.Integer({ errorMessage: '{field} must be an integer' }),
+    int1: Type.Integer({ specificError: '{field} must be an integer' }),
+    int2: Type.Integer({ specificError: '{field} must be an integer' }),
     alpha: Type.RegEx(/[a-zA-Z]+/, { maxLength: 4 }),
   });
 

@@ -36,7 +36,7 @@ describe('heterogeneous union validators', () => {
         extra: Type.Optional(Type.Integer()),
       }),
     ],
-    { errorMessage: 'Unknown type' }
+    { specificError: 'Unknown type' }
   );
   const illFormedUnion = Type.Union([
     Type.Object({

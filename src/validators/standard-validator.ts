@@ -15,14 +15,14 @@ export class StandardValidator<
   }
 
   /** @inheritdoc */
-  override safeValidate(value: unknown, errorMessage: string): S {
-    this.uncompiledSafeValidate(this.schema, value, errorMessage);
+  override safeValidate(value: unknown, specificError: string): S {
+    this.uncompiledSafeValidate(this.schema, value, specificError);
     return this.schema;
   }
 
   /** @inheritdoc */
-  override unsafeValidate(value: unknown, errorMessage: string): S {
-    this.uncompiledUnsafeValidate(this.schema, value, errorMessage);
+  override unsafeValidate(value: unknown, specificError: string): S {
+    this.uncompiledUnsafeValidate(this.schema, value, specificError);
     return this.schema;
   }
 }

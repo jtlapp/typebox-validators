@@ -17,18 +17,18 @@ export abstract class AbstractTypedUnionValidator<
   /** @inheritdoc */
   override safeValidateAndCleanCopy(
     value: unknown,
-    errorMessage: string
+    specificError: string
   ): [TObject, Static<S>] {
-    const schema = this.safeValidate(value, errorMessage) as TObject;
+    const schema = this.safeValidate(value, specificError) as TObject;
     return [schema, this.cleanCopyOfValue(schema, value)];
   }
 
   /** @inheritdoc */
   override safeValidateAndCleanOriginal(
     value: unknown,
-    errorMessage: string
+    specificError: string
   ): TObject {
-    const schema = this.safeValidate(value, errorMessage) as TObject;
+    const schema = this.safeValidate(value, specificError) as TObject;
     this.cleanOriginalValue(schema, value);
     return schema;
   }

@@ -18,16 +18,16 @@ export class CompilingStandardValidator<
   }
 
   /** @inheritdoc */
-  override safeValidate(value: unknown, errorMessage: string): S {
+  override safeValidate(value: unknown, specificError: string): S {
     const compiledType = this.getCompiledType();
-    this.compiledSafeValidate(compiledType, value, errorMessage);
+    this.compiledSafeValidate(compiledType, value, specificError);
     return this.schema;
   }
 
   /** @inheritdoc */
-  override unsafeValidate(value: unknown, errorMessage: string): S {
+  override unsafeValidate(value: unknown, specificError: string): S {
     const compiledType = this.getCompiledType();
-    this.compiledUnsafeValidate(compiledType, value, errorMessage);
+    this.compiledUnsafeValidate(compiledType, value, specificError);
     return this.schema;
   }
 
