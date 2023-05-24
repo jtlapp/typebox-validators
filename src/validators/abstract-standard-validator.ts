@@ -20,6 +20,16 @@ export abstract class AbstractStandardValidator<
     errorMessage: string
   ): [S, Static<S>] {
     this.safeValidate(value, errorMessage);
-    return [this.schema, this.cleanValue(this.schema, value)];
+    return [this.schema, this.cleanCopyOfValue(this.schema, value)];
+  }
+
+  /** @inheritdoc */
+  override safeValidateAndCleanOriginal(
+    value: unknown,
+    errorMessage: string
+  ): S {
+    this.safeValidate(value, errorMessage);
+    this.cleanOriginalValue(this.schema, value);
+    return this.schema;
   }
 }

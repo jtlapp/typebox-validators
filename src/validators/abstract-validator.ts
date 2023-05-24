@@ -12,6 +12,8 @@
  * separately retrievable, allowing custom presentation of the details.
  */
 
+// TODO: revisit meaning of root most errorMessage
+
 import type { TSchema, Static } from '@sinclair/typebox';
 import { Value as TypeBoxValue } from '@sinclair/typebox/value';
 
@@ -68,6 +70,24 @@ export abstract class AbstractValidator<S extends TSchema> {
   ): [TSchema, Static<S>];
 
   /**
+   * Safely validate a value against the schema and return the value with all
+   * unrecognized properties of objects removed. Short-circuits at the first
+   * validation error, reporting only this error.
+   *
+   * @param value Value to validate against the schema and then clean.
+   * @param errorMessage Error message to use in the ValidationException when
+   *    thrown. The exception also reports the details of the first error.
+   * @returns The most specific schema against which the value was validated.
+   *  Standard validators return their provided schema, while typed union
+   *  validators return the schema of the matching member of the union.
+   * @throws ValidationException when the value is invalid.
+   */
+  abstract safeValidateAndCleanOriginal(
+    value: unknown,
+    errorMessage: string
+  ): TSchema;
+
+  /**
    * Unsafely validate a value against the schema, but have the validation
    * exception report all detectable validation errors.
    *
@@ -100,7 +120,7 @@ export abstract class AbstractValidator<S extends TSchema> {
       : this.unsafeValidate(value, errorMessage);
   }
 
-  protected cleanValue<VS extends TSchema>(
+  protected cleanCopyOfValue<VS extends TSchema>(
     schema: VS,
     value: unknown
   ): Static<VS> {
@@ -112,6 +132,19 @@ export abstract class AbstractValidator<S extends TSchema> {
       return cleanedValue;
     }
     return value;
+  }
+
+  protected cleanOriginalValue<VS extends TSchema>(
+    schema: VS,
+    value: unknown
+  ): void {
+    if (schema.type === 'object') {
+      for (const key in value as Record<string, any>) {
+        if (!(key in schema.properties)) {
+          delete (value as Record<string, any>)[key];
+        }
+      }
+    }
   }
 
   protected compiledSafeValidate(

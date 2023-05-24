@@ -20,7 +20,17 @@ export abstract class AbstractTypedUnionValidator<
     errorMessage: string
   ): [TObject, Static<S>] {
     const schema = this.safeValidate(value, errorMessage) as TObject;
-    return [schema, this.cleanValue(schema, value)];
+    return [schema, this.cleanCopyOfValue(schema, value)];
+  }
+
+  /** @inheritdoc */
+  override safeValidateAndCleanOriginal(
+    value: unknown,
+    errorMessage: string
+  ): TObject {
+    const schema = this.safeValidate(value, errorMessage) as TObject;
+    this.cleanOriginalValue(schema, value);
+    return schema;
   }
 
   protected createMemberValidators(): CompilingStandardValidator<TObject>[] {

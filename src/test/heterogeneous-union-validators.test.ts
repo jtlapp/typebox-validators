@@ -217,6 +217,7 @@ function testHeterogeneousUnionValidation(
       );
       expect(schema).toEqual(goodValidator1.schema.anyOf[0]);
       expect(cleanObject).toEqual({ s: 'hello', str1: 'hello' });
+      expect(cleanObject).not.toBe(validObject);
     });
 
     it('safeValidateAndCleanCopy() fails on invalid object', () => {
@@ -224,6 +225,34 @@ function testHeterogeneousUnionValidation(
       try {
         const invalidObject = { s: 's', str1: 1, str2: 2 };
         goodValidator1.safeValidateAndCleanCopy(invalidObject, OVERALL_MESSAGE);
+      } catch (err: unknown) {
+        if (!(err instanceof ValidationException)) throw err;
+        expect(err.details.length).toEqual(1);
+        const detail = 'str1: Expected string';
+        expect(err.message).toEqual(OVERALL_MESSAGE);
+        expect(err.details[0].toString()).toEqual(detail);
+        expect(err.toString()).toEqual(`${OVERALL_MESSAGE}: ${detail}`);
+      }
+    });
+
+    it('safeValidateAndCleanOriginal() cleans object on successful validation', () => {
+      const value = { s: 'hello', str1: 'hello', misc: 'foo' };
+      const schema = goodValidator1.safeValidateAndCleanOriginal(
+        value,
+        OVERALL_MESSAGE
+      );
+      expect(schema).toEqual(goodValidator1.schema.anyOf[0]);
+      expect(value).toEqual({ s: 'hello', str1: 'hello' });
+    });
+
+    it('safeValidateAndCleanOriginal() fails on invalid object', () => {
+      expect.assertions(4);
+      try {
+        const invalidObject = { s: 's', str1: 1, str2: 2 };
+        goodValidator1.safeValidateAndCleanOriginal(
+          invalidObject,
+          OVERALL_MESSAGE
+        );
       } catch (err: unknown) {
         if (!(err instanceof ValidationException)) throw err;
         expect(err.details.length).toEqual(1);
