@@ -8,7 +8,7 @@ import ExtendableError from 'es6-error';
 import { ValidationErrorDetail } from './validation-error-detail';
 
 /**
- * Reports the occurrence of one or more validation errors.
+ * Exception reporting the occurrence of one or more validation errors.
  */
 export class ValidationException extends ExtendableError {
   /**
