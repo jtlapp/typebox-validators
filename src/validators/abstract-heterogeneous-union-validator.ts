@@ -7,22 +7,25 @@ import {
 import { AbstractTypedUnionValidator } from './abstract-typed-union-validator';
 import { UnionTypeException } from '../lib/union-type-exception';
 
+const DEFAULT_OVERALL_ERROR = 'Invalid value';
+
 /**
  * Abstract validator for heterogeneous unions, providing safe
- * and unsafe validation, supporting custom error messages.
+ * and unsafe validation, supporting custom error messages, and
+ * cleaning values of unrecognized properties.
  */
 export abstract class AbstractHeterogeneousUnionValidator<
   S extends TUnion<TObject[]>
 > extends AbstractTypedUnionValidator<S> {
   protected uniqueKeyByMemberIndex?: string[];
 
-  constructor(schema: S) {
+  constructor(schema: Readonly<S>) {
     super(schema);
   }
 
   protected findHeterogeneousUnionSchemaIndex(
-    subject: any,
-    overallError: string
+    subject: Readonly<any>,
+    overallError?: string
   ): number {
     if (this.uniqueKeyByMemberIndex === undefined) {
       // only incur cost if validator is actually used
@@ -37,7 +40,11 @@ export abstract class AbstractHeterogeneousUnionValidator<
         }
       }
     }
-    throw new UnionTypeException(this.schema, subject, overallError);
+    throw new UnionTypeException(
+      this.schema,
+      subject,
+      overallError ?? DEFAULT_OVERALL_ERROR
+    );
   }
 
   protected cacheUniqueKeys(): void {

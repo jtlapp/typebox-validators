@@ -4,31 +4,32 @@ import { AbstractValidator } from './abstract-validator';
 
 /**
  * Abstract validator for standard TypeBox values, providing safe
- * and unsafe validation, supporting custom error messages.
+ * and unsafe validation, supporting custom error messages, and
+ * cleaning values of unrecognized properties.
  */
 export abstract class AbstractStandardValidator<
   S extends TSchema
 > extends AbstractValidator<S> {
   /** @inheritdoc */
-  constructor(schema: S) {
+  constructor(schema: Readonly<S>) {
     super(schema);
   }
 
   /** @inheritdoc */
   override safeValidateAndCleanCopy(
-    value: unknown,
-    specificError: string
+    value: Readonly<unknown>,
+    overallError?: string
   ): [S, Static<S>] {
-    this.safeValidate(value, specificError);
+    this.safeValidate(value, overallError);
     return [this.schema, this.cleanCopyOfValue(this.schema, value)];
   }
 
   /** @inheritdoc */
   override safeValidateAndCleanOriginal(
     value: unknown,
-    specificError: string
+    overallError?: string
   ): S {
-    this.safeValidate(value, specificError);
+    this.safeValidate(value as any, overallError);
     this.cleanOriginalValue(this.schema, value);
     return this.schema;
   }

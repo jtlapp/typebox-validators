@@ -15,7 +15,10 @@ export class ValidationException extends ExtendableError {
    * @param overallError Overall error message
    * @param specifics The individual specific validation errors
    */
-  constructor(overallError: string, public specifics: ValueError[] = []) {
+  constructor(
+    overallError: string,
+    public specifics: Readonly<ValueError[]> = []
+  ) {
     super(overallError);
     this.specifics = specifics.map(
       (specific) => new SpecificValidationError(specific)

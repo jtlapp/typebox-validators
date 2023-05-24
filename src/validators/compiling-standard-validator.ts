@@ -5,7 +5,8 @@ import { AbstractStandardValidator } from './abstract-standard-validator';
 
 /**
  * Lazily compiled validator for standard TypeBox values, providing safe
- * and unsafe validation, supporting custom error messages.
+ * and unsafe validation, supporting custom error messages, and cleaning
+ * values of unrecognized properties.
  */
 export class CompilingStandardValidator<
   S extends TSchema
@@ -13,21 +14,21 @@ export class CompilingStandardValidator<
   #compiledType?: TypeCheck<S>;
 
   /** @inheritdoc */
-  constructor(schema: S) {
+  constructor(schema: Readonly<S>) {
     super(schema);
   }
 
   /** @inheritdoc */
-  override safeValidate(value: unknown, specificError: string): S {
+  override safeValidate(value: Readonly<unknown>, overallError?: string): S {
     const compiledType = this.getCompiledType();
-    this.compiledSafeValidate(compiledType, value, specificError);
+    this.compiledSafeValidate(compiledType, value, overallError);
     return this.schema;
   }
 
   /** @inheritdoc */
-  override unsafeValidate(value: unknown, specificError: string): S {
+  override unsafeValidate(value: Readonly<unknown>, overallError?: string): S {
     const compiledType = this.getCompiledType();
-    this.compiledUnsafeValidate(compiledType, value, specificError);
+    this.compiledUnsafeValidate(compiledType, value, overallError);
     return this.schema;
   }
 

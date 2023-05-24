@@ -4,7 +4,8 @@ import { AbstractHeterogeneousUnionValidator } from './abstract-heterogeneous-un
 
 /**
  * Non-compiling validator for heterogeneous unions, providing safe
- * and unsafe validation, supporting custom error messages
+ * and unsafe validation, supporting custom error messages, and
+ * cleaning values of unrecognized properties.
  */
 export class HeterogeneousUnionValidator<
   S extends TUnion<TObject[]>
@@ -15,18 +16,24 @@ export class HeterogeneousUnionValidator<
   }
 
   /** @inheritdoc */
-  override safeValidate(value: unknown, specificError: string): TObject {
-    const i = this.findHeterogeneousUnionSchemaIndex(value, specificError);
+  override safeValidate(
+    value: Readonly<unknown>,
+    overallError?: string
+  ): TObject {
+    const i = this.findHeterogeneousUnionSchemaIndex(value, overallError);
     const schema = this.schema.anyOf[i] as TObject;
-    this.uncompiledSafeValidate(schema, value, specificError);
+    this.uncompiledSafeValidate(schema, value, overallError);
     return schema;
   }
 
   /** @inheritdoc */
-  override unsafeValidate(value: unknown, specificError: string): TObject {
-    const i = this.findHeterogeneousUnionSchemaIndex(value, specificError);
+  override unsafeValidate(
+    value: Readonly<unknown>,
+    overallError?: string
+  ): TObject {
+    const i = this.findHeterogeneousUnionSchemaIndex(value, overallError);
     const schema = this.schema.anyOf[i] as TObject;
-    this.uncompiledUnsafeValidate(schema, value, specificError);
+    this.uncompiledUnsafeValidate(schema, value, overallError);
     return schema;
   }
 }

@@ -4,10 +4,12 @@ import { AbstractTypedUnionValidator } from './abstract-typed-union-validator';
 import { UnionTypeException } from '../lib/union-type-exception';
 
 const DEFAULT_DISCRIMINANT_KEY = 'kind';
+const DEFAULT_OVERALL_ERROR = 'Invalid value';
 
 /**
  * Abstract validator for discriminated unions, providing safe
- * and unsafe validation, supporting custom error messages.
+ * and unsafe validation, supporting custom error messages, and
+ * cleaning values of unrecognized properties.
  */
 export abstract class AbstractDiscriminatedUnionValidator<
   S extends TUnion<TObject[]>
@@ -15,15 +17,15 @@ export abstract class AbstractDiscriminatedUnionValidator<
   #discriminantKey: string;
   #unionIsWellformed: boolean = false;
 
-  constructor(schema: S) {
+  constructor(schema: Readonly<S>) {
     super(schema);
     this.#discriminantKey =
       this.schema.discriminantKey ?? DEFAULT_DISCRIMINANT_KEY;
   }
 
   protected findDiscriminatedUnionSchemaIndex(
-    subject: any,
-    overallError: string
+    subject: Readonly<any>,
+    overallError?: string
   ): number {
     if (!this.#unionIsWellformed) {
       // only incur cost if validator is actually used
@@ -51,6 +53,10 @@ export abstract class AbstractDiscriminatedUnionValidator<
         }
       }
     }
-    throw new UnionTypeException(this.schema, subject, overallError);
+    throw new UnionTypeException(
+      this.schema,
+      subject,
+      overallError ?? DEFAULT_OVERALL_ERROR
+    );
   }
 }

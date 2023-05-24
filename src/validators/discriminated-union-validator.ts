@@ -4,8 +4,9 @@ import { AbstractDiscriminatedUnionValidator } from './abstract-discriminated-un
 
 /**
  * Non-compiling validator for discriminated unions, providing safe and
- * unsafe validation, supporting custom error messages. List the more
- * frequently used types earlier in the union to improve performance.
+ * unsafe validation, supporting custom error messages, and cleaning
+ * values of unrecognized properties. List the more frequently used types
+ * earlier in the union to improve performance.
  */
 export class DiscriminatedUnionValidator<
   S extends TUnion<TObject[]>
@@ -16,18 +17,24 @@ export class DiscriminatedUnionValidator<
   }
 
   /** @inheritdoc */
-  override safeValidate(value: unknown, specificError: string): TObject {
-    const i = this.findDiscriminatedUnionSchemaIndex(value, specificError);
+  override safeValidate(
+    value: Readonly<unknown>,
+    overallError?: string
+  ): TObject {
+    const i = this.findDiscriminatedUnionSchemaIndex(value, overallError);
     const schema = this.schema.anyOf[i] as TObject;
-    this.uncompiledSafeValidate(this.schema.anyOf[i], value, specificError);
+    this.uncompiledSafeValidate(this.schema.anyOf[i], value, overallError);
     return schema;
   }
 
   /** @inheritdoc */
-  override unsafeValidate(value: unknown, specificError: string): TObject {
-    const i = this.findDiscriminatedUnionSchemaIndex(value, specificError);
+  override unsafeValidate(
+    value: Readonly<unknown>,
+    overallError?: string
+  ): TObject {
+    const i = this.findDiscriminatedUnionSchemaIndex(value, overallError);
     const schema = this.schema.anyOf[i] as TObject;
-    this.uncompiledUnsafeValidate(this.schema.anyOf[i], value, specificError);
+    this.uncompiledUnsafeValidate(this.schema.anyOf[i], value, overallError);
     return schema;
   }
 }

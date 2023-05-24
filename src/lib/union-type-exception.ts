@@ -7,13 +7,13 @@ const DEFAULT_UNKNOWN_TYPE_MESSAGE = 'not a type the union recognizes';
 
 /**
  * Exception thrown when a value is not a member of a typed member union.
- * Provides the error message in the union schema's `type` property, if
- * given, otherwise providing a default message.
+ * Provides the error message in the union schema's `typeError` property
+ * if given, otherwise providing a default error message.
  */
 export class UnionTypeException extends ValidationException {
   constructor(
-    unionSchema: TUnion<TObject[]>,
-    value: unknown,
+    unionSchema: Readonly<TUnion<TObject[]>>,
+    value: Readonly<unknown>,
     overallError: string
   ) {
     super(overallError, [
