@@ -2,9 +2,14 @@
 
 TypeBox validators with custom errors, discriminated unions, and safe multi-tier handling
 
-- TODO: revisit meaning of rootmost errorMessage (It seems like this should be the overall message, which would simplify validation sigs; but in this case I might need a second error message in typed unions for type not recognized)
+# TODO
 
-- TODO: test in browser context. Maybe use https://github.com/egoist/tsup. But how to make it easy for devs to use this in a browser?
+- use methods `test`, `assert` (user optionally supplies error template with `{field}` and `{detail}`, traceless error -- a convenience method), `getFirstError`, `getErrors`, `getCleanCopy`, and `clean`. (If app wants to throw for multiple errors, it can wrap getErrors and use preferred error message.)
+- have `getCleanCopy` and `clean` compile
+- write generic test tools that take examples for each kind of class and guarantee that common tests are done on these classes; reuse sample schemas/values as much as possible; maybe classify schema/value pairs by whether they're valid, expected error count, single-field multiple errors (and whether one is maxlength); maybe pair invalid schemas with their expected errors
+- rename specifics back to details; rename specificError to errorMessage
+- mention use of `additionalProperties` for preventing unrecognized properties
+- test in browser context. Maybe use https://github.com/egoist/tsup. But how to make it easy for devs to use this in a browser?
 
 ## Introduction
 
