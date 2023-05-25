@@ -249,7 +249,13 @@ function testStandardValidation(
       it('rejects objects with multiple invalid fields reporting all errors', () => {
         expect.assertions(5);
         try {
-          const invalidObject = { delta: 0.5, count: 0, name: 'ABCDEGHIJKLMN' };
+          const invalidObject = {
+            delta: 0.5,
+            count: 0,
+            // TODO: change to '99' to break test, 'cause generates multiple errors
+            name: 'ABDEIJFIJEFIJEFIEJFIEJ',
+          };
+          //(validator1.schema as any).properties.name.specificError = undefined; // TODO
           validator1.unsafeValidate(invalidObject, OVERALL_MESSAGE);
         } catch (err: unknown) {
           if (!(err instanceof ValidationException)) throw err;
