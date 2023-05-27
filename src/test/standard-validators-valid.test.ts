@@ -8,6 +8,7 @@ import {
   ValidatorKind,
   MethodKind,
   specsToRun,
+  getCachedValidator,
 } from './test-utils';
 
 const onlyRunValidator = ValidatorKind.All;
@@ -24,16 +25,35 @@ const schema1 = Type.Object({
   }),
 });
 
+const compilingValidators = new Map<
+  TSchema,
+  AbstractStandardValidator<TSchema>
+>();
+const noncompilingValidators = new Map<
+  TSchema,
+  AbstractStandardValidator<TSchema>
+>();
+
 describe('standard validators - valid values', () => {
   if (runThisValidator(ValidatorKind.Noncompiling)) {
     describe('StandardValidator', () => {
-      testValidator((schema: TSchema) => new StandardValidator(schema));
+      testValidator((schema: TSchema) =>
+        getCachedValidator(
+          noncompilingValidators,
+          schema,
+          () => new StandardValidator(schema)
+        )
+      );
     });
   }
   if (runThisValidator(ValidatorKind.Compiling)) {
     describe('CompilingStandardValidator', () => {
-      testValidator(
-        (schema: TSchema) => new CompilingStandardValidator(schema)
+      testValidator((schema: TSchema) =>
+        getCachedValidator(
+          compilingValidators,
+          schema,
+          () => new CompilingStandardValidator(schema)
+        )
       );
     });
   }

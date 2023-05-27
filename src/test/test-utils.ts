@@ -57,6 +57,19 @@ export function specsToRun<S extends TestSpec>(specs: S[]): S[] {
   return specs;
 }
 
+export function getCachedValidator(
+  cache: Map<TSchema, AbstractValidator<any>>,
+  schema: TSchema,
+  createValidator: (schema: TSchema) => AbstractValidator<any>
+): AbstractValidator<any> {
+  let validator = cache.get(schema);
+  if (validator === undefined) {
+    validator = createValidator(schema);
+    cache.set(schema, validator);
+  }
+  return validator;
+}
+
 // TODO: still using this?
 export function checkValidations(
   validator: AbstractValidator<TUnion<TObject[]>>,
