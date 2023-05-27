@@ -5,7 +5,7 @@ import { AbstractValidator } from '../validators/abstract-validator';
 import { CompilingHeterogeneousUnionValidator } from '../validators/compiling-heterogeneous-union-validator';
 import { ValidationException } from '../lib/validation-exception';
 
-import { OVERALL_MESSAGE, checkValidations } from './test-util';
+import { OVERALL_MESSAGE, checkValidations } from './test-utils';
 
 describe('heterogeneous union validators', () => {
   const wellFormedUnion1 = Type.Union([

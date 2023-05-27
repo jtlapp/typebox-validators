@@ -5,29 +5,12 @@ import { StandardValidator } from '../validators/standard-validator';
 import { ValidationException } from '../lib/validation-exception';
 import { DEFAULT_OVERALL_ERROR } from '../lib/errors';
 import { CompilingStandardValidator } from '../validators/compiling-standard-validator';
-
-type ValidatorMethodOfClass<T> = {
-  [K in keyof T]: T[K] extends (value: any, errorMessage?: string) => any
-    ? K
-    : never;
-}[keyof T];
-
-interface ValidTestSpec {
-  description: string;
-  schema: TSchema;
-  value: any;
-}
-
-interface InvalidTestSpec {
-  description: string;
-  schema: TSchema;
-  value: any;
-  overallMessage?: string;
-  assertMessage?: string;
-  errors: { path: string; message: string }[];
-  assertString?: string;
-  validateString?: string;
-}
+import {
+  ValidatorMethodOfClass,
+  ValidTestSpec,
+  InvalidTestSpec,
+  specsToRun,
+} from './test-utils';
 
 describe('standard validators', () => {
   describe('StandardValidator', () => {
@@ -63,11 +46,13 @@ function testValidator(
     testValidSpecs([
       {
         description: 'valid value 1, no unrecognized fields',
+        onlySpec: false,
         schema: schema1,
         value: { delta: 0, count: 1, name: 'ABCDE' },
       },
       {
         description: 'valid value 2, with unrecognized fields',
+        onlySpec: false,
         schema: schema1,
         value: {
           delta: -5,
@@ -84,6 +69,7 @@ function testValidator(
     testInvalidSpecs([
       {
         description: 'single invalid field with one error',
+        onlySpec: false,
         schema: schema1,
         value: { delta: 0.5, count: 1, name: 'ABCDE' },
         assertMessage: DEFAULT_OVERALL_ERROR,
@@ -94,6 +80,7 @@ function testValidator(
       {
         description:
           'single invalid field with one error, custom overall message 1',
+        onlySpec: false,
         schema: schema1,
         value: { delta: 0.5, count: 1, name: 'ABCDE' },
         overallMessage: 'Custom message',
@@ -105,6 +92,7 @@ function testValidator(
       {
         description:
           'single invalid field with one error, custom overall message 2',
+        onlySpec: false,
         schema: schema1,
         value: { delta: 0.5, count: 1, name: 'ABCDE' },
         overallMessage: "Oopsie. '{field}' {detail}",
@@ -117,6 +105,7 @@ function testValidator(
       },
       {
         description: 'single invalid field with multiple errors',
+        onlySpec: false,
         schema: schema2,
         value: { int1: 1, int2: 1, alpha: '12345' },
         errors: [
@@ -132,6 +121,7 @@ function testValidator(
       },
       {
         description: 'multiple invalid fields with multiple errors',
+        onlySpec: false,
         schema: schema2,
         value: { int1: 1.5, int2: 1.5, alpha: '12345' },
         assertMessage: DEFAULT_OVERALL_ERROR,
@@ -156,6 +146,7 @@ function testValidator(
       },
       {
         description: 'one custom error message for multiple errors',
+        onlySpec: false,
         schema: schema1,
         value: { delta: 0.5, count: 1, name: '1' },
         assertMessage: DEFAULT_OVERALL_ERROR,
@@ -235,7 +226,7 @@ function testValidator(
 
   function testInvalidSpecs(specs: InvalidTestSpec[]) {
     describe('test() rejections', () => {
-      specs.forEach((spec) => {
+      specsToRun(specs).forEach((spec) => {
         it('test() should reject ' + spec.description, () => {
           const validator = createValidator(spec.schema);
           expect(validator.test(spec.value)).toBe(false);
@@ -251,7 +242,7 @@ function testValidator(
     testValidateMethodRejection('validateAndCleanCopy', specs);
 
     describe('errors()', () => {
-      specs.forEach((spec) => {
+      specsToRun(specs).forEach((spec) => {
         it('errors() for ' + spec.description, () => {
           const validator = createValidator(spec.schema);
           const errors = [...validator.errors(spec.value)];
@@ -270,7 +261,7 @@ function testValidator(
     specs: InvalidTestSpec[]
   ) {
     describe(`${method}() rejections`, () => {
-      specs.forEach((spec) => {
+      specsToRun(specs).forEach((spec) => {
         it(`${method}() should reject ${spec.description}`, () => {
           const validator = createValidator(spec.schema);
           try {
@@ -302,7 +293,7 @@ function testValidator(
     specs: InvalidTestSpec[]
   ) {
     describe(`${method}() rejections`, () => {
-      specs.forEach((spec) => {
+      specsToRun(specs).forEach((spec) => {
         it(`${method}() should reject ${spec.description}`, () => {
           const validator = createValidator(spec.schema);
           try {
