@@ -10,8 +10,8 @@ import {
   specsToRun,
 } from './test-utils';
 
-const onlyRunValidator: ValidatorKind = ValidatorKind.All;
-const onlyRunMethod: MethodKind = MethodKind.All;
+const onlyRunValidator = ValidatorKind.All;
+const onlyRunMethod = MethodKind.All;
 
 describe('standard validators - valid values', () => {
   if (runThisValidator(ValidatorKind.Noncompiling)) {
