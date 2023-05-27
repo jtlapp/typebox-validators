@@ -3,16 +3,29 @@ import { TSchema, Type } from '@sinclair/typebox';
 import { AbstractStandardValidator } from '../validators/abstract-standard-validator';
 import { StandardValidator } from '../validators/standard-validator';
 import { CompilingStandardValidator } from '../validators/compiling-standard-validator';
-import { ValidTestSpec } from './test-utils';
+import {
+  ValidTestSpec,
+  ValidatorKind,
+  TestKind,
+  specsToRun,
+} from './test-utils';
+
+const onlyRunValidator: ValidatorKind = ValidatorKind.All;
+const onlyRunTest: TestKind = TestKind.All;
 
 describe('standard validators - valid values', () => {
-  describe('StandardValidator', () => {
-    testValidator((schema: TSchema) => new StandardValidator(schema));
-  });
-
-  describe('CompilingStandardValidator', () => {
-    testValidator((schema: TSchema) => new CompilingStandardValidator(schema));
-  });
+  if (runThisValidator(ValidatorKind.Noncompiling)) {
+    describe('StandardValidator', () => {
+      testValidator((schema: TSchema) => new StandardValidator(schema));
+    });
+  }
+  if (runThisValidator(ValidatorKind.Compiling)) {
+    describe('CompilingStandardValidator', () => {
+      testValidator(
+        (schema: TSchema) => new CompilingStandardValidator(schema)
+      );
+    });
+  }
 });
 
 function testValidator(
@@ -51,59 +64,94 @@ function testValidator(
   ]);
 
   function testValidSpecs(validSpecs: ValidTestSpec[]) {
-    validSpecs.forEach((spec) => {
-      it(`assert() should accept ${spec.description}`, () => {
-        const validator = createValidator(spec.schema);
-        expect(() => validator.assert(spec.value)).not.toThrow();
-      });
-
-      it(`validate() should accept ${spec.description}`, () => {
-        const validator = createValidator(spec.schema);
-        expect(() => validator.validate(spec.value)).not.toThrow();
-      });
-
-      it(`assertAndClean() should clean provided ${spec.description}`, () => {
-        const validator = createValidator(spec.schema);
-        const value = { ...spec.value };
-        expect(() => validator.assertAndClean(value)).not.toThrow();
-        for (const key in value) {
-          expect(key in spec.schema.properties).toBe(true);
+    specsToRun(validSpecs).forEach((spec) => {
+      describe('test()', () => {
+        if (runThisTest(TestKind.Test)) {
+          it(`test() should accept ${spec.description}`, () => {
+            const validator = createValidator(spec.schema);
+            expect(validator.test(spec.value)).toBe(true);
+          });
         }
       });
 
-      it(`validateAndClean() should clean provided ${spec.description}`, () => {
-        const validator = createValidator(spec.schema);
-        const value = { ...spec.value };
-        expect(() => validator.validateAndClean(value)).not.toThrow();
-        for (const key in value) {
-          expect(key in spec.schema.properties).toBe(true);
+      describe('no cleaning', () => {
+        if (runThisTest(TestKind.Assert)) {
+          it(`assert() should accept ${spec.description}`, () => {
+            const validator = createValidator(spec.schema);
+            expect(() => validator.assert(spec.value)).not.toThrow();
+          });
         }
-        expect(Object.keys(value).length).toEqual(
-          Object.keys(spec.schema.properties).length
-        );
+
+        if (runThisTest(TestKind.Validate)) {
+          it(`validate() should accept ${spec.description}`, () => {
+            const validator = createValidator(spec.schema);
+            expect(() => validator.validate(spec.value)).not.toThrow();
+          });
+        }
       });
 
-      it(`assertAndCleanCopy() should clean copy of ${spec.description}`, () => {
-        const validator = createValidator(spec.schema);
-        const value = validator.assertAndCleanCopy(spec.value) as object;
-        for (const key in value) {
-          expect(key in spec.schema.properties).toBe(true);
+      describe('cleaning provided value', () => {
+        if (runThisTest(TestKind.AssertAndClean)) {
+          it(`assertAndClean() should clean provided ${spec.description}`, () => {
+            const validator = createValidator(spec.schema);
+            const value = { ...spec.value };
+            expect(() => validator.assertAndClean(value)).not.toThrow();
+            for (const key in value) {
+              expect(key in spec.schema.properties).toBe(true);
+            }
+          });
         }
-        expect(Object.keys(value).length).toEqual(
-          Object.keys(spec.schema.properties).length
-        );
+
+        if (runThisTest(TestKind.ValidateAndClean)) {
+          it(`validateAndClean() should clean provided ${spec.description}`, () => {
+            const validator = createValidator(spec.schema);
+            const value = { ...spec.value };
+            expect(() => validator.validateAndClean(value)).not.toThrow();
+            for (const key in value) {
+              expect(key in spec.schema.properties).toBe(true);
+            }
+            expect(Object.keys(value).length).toEqual(
+              Object.keys(spec.schema.properties).length
+            );
+          });
+        }
       });
 
-      it(`validateAndCleanCopy() should clean copy of ${spec.description}`, () => {
-        const validator = createValidator(spec.schema);
-        const value = validator.validateAndCleanCopy(spec.value) as object;
-        for (const key in value) {
-          expect(key in spec.schema.properties).toBe(true);
+      describe('cleaning copy of value', () => {
+        if (runThisTest(TestKind.AssertAndCleanCopy)) {
+          it(`assertAndCleanCopy() should clean copy of ${spec.description}`, () => {
+            const validator = createValidator(spec.schema);
+            const value = validator.assertAndCleanCopy(spec.value) as object;
+            for (const key in value) {
+              expect(key in spec.schema.properties).toBe(true);
+            }
+            expect(Object.keys(value).length).toEqual(
+              Object.keys(spec.schema.properties).length
+            );
+          });
         }
-        expect(Object.keys(value).length).toEqual(
-          Object.keys(spec.schema.properties).length
-        );
+
+        if (runThisTest(TestKind.ValidateAndCleanCopy)) {
+          it(`validateAndCleanCopy() should clean copy of ${spec.description}`, () => {
+            const validator = createValidator(spec.schema);
+            const value = validator.validateAndCleanCopy(spec.value) as object;
+            for (const key in value) {
+              expect(key in spec.schema.properties).toBe(true);
+            }
+            expect(Object.keys(value).length).toEqual(
+              Object.keys(spec.schema.properties).length
+            );
+          });
+        }
       });
     });
   }
+}
+
+function runThisValidator(validatorKind: ValidatorKind): boolean {
+  return [ValidatorKind.All, validatorKind].includes(onlyRunValidator);
+}
+
+function runThisTest(testKind: TestKind): boolean {
+  return [TestKind.All, testKind].includes(onlyRunTest);
 }
