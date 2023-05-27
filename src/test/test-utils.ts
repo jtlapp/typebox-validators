@@ -3,6 +3,24 @@ import { AbstractValidator } from '../validators/abstract-validator';
 
 export const OVERALL_MESSAGE = 'Invalid union value';
 
+export enum ValidatorKind {
+  All,
+  Compiling,
+  Noncompiling,
+}
+
+export enum TestKind {
+  All,
+  Test,
+  Assert,
+  AssertAndClean,
+  AssertAndCleanCopy,
+  Validate,
+  ValidateAndClean,
+  ValidateAndCleanCopy,
+  Errors,
+}
+
 export type ValidatorMethodOfClass<T> = {
   [K in keyof T]: T[K] extends (value: any, errorMessage?: string) => any
     ? K

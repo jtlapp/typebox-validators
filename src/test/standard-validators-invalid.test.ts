@@ -6,19 +6,30 @@ import { ValidationException } from '../lib/validation-exception';
 import { DEFAULT_OVERALL_ERROR } from '../lib/errors';
 import { CompilingStandardValidator } from '../validators/compiling-standard-validator';
 import {
+  ValidatorKind,
+  TestKind,
   ValidatorMethodOfClass,
   InvalidTestSpec,
   specsToRun,
 } from './test-utils';
 
-describe('standard validators - invalid values', () => {
-  describe('StandardValidator', () => {
-    testValidator((schema: TSchema) => new StandardValidator(schema));
-  });
+const onlyRunValidator: ValidatorKind = ValidatorKind.All;
+const onlyRunTest: TestKind = TestKind.All;
 
-  describe('CompilingStandardValidator', () => {
-    testValidator((schema: TSchema) => new CompilingStandardValidator(schema));
-  });
+describe('standard validators - invalid values', () => {
+  if (runThisValidator(ValidatorKind.Noncompiling)) {
+    describe('StandardValidator', () => {
+      testValidator((schema: TSchema) => new StandardValidator(schema));
+    });
+  }
+
+  if (runThisValidator(ValidatorKind.Compiling)) {
+    describe('CompilingStandardValidator', () => {
+      testValidator(
+        (schema: TSchema) => new CompilingStandardValidator(schema)
+      );
+    });
+  }
 });
 
 function testValidator(
@@ -141,35 +152,51 @@ function testValidator(
   ]);
 
   function testInvalidSpecs(specs: InvalidTestSpec[]) {
-    describe('test() rejections', () => {
-      specsToRun(specs).forEach((spec) => {
-        it('test() should reject ' + spec.description, () => {
-          const validator = createValidator(spec.schema);
-          expect(validator.test(spec.value)).toBe(false);
-        });
-      });
-    });
-
-    testAssertMethodRejection('assert', specs);
-    testAssertMethodRejection('assertAndClean', specs);
-    testAssertMethodRejection('assertAndCleanCopy', specs);
-    testValidateMethodRejection('validate', specs);
-    testValidateMethodRejection('validateAndClean', specs);
-    testValidateMethodRejection('validateAndCleanCopy', specs);
-
-    describe('errors()', () => {
-      specsToRun(specs).forEach((spec) => {
-        it('errors() for ' + spec.description, () => {
-          const validator = createValidator(spec.schema);
-          const errors = [...validator.errors(spec.value)];
-          expect(errors.length).toEqual(spec.errors.length);
-          errors.forEach((error, i) => {
-            expect(error.path).toEqual(spec.errors[i].path);
-            expect(error.message).toContain(spec.errors[i].message);
+    if (runThisTest(TestKind.Test)) {
+      describe('test() rejections', () => {
+        specsToRun(specs).forEach((spec) => {
+          it('test() should reject ' + spec.description, () => {
+            const validator = createValidator(spec.schema);
+            expect(validator.test(spec.value)).toBe(false);
           });
         });
       });
-    });
+    }
+
+    if (runThisTest(TestKind.Assert)) {
+      testAssertMethodRejection('assert', specs);
+    }
+    if (runThisTest(TestKind.AssertAndClean)) {
+      testAssertMethodRejection('assertAndClean', specs);
+    }
+    if (runThisTest(TestKind.AssertAndCleanCopy)) {
+      testAssertMethodRejection('assertAndCleanCopy', specs);
+    }
+    if (runThisTest(TestKind.Validate)) {
+      testValidateMethodRejection('validate', specs);
+    }
+    if (runThisTest(TestKind.ValidateAndClean)) {
+      testValidateMethodRejection('validateAndClean', specs);
+    }
+    if (runThisTest(TestKind.ValidateAndCleanCopy)) {
+      testValidateMethodRejection('validateAndCleanCopy', specs);
+    }
+
+    if (runThisTest(TestKind.Errors)) {
+      describe('errors()', () => {
+        specsToRun(specs).forEach((spec) => {
+          it('errors() for ' + spec.description, () => {
+            const validator = createValidator(spec.schema);
+            const errors = [...validator.errors(spec.value)];
+            expect(errors.length).toEqual(spec.errors.length);
+            errors.forEach((error, i) => {
+              expect(error.path).toEqual(spec.errors[i].path);
+              expect(error.message).toContain(spec.errors[i].message);
+            });
+          });
+        });
+      });
+    }
   }
 
   function testAssertMethodRejection<S extends TSchema>(
@@ -237,4 +264,14 @@ function testValidator(
       });
     });
   }
+}
+
+function runThisValidator(validatorKind: ValidatorKind): boolean {
+  return (
+    onlyRunValidator === ValidatorKind.All || validatorKind === onlyRunValidator
+  );
+}
+
+function runThisTest(testKind: TestKind): boolean {
+  return onlyRunTest === TestKind.All || testKind === onlyRunTest;
 }
