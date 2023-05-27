@@ -42,14 +42,14 @@ function testStandardValidation(
   validator2: AbstractValidator<TSchema>
 ) {
   describe(description, () => {
-    describe('safeValidate()', () => {
+    describe('assert()', () => {
       it('accepts valid values', () => {
         let validObject = { delta: 0, count: 1, name: 'ABCDE' };
-        let schema = validator1.safeValidate(validObject);
+        let schema = validator1.assert(validObject);
         expect(schema).toBe(validator1.schema);
 
         validObject = { delta: -5, count: 125, name: 'ABCDEDEFGH' };
-        schema = validator1.safeValidate(validObject);
+        schema = validator1.assert(validObject);
         expect(schema).toBe(validator1.schema);
       });
 
@@ -57,7 +57,7 @@ function testStandardValidation(
         expect.assertions(4);
         try {
           const invalidObject = { delta: 0.5, count: 1, name: 'ABCDE' };
-          validator1.safeValidate(invalidObject);
+          validator1.assert(invalidObject);
         } catch (err: unknown) {
           if (!(err instanceof ValidationException)) throw err;
           expect(err.specifics.length).toEqual(1);
@@ -73,7 +73,7 @@ function testStandardValidation(
         expect.assertions(3);
         try {
           const invalidObject = { delta: 0.5, count: 0, name: 'ABCDE' };
-          validator1.safeValidate(invalidObject, OVERALL_MESSAGE);
+          validator1.assert(invalidObject, OVERALL_MESSAGE);
         } catch (err: unknown) {
           if (!(err instanceof ValidationException)) throw err;
           expect(err.specifics.length).toEqual(1);
@@ -87,7 +87,7 @@ function testStandardValidation(
         expect.assertions(3);
         try {
           const invalidObject = { int1: 1, int2: 1, alpha: 'ABCDE' };
-          validator2.safeValidate(invalidObject);
+          validator2.assert(invalidObject);
         } catch (err: unknown) {
           if (!(err instanceof ValidationException)) throw err;
           expect(err.specifics.length).toEqual(1);
@@ -101,7 +101,7 @@ function testStandardValidation(
         expect.assertions(3);
         try {
           const invalidObject = { delta: 1, count: 1, name: '12345' };
-          validator1.safeValidate(invalidObject);
+          validator1.assert(invalidObject);
         } catch (err: unknown) {
           if (!(err instanceof ValidationException)) throw err;
           expect(err.specifics.length).toEqual(1);
@@ -112,23 +112,15 @@ function testStandardValidation(
       });
     });
 
-    describe('safeValidateAndCleanCopy()', () => {
+    describe('assertAndCleanCopy()', () => {
       it('validates valid objects and returns schema and cleaned value', () => {
         let validObject = { delta: 0, count: 1, name: 'ABCDE' };
-        let [schema, value] = validator1.safeValidateAndCleanCopy(
-          validObject,
-          OVERALL_MESSAGE
-        );
-        expect(schema).toBe(validator1.schema);
+        let value = validator1.assertAndCleanCopy(validObject, OVERALL_MESSAGE);
         expect(value).toEqual(validObject);
         expect(value).not.toBe(validObject);
 
         validObject = { delta: -5, count: 125, name: 'ABCDEDEFGH' };
-        [schema, value] = validator1.safeValidateAndCleanCopy(
-          validObject,
-          OVERALL_MESSAGE
-        );
-        expect(schema).toBe(validator1.schema);
+        value = validator1.assertAndCleanCopy(validObject, OVERALL_MESSAGE);
         expect(value).toEqual({ delta: -5, count: 125, name: 'ABCDEDEFGH' });
         expect(value).not.toBe(validObject);
       });
@@ -137,7 +129,7 @@ function testStandardValidation(
         expect.assertions(4);
         try {
           const invalidObject = { delta: 0.5, count: 1, name: 'ABCDE' };
-          validator1.safeValidateAndCleanCopy(invalidObject);
+          validator1.assertAndCleanCopy(invalidObject);
         } catch (err: unknown) {
           if (!(err instanceof ValidationException)) throw err;
           expect(err.specifics.length).toEqual(1);
@@ -153,7 +145,7 @@ function testStandardValidation(
         expect.assertions(4);
         try {
           const invalidObject = { delta: 0.5, count: 1, name: 'ABCDE' };
-          validator1.safeValidateAndCleanCopy(invalidObject, OVERALL_MESSAGE);
+          validator1.assertAndCleanCopy(invalidObject, OVERALL_MESSAGE);
         } catch (err: unknown) {
           if (!(err instanceof ValidationException)) throw err;
           expect(err.specifics.length).toEqual(1);
@@ -166,21 +158,15 @@ function testStandardValidation(
       });
     });
 
-    describe('safeValidateAndCleanOriginal()', () => {
+    describe('assertAndClean()', () => {
       it('validates valid objects, returns schema, and cleans original value', () => {
         let value = { delta: 0, count: 1, name: 'ABCDE', foo: 'bar' };
-        let schema = validator1.safeValidateAndCleanOriginal(
-          value,
-          OVERALL_MESSAGE
-        );
+        let schema = validator1.assertAndClean(value, OVERALL_MESSAGE);
         expect(schema).toBe(validator1.schema);
         expect(value).toEqual({ delta: 0, count: 1, name: 'ABCDE' });
 
         value = { foo: 'bar', delta: -5, count: 125, name: 'ABCDEDEFGH' };
-        schema = validator1.safeValidateAndCleanOriginal(
-          value,
-          OVERALL_MESSAGE
-        );
+        schema = validator1.assertAndClean(value, OVERALL_MESSAGE);
         expect(schema).toBe(validator1.schema);
         expect(value).toEqual({ delta: -5, count: 125, name: 'ABCDEDEFGH' });
       });
@@ -189,7 +175,7 @@ function testStandardValidation(
         expect.assertions(4);
         try {
           const invalidObject = { delta: 0.5, count: 1, name: 'ABCDE' };
-          validator1.safeValidateAndCleanOriginal(invalidObject);
+          validator1.assertAndClean(invalidObject);
         } catch (err: unknown) {
           if (!(err instanceof ValidationException)) throw err;
           expect(err.specifics.length).toEqual(1);
@@ -205,10 +191,7 @@ function testStandardValidation(
         expect.assertions(4);
         try {
           const invalidObject = { delta: 0.5, count: 1, name: 'ABCDE' };
-          validator1.safeValidateAndCleanOriginal(
-            invalidObject,
-            OVERALL_MESSAGE
-          );
+          validator1.assertAndClean(invalidObject, OVERALL_MESSAGE);
         } catch (err: unknown) {
           if (!(err instanceof ValidationException)) throw err;
           expect(err.specifics.length).toEqual(1);
@@ -221,14 +204,14 @@ function testStandardValidation(
       });
     });
 
-    describe('unsafeValidate()', () => {
+    describe('validate()', () => {
       it('accepts valid values', () => {
         let validObject = { delta: 0, count: 1, name: 'ABCDE' };
-        let schema = validator1.unsafeValidate(validObject, OVERALL_MESSAGE);
+        let schema = validator1.validate(validObject, OVERALL_MESSAGE);
         expect(schema).toBe(validator1.schema);
 
         validObject = { delta: -5, count: 125, name: 'ABCDEDEFGH' };
-        schema = validator1.unsafeValidate(validObject, OVERALL_MESSAGE);
+        schema = validator1.validate(validObject, OVERALL_MESSAGE);
         expect(schema).toBe(validator1.schema);
       });
 
@@ -236,7 +219,7 @@ function testStandardValidation(
         expect.assertions(3);
         try {
           const invalidObject = { delta: 0.5, count: 1, name: 'ABCDE' };
-          validator1.unsafeValidate(invalidObject);
+          validator1.validate(invalidObject);
         } catch (err: unknown) {
           if (!(err instanceof ValidationException)) throw err;
           expect(err.specifics.length).toEqual(1);
@@ -256,7 +239,7 @@ function testStandardValidation(
             name: 'ABDEIJFIJEFIJEFIEJFIEJ',
           };
           //(validator1.schema as any).properties.name.specificError = undefined; // TODO
-          validator1.unsafeValidate(invalidObject, OVERALL_MESSAGE);
+          validator1.validate(invalidObject, OVERALL_MESSAGE);
         } catch (err: unknown) {
           if (!(err instanceof ValidationException)) throw err;
           expect(err.specifics.length).toEqual(3);
@@ -276,7 +259,7 @@ function testStandardValidation(
         expect.assertions(4);
         try {
           const invalidObject = { int1: 1, int2: 1, alpha: '12345' };
-          validator2.unsafeValidate(invalidObject);
+          validator2.validate(invalidObject);
         } catch (err: unknown) {
           if (!(err instanceof ValidationException)) throw err;
           expect(err.specifics.length).toEqual(2);
@@ -294,7 +277,7 @@ function testStandardValidation(
         expect.assertions(4);
         try {
           const invalidObject = { int1: 0.5, int2: 0.5, alpha: 'ABCD' };
-          validator2.unsafeValidate(invalidObject);
+          validator2.validate(invalidObject);
         } catch (err: unknown) {
           if (!(err instanceof ValidationException)) throw err;
           expect(err.specifics.length).toEqual(2);

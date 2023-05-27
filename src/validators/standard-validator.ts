@@ -1,11 +1,11 @@
 import type { TSchema } from '@sinclair/typebox';
 
 import { AbstractStandardValidator } from './abstract-standard-validator';
+import { ValueError } from '@sinclair/typebox/errors';
+import { Value } from '@sinclair/typebox/value';
 
 /**
- * Non-compiling validator for standard TypeBox values, providing safe
- * and unsafe validation, supporting custom error messages, and cleaning
- * values of unrecognized properties.
+ * Non-compiling validator for standard TypeBox values.
  */
 export class StandardValidator<
   S extends TSchema
@@ -16,14 +16,22 @@ export class StandardValidator<
   }
 
   /** @inheritdoc */
-  override safeValidate(value: Readonly<unknown>, overallError?: string): S {
-    this.uncompiledSafeValidate(this.schema, value, overallError);
-    return this.schema;
+  override test(value: Readonly<unknown>): boolean {
+    return Value.Check(this.schema, value);
   }
 
   /** @inheritdoc */
-  override unsafeValidate(value: Readonly<unknown>, overallError?: string): S {
-    this.uncompiledUnsafeValidate(this.schema, value, overallError);
-    return this.schema;
+  override assert(value: Readonly<unknown>, overallError?: string): void {
+    this.uncompiledAssert(this.schema, value, overallError);
+  }
+
+  /** @inheritdoc */
+  override validate(value: Readonly<unknown>, overallError?: string): void {
+    this.uncompiledValidate(this.schema, value, overallError);
+  }
+
+  /** @inheritdoc */
+  override getErrorIterator(value: Readonly<unknown>): Iterator<ValueError> {
+    return this.uncompiledGetErrorIterator(this.schema, value);
   }
 }

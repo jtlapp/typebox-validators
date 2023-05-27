@@ -12,17 +12,17 @@ export function checkValidations(
   const expectedSchema = validator.schema.anyOf[schemaIndex];
 
   tryValidation(valid, expectedSchema, 'Invalid value', () =>
-    validator.safeValidate(value)
+    validator.assert(value)
   );
   tryValidation(valid, expectedSchema, OVERALL_MESSAGE, () =>
-    validator.safeValidate(value, OVERALL_MESSAGE)
+    validator.assert(value, OVERALL_MESSAGE)
   );
 
   tryValidation(valid, expectedSchema, 'Invalid value', () =>
-    validator.unsafeValidate(value)
+    validator.validate(value)
   );
   tryValidation(valid, expectedSchema, OVERALL_MESSAGE, () =>
-    validator.unsafeValidate(value, OVERALL_MESSAGE)
+    validator.validate(value, OVERALL_MESSAGE)
   );
 }
 

@@ -3,16 +3,14 @@ import {
   TUnion,
   Modifier as TypeBoxModifier,
 } from '@sinclair/typebox';
+import { ValueError } from '@sinclair/typebox/errors';
 
 import { AbstractTypedUnionValidator } from './abstract-typed-union-validator';
 import { UnionTypeException } from '../lib/union-type-exception';
-
-const DEFAULT_OVERALL_ERROR = 'Invalid value';
+import { DEFAULT_OVERALL_ERROR } from '../lib/constants';
 
 /**
- * Abstract validator for heterogeneous unions, providing safe
- * and unsafe validation, supporting custom error messages, and
- * cleaning values of unrecognized properties.
+ * Abstract validator for heterogeneous unions of objects.
  */
 export abstract class AbstractHeterogeneousUnionValidator<
   S extends TUnion<TObject[]>
@@ -24,27 +22,36 @@ export abstract class AbstractHeterogeneousUnionValidator<
   }
 
   protected findHeterogeneousUnionSchemaIndex(
-    subject: Readonly<any>,
-    overallError?: string
-  ): number {
+    value: Readonly<any>
+  ): number | ValueError {
     if (this.uniqueKeyByMemberIndex === undefined) {
       // only incur cost if validator is actually used
       this.cacheUniqueKeys();
     }
 
-    if (typeof subject === 'object' && subject !== null) {
+    if (typeof value === 'object' && value !== null) {
       for (let i = 0; i < this.schema.anyOf.length; ++i) {
         const uniqueKey = this.uniqueKeyByMemberIndex![i];
-        if (subject[uniqueKey] !== undefined) {
+        if (value[uniqueKey] !== undefined) {
           return i;
         }
       }
     }
-    throw new UnionTypeException(
-      this.schema,
-      subject,
-      overallError ?? DEFAULT_OVERALL_ERROR
-    );
+    return this.createUnionTypeError(this.schema, value);
+  }
+
+  protected findHeterogeneousUnionSchemaIndexOrThrow(
+    value: Readonly<any>,
+    overallError?: string
+  ): number {
+    const indexOrError = this.findHeterogeneousUnionSchemaIndex(value);
+    if (typeof indexOrError !== 'number') {
+      throw new UnionTypeException(
+        overallError ?? DEFAULT_OVERALL_ERROR,
+        indexOrError
+      );
+    }
+    return indexOrError;
   }
 
   protected cacheUniqueKeys(): void {

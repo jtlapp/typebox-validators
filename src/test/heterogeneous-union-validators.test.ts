@@ -174,9 +174,9 @@ function testHeterogeneousUnionValidation(
       for (const trial of trials) {
         const expectedOverall = trial.overallError ?? 'Invalid value';
 
-        // safeValidate()
+        // assert()
         try {
-          trial.validator.safeValidate(invalidObject, trial.overallError);
+          trial.validator.assert(invalidObject, trial.overallError);
         } catch (err: unknown) {
           if (!(err instanceof ValidationException)) throw err;
           expect(err.specifics.length).toEqual(1);
@@ -187,9 +187,9 @@ function testHeterogeneousUnionValidation(
           );
         }
 
-        // unsafeValidate()
+        // validate()
         try {
-          trial.validator.unsafeValidate(invalidObject, trial.overallError);
+          trial.validator.validate(invalidObject, trial.overallError);
         } catch (err: unknown) {
           if (!(err instanceof ValidationException)) throw err;
           expect(err.specifics.length).toEqual(1);
@@ -206,7 +206,7 @@ function testHeterogeneousUnionValidation(
       expect.assertions(4);
       try {
         const invalidObject = { s: 's', str1: 1, str2: 2 };
-        goodValidator1.safeValidate(invalidObject);
+        goodValidator1.assert(invalidObject);
       } catch (err: unknown) {
         if (!(err instanceof ValidationException)) throw err;
         const overall = 'Invalid value';
@@ -218,22 +218,21 @@ function testHeterogeneousUnionValidation(
       }
     });
 
-    it('safeValidateAndCleanCopy() cleans object on successful validation', () => {
+    it('assertAndCleanCopy() cleans object on successful validation', () => {
       const validObject = { s: 'hello', str1: 'hello', misc: 'foo' };
-      const [schema, cleanObject] = goodValidator1.safeValidateAndCleanCopy(
+      const cleanObject = goodValidator1.assertAndCleanCopy(
         validObject,
         OVERALL_MESSAGE
       );
-      expect(schema).toEqual(goodValidator1.schema.anyOf[0]);
       expect(cleanObject).toEqual({ s: 'hello', str1: 'hello' });
       expect(cleanObject).not.toBe(validObject);
     });
 
-    it('safeValidateAndCleanCopy() fails on invalid object (default message)', () => {
+    it('assertAndCleanCopy() fails on invalid object (default message)', () => {
       expect.assertions(4);
       try {
         const invalidObject = { s: 's', str1: 1, str2: 2 };
-        goodValidator1.safeValidateAndCleanCopy(invalidObject);
+        goodValidator1.assertAndCleanCopy(invalidObject);
       } catch (err: unknown) {
         if (!(err instanceof ValidationException)) throw err;
         const message = 'Invalid value';
@@ -245,11 +244,11 @@ function testHeterogeneousUnionValidation(
       }
     });
 
-    it('safeValidateAndCleanCopy() fails on invalid object (custom message)', () => {
+    it('assertAndCleanCopy() fails on invalid object (custom message)', () => {
       expect.assertions(4);
       try {
         const invalidObject = { s: 's', str1: 1, str2: 2 };
-        goodValidator1.safeValidateAndCleanCopy(invalidObject, OVERALL_MESSAGE);
+        goodValidator1.assertAndCleanCopy(invalidObject, OVERALL_MESSAGE);
       } catch (err: unknown) {
         if (!(err instanceof ValidationException)) throw err;
         expect(err.specifics.length).toEqual(1);
@@ -260,21 +259,18 @@ function testHeterogeneousUnionValidation(
       }
     });
 
-    it('safeValidateAndCleanOriginal() cleans object on successful validation', () => {
+    it('assertAndClean() cleans object on successful validation', () => {
       const value = { s: 'hello', str1: 'hello', misc: 'foo' };
-      const schema = goodValidator1.safeValidateAndCleanOriginal(
-        value,
-        OVERALL_MESSAGE
-      );
+      const schema = goodValidator1.assertAndClean(value, OVERALL_MESSAGE);
       expect(schema).toEqual(goodValidator1.schema.anyOf[0]);
       expect(value).toEqual({ s: 'hello', str1: 'hello' });
     });
 
-    it('safeValidateAndCleanOriginal() fails on invalid object (default message)', () => {
+    it('assertAndClean() fails on invalid object (default message)', () => {
       expect.assertions(4);
       try {
         const invalidObject = { s: 's', str1: 1, str2: 2 };
-        goodValidator1.safeValidateAndCleanOriginal(invalidObject);
+        goodValidator1.assertAndClean(invalidObject);
       } catch (err: unknown) {
         if (!(err instanceof ValidationException)) throw err;
         const message = 'Invalid value';
@@ -286,14 +282,11 @@ function testHeterogeneousUnionValidation(
       }
     });
 
-    it('safeValidateAndCleanOriginal() fails on invalid object (custom message)', () => {
+    it('assertAndClean() fails on invalid object (custom message)', () => {
       expect.assertions(4);
       try {
         const invalidObject = { s: 's', str1: 1, str2: 2 };
-        goodValidator1.safeValidateAndCleanOriginal(
-          invalidObject,
-          OVERALL_MESSAGE
-        );
+        goodValidator1.assertAndClean(invalidObject, OVERALL_MESSAGE);
       } catch (err: unknown) {
         if (!(err instanceof ValidationException)) throw err;
         expect(err.specifics.length).toEqual(1);
@@ -308,7 +301,7 @@ function testHeterogeneousUnionValidation(
       expect.assertions(5);
       try {
         const invalidObject = { s: 's', str1: 1, str2: 2 };
-        goodValidator1.unsafeValidate(invalidObject, OVERALL_MESSAGE);
+        goodValidator1.validate(invalidObject, OVERALL_MESSAGE);
       } catch (err: unknown) {
         if (!(err instanceof ValidationException)) throw err;
         expect(err.specifics.length).toEqual(2);
@@ -326,11 +319,11 @@ function testHeterogeneousUnionValidation(
     it("rejects unions whose members aren't all unique", () => {
       const validObject = { s: 'hello', str1: 'hello' };
 
-      expect(() => badValidator.safeValidate(validObject)).toThrow(
+      expect(() => badValidator.assert(validObject)).toThrow(
         'Heterogeneous union has members lacking unique keys'
       );
 
-      expect(() => badValidator.unsafeValidate(validObject)).toThrow(
+      expect(() => badValidator.validate(validObject)).toThrow(
         'Heterogeneous union has members lacking unique keys'
       );
     });

@@ -1,15 +1,14 @@
 import { TObject, TUnion } from '@sinclair/typebox';
+import { ValueError } from '@sinclair/typebox/errors';
 
 import { AbstractTypedUnionValidator } from './abstract-typed-union-validator';
 import { UnionTypeException } from '../lib/union-type-exception';
+import { DEFAULT_OVERALL_ERROR } from '../lib/constants';
 
 const DEFAULT_DISCRIMINANT_KEY = 'kind';
-const DEFAULT_OVERALL_ERROR = 'Invalid value';
 
 /**
- * Abstract validator for discriminated unions, providing safe
- * and unsafe validation, supporting custom error messages, and
- * cleaning values of unrecognized properties.
+ * Abstract validator for discriminated unions.
  */
 export abstract class AbstractDiscriminatedUnionValidator<
   S extends TUnion<TObject[]>
@@ -24,9 +23,8 @@ export abstract class AbstractDiscriminatedUnionValidator<
   }
 
   protected findDiscriminatedUnionSchemaIndex(
-    subject: Readonly<any>,
-    overallError?: string
-  ): number {
+    subject: Readonly<any>
+  ): number | ValueError {
     if (!this.#unionIsWellformed) {
       // only incur cost if validator is actually used
       for (const memberSchema of this.schema.anyOf) {
@@ -53,10 +51,20 @@ export abstract class AbstractDiscriminatedUnionValidator<
         }
       }
     }
-    throw new UnionTypeException(
-      this.schema,
-      subject,
-      overallError ?? DEFAULT_OVERALL_ERROR
-    );
+    return this.createUnionTypeError(this.schema, subject);
+  }
+
+  protected findDiscriminatedUnionSchemaIndexOrThrow(
+    value: Readonly<any>,
+    overallError?: string
+  ): number {
+    const indexOrError = this.findDiscriminatedUnionSchemaIndex(value);
+    if (typeof indexOrError !== 'number') {
+      throw new UnionTypeException(
+        overallError ?? DEFAULT_OVERALL_ERROR,
+        indexOrError
+      );
+    }
+    return indexOrError;
   }
 }

@@ -1,4 +1,5 @@
 import { TObject, TUnion } from '@sinclair/typebox';
+import { ValueError } from '@sinclair/typebox/errors';
 
 import { AbstractDiscriminatedUnionValidator } from './abstract-discriminated-union-validator';
 import { CompilingStandardValidator } from './compiling-standard-validator';
@@ -21,24 +22,44 @@ export class CompilingDiscriminatedUnionValidator<
   }
 
   /** @inheritdoc */
-  override safeValidate(
-    value: Readonly<unknown>,
-    overallError?: string
-  ): TObject {
-    const i = this.findDiscriminatedUnionSchemaIndex(value, overallError);
-    const schema = this.schema.anyOf[i] as TObject;
-    this.memberValidators[i].safeValidate(value, overallError);
-    return schema;
+  override test(value: Readonly<unknown>): boolean {
+    const indexOrError = this.findDiscriminatedUnionSchemaIndex(value);
+    if (typeof indexOrError !== 'number') {
+      return false;
+    }
+    return this.memberValidators[indexOrError].test(value);
   }
 
   /** @inheritdoc */
-  override unsafeValidate(
+  override getErrorIterator(value: Readonly<unknown>): Iterator<ValueError> {
+    const indexOrError = this.findDiscriminatedUnionSchemaIndex(value);
+    if (typeof indexOrError !== 'number') {
+      return this.createUnionTypeErrorIterator(indexOrError);
+    }
+    return this.memberValidators[indexOrError].getErrorIterator(value);
+  }
+
+  override assertReturningSchema(
     value: Readonly<unknown>,
     overallError?: string
   ): TObject {
-    const i = this.findDiscriminatedUnionSchemaIndex(value, overallError);
-    const schema = this.schema.anyOf[i] as TObject;
-    this.memberValidators[i].unsafeValidate(value, overallError);
-    return schema;
+    const i = this.findDiscriminatedUnionSchemaIndexOrThrow(
+      value,
+      overallError
+    );
+    this.memberValidators[i].assert(value, overallError);
+    return this.schema.anyOf[i] as TObject;
+  }
+
+  override validateReturningSchema(
+    value: Readonly<unknown>,
+    overallError?: string
+  ): TObject {
+    const i = this.findDiscriminatedUnionSchemaIndexOrThrow(
+      value,
+      overallError
+    );
+    this.memberValidators[i].validate(value, overallError);
+    return this.schema.anyOf[i] as TObject;
   }
 }

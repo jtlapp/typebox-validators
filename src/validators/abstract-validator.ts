@@ -1,131 +1,191 @@
 import type { TSchema, Static } from '@sinclair/typebox';
-import { Value as TypeBoxValue } from '@sinclair/typebox/value';
-
-import { ValidationException } from '../lib/validation-exception';
+import {
+  Value as TypeBoxValue,
+  ValueError,
+  ValueErrorIterator,
+} from '@sinclair/typebox/value';
 import { TypeCheck } from '@sinclair/typebox/compiler';
 
-const DEFAULT_OVERALL_ERROR = 'Invalid value';
+import { ValidationException } from '../lib/validation-exception';
+import { DEFAULT_OVERALL_ERROR } from '../lib/constants';
 
 /**
  * Abstract base class for validators, providing validation services for a
- * JSON schema, offering both safe and unsafe validation, supporting
- * custom error messages, and cleaning values of unrecognized properties.
+ * JSON schema, offering both short-circuting and full validation, supporting
+ * custom error messages, and optionally removing unrecognized properties.
  *
- * Safe validation short-circuits at the first validation error and reports
- * only this error. Internally, TypeBox tests a `maxLength` constraint before
- * testing a regex pattern, so safe validation will prevent an excessive
- * length string from being parsed. Safe validatin also quits at the first
- * error, preventing the server from wasting clock cycles on bad data.
+ * As of TypeBox version 0.28.13, when validating any given value, TypeBox
+ * checks the value's `maxItems` and `maxLength` constraints before testing
+ * any other constraints. An API endpoint can therefore protect itself from
+ * faulty and malicious clients by short-circuting validation upon detecting
+ * the first validation error. The `test` method does this, but it does not
+ * return any errors. If you want to short-circuit validation and return the
+ * first error, use one of the `assert` methods. These methods protect the
+ * server from running regex checks on excessively long strings and from
+ * running regex checks on all the items of excessively long arrays.
  *
- * Unsafe validation reports all validation errors, making each error
- * separately retrievable, allowing custom presentation of the specifics.
+ * @typeParam S Type for a JSON schema.
  */
 export abstract class AbstractValidator<S extends TSchema> {
   /**
-   * @param schema JSON schema against which to validate values. TypeBox types
-   *  may optionally include a `specificError` string among its options. This
+   * @param schema JSON schema against which to validate values. When a schema
+   *  nested within this schema provides an `errorMessage` string option, this
    *  string replaces the specific error messages that TypeBox would otherwise
-   *  provide for the type when the type fails validation. Each occurrence of
-   *  "{field}" within these messages (if it occurs) will be replaced with the
-   *  name of the field that failed validation. However, `specificError` is
-   *  ignored when it occurs in the rootmost type of the schema. This is
-   *  because a ValidationException provides an overall error message for the
-   *  value, and the caller has the option to ignore specific errors.
+   *  provide for the nested schema on validation failure. Occurrences of the
+   *  substring "{field}" within these messages (if any) are replaced with the
+   *  name of the field that failed validation (or with the path to the this
+   *  field). `errorMessage` is ignored when it occurs in the rootmost schema,
+   *  as the validation methods provide the exception's overall error message.
    */
   constructor(readonly schema: Readonly<S>) {}
 
   /**
-   * Safely validates a value against the schema. Short-circuits at the first
-   * specific validation error, reporting only this error. Does NOT remove
-   * unrecognized properties from the value.
+   * Tests whether a value conforms to the schema. This method does not throw
+   * `ValidationException` and does not clean values of unrecognized properties.
    *
    * @param value Value to validate against the schema.
-   * @param overallError Overall error to report with a ValidationException,
-   *  in addition to providing an optionally retrievable specific error. This
-   *  is a good place to mention the role of the variable that is in error,
-   *  rather than just the variable's type. Defaults to "Invalid value".
-   * @returns The most specific schema against which the value was validated.
-   *  Standard validators return their provided schema, while typed union
-   *  validators return the schema of the matching member of the union.
-   * @throws ValidationException when the value is invalid, detecting and
-   *  reporting only the first specific error.
+   * @returns `true` when the value conforms to the schema, `false` otherwise.
    */
-  abstract safeValidate(
-    value: Readonly<unknown>,
-    overallError?: string
-  ): TSchema;
+  abstract test(value: Readonly<unknown>): boolean;
 
   /**
-   * Safely validates a value against the schema and returns a copy of the
-   * value with all unrecognized object properties removed. Short-circuits at
-   * the first specific validation error, reporting only this error. Useful
-   * with immutable values having additional utility elsewhere.
+   * Validates a value against the schema, halting validation at the first
+   * validation error with a `ValidationException`. Does not clean values of
+   * unrecognized properties.
    *
    * @param value Value to validate against the schema.
-   * @param overallError Overall error to report with a ValidationException,
-   *  in addition to providing an optionally retrievable specific error. This
-   *  is a good place to mention the role of the variable that is in error,
-   *  rather than just the variable's type. Defaults to "Invalid value".
-   * @returns The pair [`schema`, `value`], where `schema` is the most specific
-   *  schema against which the value was validated, and `value` is the provided
-   *  value, if it is not an object. If the value is an object, `value` is a copy
-   *  of the object with all unrecognized properties removed. Standard validators
-   *  return their provided schema, while typed union validators return the
-   *  schema of the matching member of the union.
-   * @throws ValidationException when the value is invalid, detecting and
-   *  reporting only the first specific error.
+   * @param errorMessage Error message to report in the `ValidationException`.
+   *  The substring `{field}`, if present, will be replaced with the name of
+   *  the field that failed validation (or with the path to this field). The
+   *  substring `{error}`, if present, will be replaced with the specific
+   *  error message. If the error occurred on a field whose schema provides
+   *  an `errorMessage` property, `{error}` will be this error message.
+   *  Defaults to "Invalid field '{field}': {error}".
+   * @throws ValidationException when the value is invalid, reporting only
+   *  the first validation error in the `details` property. The `errorMessage`
+   *  parameter provides the exception's error message.
    */
-  abstract safeValidateAndCleanCopy(
-    value: Readonly<unknown>,
-    overallError?: string
-  ): [TSchema, Static<S>];
+  abstract assert(value: Readonly<unknown>, errorMessage?: string): void;
 
   /**
-   * Safely validates a value against the schema, and if the value is an
-   * object, removes all unrecognized properties from the value. Short-
-   * circuits at the first specific validation error, reporting only this
-   * error. Useful with mutable values that are otherwise throw-away.
-   *
-   * @param value Value to validate against the schema and then clean.
-   * @param overallError Overall error to report with a ValidationException,
-   *  in addition to providing an optionally retrievable specific error. This
-   *  is a good place to mention the role of the variable that is in error,
-   *  rather than just the variable's type. Defaults to "Invalid value".
-   * @returns The most specific schema against which the value was validated.
-   *  Standard validators return their provided schema, while typed union
-   *  validators return the schema of the matching member of the union.
-   * @throws ValidationException when the value is invalid, detecting and
-   *  reporting only the first specific error.
-   */
-  abstract safeValidateAndCleanOriginal(
-    value: unknown,
-    overallError?: string
-  ): TSchema;
-
-  /**
-   * Unsafely validates a value against the schema, having the validation
-   * exception report all detectable validation errors.
+   * Validates a value against the schema, halting validation at the first
+   * validation error with a `ValidationException`. On successful validation,
+   * removes unrecognized properties from the provided value.
    *
    * @param value Value to validate against the schema.
-   * @param overallError Overall error to report with a ValidationException,
-   *  in addition to providing optionally retrievable specific errors. This
-   *  is a good place to mention the role of the variable that is in error,
-   *  rather than just the variable's type. Defaults to "Invalid value".
-   * @returns The most specific schema against which the value was validated.
-   *  Standard validators return their provided schema, while typed union
-   *  validators return the schema of the matching member of the union.
-   * @throws ValidationException when the value is invalid, detecting and
-   *  reporting all specific validation errors.
+   * @param errorMessage Error message to report in the `ValidationException`.
+   *  The substring `{field}`, if present, will be replaced with the name of
+   *  the field that failed validation (or with the path to this field). The
+   *  substring `{error}`, if present, will be replaced with the specific
+   *  error message. If the error occurred on a field whose schema provides
+   *  an `errorMessage` property, `{error}` will be this error message.
+   *  Defaults to "Invalid field '{field}': {error}".
+   * @throws ValidationException when the value is invalid, reporting only
+   *  the first validation error in the `details` property. The `errorMessage`
+   *  parameter provides the exception's error message.
    */
-  abstract unsafeValidate(
+  abstract assertAndClean(value: unknown, errorMessage?: string): void;
+
+  /**
+   * Validates a value against the schema, halting validation at the first
+   * validation error with a `ValidationException`. On successful validation,
+   * returns a copy of the value with unrecognized properties removed, but
+   * returns the original value if there are no unrecognized properties.
+   *
+   * @param value Value to validate against the schema.
+   * @param errorMessage Error message to report in the `ValidationException`.
+   *  The substring `{field}`, if present, will be replaced with the name of
+   *  the field that failed validation (or with the path to this field). The
+   *  substring `{error}`, if present, will be replaced with the specific
+   *  error message. If the error occurred on a field whose schema provides
+   *  an `errorMessage` property, `{error}` will be this error message.
+   *  Defaults to "Invalid field '{field}': {error}".
+   * @returns The provided value itself if the value is not an object or if
+   *  the value is an object having no unrecognized properties. If the value
+   *  is an object having at least one unrecognized property, returns a copy
+   *  of the value with unrecognized properties removed.
+   * @throws ValidationException when the value is invalid, reporting only
+   *  the first validation error in the `details` property. The `errorMessage`
+   *  parameter provides the exception's error message.
+   */
+  abstract assertAndCleanCopy(
     value: Readonly<unknown>,
-    overallError?: string
-  ): TSchema;
+    errorMessage?: string
+  ): Static<S>;
+
+  /**
+   * Validates a value against the schema, detecting all validation errors
+   * and reporting them by throwing `ValidationException`. Does not clean
+   * values of unrecognized properties.
+   *
+   * @param value Value to validate against the schema.
+   * @param errorMessage Error message to report in the exception.
+   *  Defaults to "Invalid value".
+   * @throws ValidationException when the value is invalid, reporting all
+   *  validation errors in the `details` property. The `errorMessage`
+   *  parameter provides the exception's error message.
+   */
+  abstract validate(value: Readonly<unknown>, errorMessage?: string): void;
+
+  /**
+   * Validates a value against the schema, detecting all validation errors
+   * and reporting them by throwing `ValidationException`. On successful
+   * validation, removes unrecognized properties from the provided value.
+   *
+   * @param value Value to validate against the schema.
+   * @param errorMessage Error message to report in the exception.
+   *  Defaults to "Invalid value".
+   * @throws ValidationException when the value is invalid, reporting all
+   *  validation errors in the `details` property. The `errorMessage`
+   *  parameter provides the exception's error message.
+   */
+  abstract validateAndClean(value: unknown, errorMessage?: string): void;
+
+  /**
+   * Validates a value against the schema, detecting all validation errors
+   * and reporting them with a `ValidationException`. On successful validation,
+   * returns a copy of the value with unrecognized properties removed, but
+   * returns the original value if there are no unrecognized properties.
+   *
+   * @param value Value to validate against the schema.
+   * @param errorMessage Error message to report in the exception.
+   *  Defaults to "Invalid value".
+   * @returns The provided value itself if the value is not an object or if
+   *  the value is an object having no unrecognized properties. If the value
+   *  is an object having at least one unrecognized property, returns a copy
+   *  of the value with unrecognized properties removed.
+   * @throws ValidationException when the value is invalid, reporting all
+   *  validation errors in the `details` property. The `errorMessage`
+   *  parameter provides the exception's error message.
+   */
+  abstract validateAndCleanCopy(
+    value: Readonly<unknown>,
+    errorMessage?: string
+  ): Static<S>;
+
+  /**
+   * Validates a value against the schema and returns an iterator that yields
+   * the validation errors. The iterator examines the value for the next error
+   * on each call to `next()`, returning a `ValueError` for the error. It does
+   * not evaluate errors in advance of their being requested, allowing you to
+   * short-circuit validation by stopping iteration early. This method does
+   * not throw `ValidationException` and does not clean values of
+   * unrecognized properties.
+   *
+   * @param value Value to validate against the schema.
+   * @returns An iterator for all validation errors. However, upon detecting
+   *  one or more errors for a particular field, if that field's schema
+   *  provides an `errorMessage` property, only a single error is reported
+   *  for the field, and the `message` property of this error is set to the
+   *  `errorMessage`.
+   */
+  abstract getErrorIterator(value: Readonly<unknown>): Iterator<ValueError>;
 
   protected cleanCopyOfValue<VS extends TSchema>(
     schema: Readonly<VS>,
     value: Readonly<unknown>
   ): Static<VS> {
+    // TODO: reimplement without 'in', cache when compiling; test performance
     if (schema.type === 'object') {
       const cleanedValue: Record<string, any> = {};
       for (const key in schema.properties) {
@@ -136,10 +196,13 @@ export abstract class AbstractValidator<S extends TSchema> {
     return value;
   }
 
-  protected cleanOriginalValue<VS extends TSchema>(
+  // TODO: make sure these methods are multiply used
+
+  protected cleanValue<VS extends TSchema>(
     schema: Readonly<VS>,
     value: unknown
   ): void {
+    // TODO: reimplement within 'in', cache when compiling; test performance
     if (schema.type === 'object') {
       for (const key in value as Record<string, any>) {
         if (!(key in schema.properties)) {
@@ -149,7 +212,7 @@ export abstract class AbstractValidator<S extends TSchema> {
     }
   }
 
-  protected compiledSafeValidate(
+  protected compiledAssert(
     compiledType: TypeCheck<S>,
     value: Readonly<unknown>,
     overallError?: string
@@ -162,7 +225,7 @@ export abstract class AbstractValidator<S extends TSchema> {
     }
   }
 
-  protected compiledUnsafeValidate(
+  protected compiledValidate(
     compiledType: TypeCheck<S>,
     value: Readonly<unknown>,
     overallError?: string
@@ -174,7 +237,21 @@ export abstract class AbstractValidator<S extends TSchema> {
     }
   }
 
-  protected uncompiledSafeValidate(
+  protected compiledGetErrorIterator(
+    compiledType: TypeCheck<S>,
+    value: Readonly<unknown>
+  ): Iterator<ValueError> {
+    return this._createErrorIterator(compiledType.Errors(value));
+  }
+
+  protected uncompiledGetErrorIterator(
+    schema: Readonly<TSchema>,
+    value: Readonly<unknown>
+  ): Iterator<ValueError> {
+    return this._createErrorIterator(TypeBoxValue.Errors(schema, value));
+  }
+
+  protected uncompiledAssert(
     schema: Readonly<TSchema>,
     value: Readonly<unknown>,
     overallError?: string
@@ -187,7 +264,7 @@ export abstract class AbstractValidator<S extends TSchema> {
     }
   }
 
-  protected uncompiledUnsafeValidate(
+  protected uncompiledValidate(
     schema: Readonly<TSchema>,
     value: Readonly<unknown>,
     overallError?: string
@@ -197,5 +274,27 @@ export abstract class AbstractValidator<S extends TSchema> {
         ...TypeBoxValue.Errors(schema, value),
       ]);
     }
+  }
+
+  private _createErrorIterator(
+    typeboxErrorIterator: ValueErrorIterator
+  ): Iterator<ValueError> {
+    const errors = typeboxErrorIterator[Symbol.iterator]();
+    return {
+      next: () => {
+        const result = errors.next();
+        if (result.done) return result;
+
+        const error = result.value;
+        const schema = error.schema;
+        if (schema.errorMessage) {
+          error.message = schema.errorMessage;
+        }
+        return {
+          done: false,
+          value: error,
+        };
+      },
+    };
   }
 }

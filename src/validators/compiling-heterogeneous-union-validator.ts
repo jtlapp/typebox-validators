@@ -1,12 +1,11 @@
 import { TObject, TUnion } from '@sinclair/typebox';
+import { ValueError } from '@sinclair/typebox/errors';
 
 import { AbstractHeterogeneousUnionValidator } from './abstract-heterogeneous-union-validator';
 import { CompilingStandardValidator } from './compiling-standard-validator';
 
 /**
- * Lazily compiled validator for heterogeneous unions, providing
- * safe and unsafe validation, supporting custom error messages, and
- * cleaning values of unrecognized properties.
+ * Lazily compiled validator for heterogeneous unions of objects.
  */
 export class CompilingHeterogeneousUnionValidator<
   S extends TUnion<TObject[]>
@@ -20,24 +19,44 @@ export class CompilingHeterogeneousUnionValidator<
   }
 
   /** @inheritdoc */
-  override safeValidate(
-    value: Readonly<unknown>,
-    overallError?: string
-  ): TObject {
-    const i = this.findHeterogeneousUnionSchemaIndex(value, overallError);
-    const schema = this.schema.anyOf[i] as TObject;
-    this.memberValidators[i].safeValidate(value, overallError);
-    return schema;
+  override test(value: Readonly<unknown>): boolean {
+    const indexOrError = this.findHeterogeneousUnionSchemaIndex(value);
+    if (typeof indexOrError !== 'number') {
+      return false;
+    }
+    return this.memberValidators[indexOrError].test(value);
   }
 
   /** @inheritdoc */
-  override unsafeValidate(
+  override getErrorIterator(value: Readonly<unknown>): Iterator<ValueError> {
+    const indexOrError = this.findHeterogeneousUnionSchemaIndex(value);
+    if (typeof indexOrError !== 'number') {
+      return this.createUnionTypeErrorIterator(indexOrError);
+    }
+    return this.memberValidators[indexOrError].getErrorIterator(value);
+  }
+
+  override assertReturningSchema(
     value: Readonly<unknown>,
     overallError?: string
   ): TObject {
-    const i = this.findHeterogeneousUnionSchemaIndex(value, overallError);
-    const schema = this.schema.anyOf[i] as TObject;
-    this.memberValidators[i].unsafeValidate(value, overallError);
-    return schema;
+    const i = this.findHeterogeneousUnionSchemaIndexOrThrow(
+      value,
+      overallError
+    );
+    this.memberValidators[i].assert(value, overallError);
+    return this.schema.anyOf[i] as TObject;
+  }
+
+  override validateReturningSchema(
+    value: Readonly<unknown>,
+    overallError?: string
+  ): TObject {
+    const i = this.findHeterogeneousUnionSchemaIndexOrThrow(
+      value,
+      overallError
+    );
+    this.memberValidators[i].validate(value, overallError);
+    return this.schema.anyOf[i] as TObject;
   }
 }

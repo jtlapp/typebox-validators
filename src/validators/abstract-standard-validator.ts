@@ -3,9 +3,7 @@ import type { Static, TSchema } from '@sinclair/typebox';
 import { AbstractValidator } from './abstract-validator';
 
 /**
- * Abstract validator for standard TypeBox values, providing safe
- * and unsafe validation, supporting custom error messages, and
- * cleaning values of unrecognized properties.
+ * Abstract validator for standard TypeBox values.
  */
 export abstract class AbstractStandardValidator<
   S extends TSchema
@@ -16,21 +14,32 @@ export abstract class AbstractStandardValidator<
   }
 
   /** @inheritdoc */
-  override safeValidateAndCleanCopy(
-    value: Readonly<unknown>,
-    overallError?: string
-  ): [S, Static<S>] {
-    this.safeValidate(value, overallError);
-    return [this.schema, this.cleanCopyOfValue(this.schema, value)];
+  override assertAndClean(value: unknown, overallError?: string): void {
+    this.assert(value as any, overallError);
+    this.cleanValue(this.schema, value);
   }
 
   /** @inheritdoc */
-  override safeValidateAndCleanOriginal(
-    value: unknown,
+  override assertAndCleanCopy(
+    value: Readonly<unknown>,
     overallError?: string
-  ): S {
-    this.safeValidate(value as any, overallError);
-    this.cleanOriginalValue(this.schema, value);
-    return this.schema;
+  ): Static<S> {
+    this.assert(value, overallError);
+    return this.cleanCopyOfValue(this.schema, value);
+  }
+
+  /** @inheritdoc */
+  override validateAndClean(value: unknown, overallError?: string): void {
+    this.validate(value as any, overallError);
+    this.cleanValue(this.schema, value);
+  }
+
+  /** @inheritdoc */
+  override validateAndCleanCopy(
+    value: Readonly<unknown>,
+    overallError?: string
+  ): Static<S> {
+    this.validate(value, overallError);
+    return this.cleanCopyOfValue(this.schema, value);
   }
 }

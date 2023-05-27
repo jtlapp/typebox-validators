@@ -1,12 +1,11 @@
 import { TObject, TUnion } from '@sinclair/typebox';
+import { Value, ValueError } from '@sinclair/typebox/value';
 
 import { AbstractDiscriminatedUnionValidator } from './abstract-discriminated-union-validator';
 
 /**
- * Non-compiling validator for discriminated unions, providing safe and
- * unsafe validation, supporting custom error messages, and cleaning
- * values of unrecognized properties. List the more frequently used types
- * earlier in the union to improve performance.
+ * Non-compiling validator for discriminated unions. List the more frequently
+ * used types earlier in the union to improve performance.
  */
 export class DiscriminatedUnionValidator<
   S extends TUnion<TObject[]>
@@ -17,24 +16,43 @@ export class DiscriminatedUnionValidator<
   }
 
   /** @inheritdoc */
-  override safeValidate(
-    value: Readonly<unknown>,
-    overallError?: string
-  ): TObject {
-    const i = this.findDiscriminatedUnionSchemaIndex(value, overallError);
-    const schema = this.schema.anyOf[i] as TObject;
-    this.uncompiledSafeValidate(this.schema.anyOf[i], value, overallError);
-    return schema;
+  override test(value: Readonly<unknown>): boolean {
+    return Value.Check(this.schema, value);
   }
 
   /** @inheritdoc */
-  override unsafeValidate(
+  override getErrorIterator(value: Readonly<unknown>): Iterator<ValueError> {
+    const indexOrError = this.findDiscriminatedUnionSchemaIndex(value);
+    if (typeof indexOrError !== 'number') {
+      return this.createUnionTypeErrorIterator(indexOrError);
+    }
+    const schema = this.schema.anyOf[indexOrError] as TObject;
+    return this.uncompiledGetErrorIterator(schema, value);
+  }
+
+  override assertReturningSchema(
     value: Readonly<unknown>,
     overallError?: string
   ): TObject {
-    const i = this.findDiscriminatedUnionSchemaIndex(value, overallError);
+    const i = this.findDiscriminatedUnionSchemaIndexOrThrow(
+      value,
+      overallError
+    );
     const schema = this.schema.anyOf[i] as TObject;
-    this.uncompiledUnsafeValidate(this.schema.anyOf[i], value, overallError);
+    this.uncompiledAssert(schema, value, overallError);
+    return schema;
+  }
+
+  override validateReturningSchema(
+    value: Readonly<unknown>,
+    overallError?: string
+  ): TObject {
+    const i = this.findDiscriminatedUnionSchemaIndexOrThrow(
+      value,
+      overallError
+    );
+    const schema = this.schema.anyOf[i] as TObject;
+    this.uncompiledValidate(schema, value, overallError);
     return schema;
   }
 }

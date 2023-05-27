@@ -1,12 +1,14 @@
 import type { TSchema } from '@sinclair/typebox';
-import { TypeCheck, TypeCompiler } from '@sinclair/typebox/compiler';
+import {
+  TypeCheck,
+  TypeCompiler,
+  ValueError,
+} from '@sinclair/typebox/compiler';
 
 import { AbstractStandardValidator } from './abstract-standard-validator';
 
 /**
- * Lazily compiled validator for standard TypeBox values, providing safe
- * and unsafe validation, supporting custom error messages, and cleaning
- * values of unrecognized properties.
+ * Lazily compiled validator for standard TypeBox values.
  */
 export class CompilingStandardValidator<
   S extends TSchema
@@ -19,24 +21,29 @@ export class CompilingStandardValidator<
   }
 
   /** @inheritdoc */
-  override safeValidate(value: Readonly<unknown>, overallError?: string): S {
+  override test(value: Readonly<unknown>): boolean {
     const compiledType = this.getCompiledType();
-    this.compiledSafeValidate(compiledType, value, overallError);
-    return this.schema;
+    return compiledType.Check(value);
   }
 
   /** @inheritdoc */
-  override unsafeValidate(value: Readonly<unknown>, overallError?: string): S {
+  override assert(value: Readonly<unknown>, overallError?: string): void {
     const compiledType = this.getCompiledType();
-    this.compiledUnsafeValidate(compiledType, value, overallError);
-    return this.schema;
+    this.compiledAssert(compiledType, value, overallError);
   }
 
-  /**
-   * Returns the compiled TypeBox type for the schema. The method compiles
-   * the type on the first call and caches the result for subsequent calls.
-   * @returns Compiled TypeBox type for the schema.
-   */
+  /** @inheritdoc */
+  override validate(value: Readonly<unknown>, overallError?: string): void {
+    const compiledType = this.getCompiledType();
+    this.compiledValidate(compiledType, value, overallError);
+  }
+
+  /** @inheritdoc */
+  override getErrorIterator(value: Readonly<unknown>): Iterator<ValueError> {
+    const compiledType = this.getCompiledType();
+    return this.compiledGetErrorIterator(compiledType, value);
+  }
+
   private getCompiledType(): TypeCheck<S> {
     if (this.#compiledType === undefined) {
       this.#compiledType = TypeCompiler.Compile(this.schema);
