@@ -4,6 +4,29 @@ import { StandardValidator } from '../validators/standard-validator';
 import { ValidationException } from '../lib/validation-exception';
 import { DEFAULT_OVERALL_ERROR } from '../lib/errors';
 
+type ValidatorMethodOfClass<T> = {
+  [K in keyof T]: T[K] extends (value: any, errorMessage?: string) => any
+    ? K
+    : never;
+}[keyof T];
+
+interface ValidTestSpec {
+  description: string;
+  schema: TSchema;
+  value: any;
+}
+
+interface InvalidTestSpec {
+  description: string;
+  schema: TSchema;
+  value: any;
+  overallMessage?: string;
+  assertMessage?: string;
+  errors: { path: string; message: string }[];
+  assertString?: string;
+  validateString?: string;
+}
+
 describe('standard validators', () => {
   const schema1 = Type.Object({
     delta: Type.Integer(),
@@ -140,13 +163,7 @@ describe('standard validators', () => {
   });
 });
 
-function testValidSpecs(
-  validSpecs: {
-    description: string;
-    schema: TSchema;
-    value: any;
-  }[]
-) {
+function testValidSpecs(validSpecs: ValidTestSpec[]) {
   validSpecs.forEach((spec) => {
     it(`assert() should accept ${spec.description}`, () => {
       const validator = new StandardValidator(spec.schema);
@@ -203,23 +220,41 @@ function testValidSpecs(
   });
 }
 
-function testInvalidSpecs(
-  invalidSpecs: {
-    description: string;
-    schema: TSchema;
-    value: any;
-    overallMessage?: string;
-    assertMessage?: string;
-    errors: { path: string; message: string }[];
-    assertString?: string;
-    validateString?: string;
-  }[]
-) {
+function testInvalidSpecs(invalidSpecs: InvalidTestSpec[]) {
   invalidSpecs.forEach((spec) => {
-    it(`assert() should reject ${spec.description}`, () => {
+    it('test() should reject ' + spec.description, () => {
+      const validator = new StandardValidator(spec.schema);
+      expect(validator.test(spec.value)).toBe(false);
+    });
+
+    testValidationMethodRejection('assert', spec);
+    testValidationMethodRejection('assertAndClean', spec);
+    testValidationMethodRejection('assertAndCleanCopy', spec);
+    testValidationMethodRejection('validate', spec);
+    testValidationMethodRejection('validateAndClean', spec);
+    testValidationMethodRejection('validateAndCleanCopy', spec);
+
+    it('errors() for ' + spec.description, () => {
+      const validator = new StandardValidator(spec.schema);
+      const errors = [...validator.errors(spec.value)];
+      expect(errors.length).toEqual(spec.errors.length);
+      errors.forEach((error, i) => {
+        expect(error.path).toEqual(spec.errors[i].path);
+        expect(error.message).toContain(spec.errors[i].message);
+      });
+    });
+  });
+}
+
+function testValidationMethodRejection<S extends TSchema>(
+  method: ValidatorMethodOfClass<StandardValidator<S>>,
+  spec: InvalidTestSpec
+) {
+  if (method.startsWith('assert')) {
+    it(`${method}() should reject ${spec.description}`, () => {
       const validator = new StandardValidator(spec.schema);
       try {
-        validator.assert(spec.value, spec.overallMessage);
+        (validator[method] as any)(spec.value, spec.overallMessage);
         fail('should have thrown');
       } catch (e: any) {
         if (!(e instanceof ValidationException)) throw e;
@@ -238,11 +273,13 @@ function testInvalidSpecs(
         }
       }
     });
+  }
 
-    it(`validate() should reject ${spec.description}`, () => {
+  if (method.startsWith('validate')) {
+    it(`${method}() should reject ${spec.description}`, () => {
       const validator = new StandardValidator(spec.schema);
       try {
-        validator.validate(spec.value, spec.overallMessage);
+        (validator[method] as any)(spec.value, spec.overallMessage);
         fail('should have thrown');
       } catch (e: any) {
         if (!(e instanceof ValidationException)) throw e;
@@ -263,5 +300,5 @@ function testInvalidSpecs(
         }
       }
     });
-  });
+  }
 }
