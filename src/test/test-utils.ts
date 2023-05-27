@@ -6,7 +6,7 @@ export const OVERALL_MESSAGE = 'Invalid union value';
 export enum ValidatorKind {
   All,
   Compiling,
-  Noncompiling,
+  NonCompiling,
 }
 
 export enum MethodKind {
@@ -57,17 +57,44 @@ export function specsToRun<S extends TestSpec>(specs: S[]): S[] {
   return specs;
 }
 
-export function getCachedValidator(
-  cache: Map<TSchema, AbstractValidator<any>>,
-  schema: TSchema,
-  createValidator: (schema: TSchema) => AbstractValidator<any>
-): AbstractValidator<any> {
-  let validator = cache.get(schema);
-  if (validator === undefined) {
-    validator = createValidator(schema);
-    cache.set(schema, validator);
+export class ValidatorCache {
+  compilingValidators = new Map<TSchema, AbstractValidator<TSchema>>();
+  nonCompilingValidators = new Map<TSchema, AbstractValidator<TSchema>>();
+
+  getCompiling(
+    schema: TSchema,
+    createValidator: (schema: TSchema) => AbstractValidator<TSchema>
+  ): AbstractValidator<TSchema> {
+    return this._getCachedValidator(
+      this.compilingValidators,
+      schema,
+      createValidator
+    );
   }
-  return validator;
+
+  getNonCompiling(
+    schema: TSchema,
+    createValidator: (schema: TSchema) => AbstractValidator<TSchema>
+  ): AbstractValidator<TSchema> {
+    return this._getCachedValidator(
+      this.nonCompilingValidators,
+      schema,
+      createValidator
+    );
+  }
+
+  private _getCachedValidator(
+    cache: Map<TSchema, AbstractValidator<any>>,
+    schema: TSchema,
+    createValidator: (schema: TSchema) => AbstractValidator<any>
+  ): AbstractValidator<any> {
+    let validator = cache.get(schema);
+    if (validator === undefined) {
+      validator = createValidator(schema);
+      cache.set(schema, validator);
+    }
+    return validator;
+  }
 }
 
 // TODO: still using this?

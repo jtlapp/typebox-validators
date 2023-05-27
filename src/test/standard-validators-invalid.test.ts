@@ -11,7 +11,7 @@ import {
   ValidatorMethodOfClass,
   InvalidTestSpec,
   specsToRun,
-  getCachedValidator,
+  ValidatorCache,
 } from './test-utils';
 
 const onlyRunValidator = ValidatorKind.All;
@@ -34,21 +34,13 @@ const schema2 = Type.Object({
   alpha: Type.String({ pattern: '^[a-zA-Z]+$', maxLength: 4 }),
 });
 
-const compilingValidators = new Map<
-  TSchema,
-  AbstractStandardValidator<TSchema>
->();
-const noncompilingValidators = new Map<
-  TSchema,
-  AbstractStandardValidator<TSchema>
->();
+const validatorCache = new ValidatorCache();
 
 describe('standard validators - invalid values', () => {
-  if (runThisValidator(ValidatorKind.Noncompiling)) {
+  if (runThisValidator(ValidatorKind.NonCompiling)) {
     describe('StandardValidator', () => {
       testValidator((schema: TSchema) =>
-        getCachedValidator(
-          noncompilingValidators,
+        validatorCache.getNonCompiling(
           schema,
           () => new StandardValidator(schema)
         )
@@ -59,8 +51,7 @@ describe('standard validators - invalid values', () => {
   if (runThisValidator(ValidatorKind.Compiling)) {
     describe('CompilingStandardValidator', () => {
       testValidator((schema: TSchema) =>
-        getCachedValidator(
-          compilingValidators,
+        validatorCache.getCompiling(
           schema,
           () => new CompilingStandardValidator(schema)
         )
