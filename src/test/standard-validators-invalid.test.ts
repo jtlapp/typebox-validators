@@ -7,14 +7,14 @@ import { DEFAULT_OVERALL_ERROR } from '../lib/errors';
 import { CompilingStandardValidator } from '../validators/compiling-standard-validator';
 import {
   ValidatorKind,
-  TestKind,
+  MethodKind,
   ValidatorMethodOfClass,
   InvalidTestSpec,
   specsToRun,
 } from './test-utils';
 
 const onlyRunValidator: ValidatorKind = ValidatorKind.All;
-const onlyRunTest: TestKind = TestKind.All;
+const onlyRunMethod: MethodKind = MethodKind.All;
 
 describe('standard validators - invalid values', () => {
   if (runThisValidator(ValidatorKind.Noncompiling)) {
@@ -152,7 +152,7 @@ function testValidator(
   ]);
 
   function testInvalidSpecs(specs: InvalidTestSpec[]) {
-    if (runThisTest(TestKind.Test)) {
+    if (runThisTest(MethodKind.Test)) {
       describe('test() rejections', () => {
         specsToRun(specs).forEach((spec) => {
           it('test() should reject ' + spec.description, () => {
@@ -163,26 +163,26 @@ function testValidator(
       });
     }
 
-    if (runThisTest(TestKind.Assert)) {
+    if (runThisTest(MethodKind.Assert)) {
       testAssertMethodRejection('assert', specs);
     }
-    if (runThisTest(TestKind.AssertAndClean)) {
+    if (runThisTest(MethodKind.AssertAndClean)) {
       testAssertMethodRejection('assertAndClean', specs);
     }
-    if (runThisTest(TestKind.AssertAndCleanCopy)) {
+    if (runThisTest(MethodKind.AssertAndCleanCopy)) {
       testAssertMethodRejection('assertAndCleanCopy', specs);
     }
-    if (runThisTest(TestKind.Validate)) {
+    if (runThisTest(MethodKind.Validate)) {
       testValidateMethodRejection('validate', specs);
     }
-    if (runThisTest(TestKind.ValidateAndClean)) {
+    if (runThisTest(MethodKind.ValidateAndClean)) {
       testValidateMethodRejection('validateAndClean', specs);
     }
-    if (runThisTest(TestKind.ValidateAndCleanCopy)) {
+    if (runThisTest(MethodKind.ValidateAndCleanCopy)) {
       testValidateMethodRejection('validateAndCleanCopy', specs);
     }
 
-    if (runThisTest(TestKind.Errors)) {
+    if (runThisTest(MethodKind.Errors)) {
       describe('errors()', () => {
         specsToRun(specs).forEach((spec) => {
           it('errors() for ' + spec.description, () => {
@@ -270,6 +270,6 @@ function runThisValidator(validatorKind: ValidatorKind): boolean {
   return [ValidatorKind.All, validatorKind].includes(onlyRunValidator);
 }
 
-function runThisTest(testKind: TestKind): boolean {
-  return [TestKind.All, testKind].includes(onlyRunTest);
+function runThisTest(methodKind: MethodKind): boolean {
+  return [MethodKind.All, methodKind].includes(onlyRunMethod);
 }

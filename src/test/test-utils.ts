@@ -9,7 +9,7 @@ export enum ValidatorKind {
   Noncompiling,
 }
 
-export enum TestKind {
+export enum MethodKind {
   All,
   Test,
   Assert,

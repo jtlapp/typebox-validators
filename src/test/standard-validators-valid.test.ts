@@ -6,12 +6,12 @@ import { CompilingStandardValidator } from '../validators/compiling-standard-val
 import {
   ValidTestSpec,
   ValidatorKind,
-  TestKind,
+  MethodKind,
   specsToRun,
 } from './test-utils';
 
 const onlyRunValidator: ValidatorKind = ValidatorKind.All;
-const onlyRunTest: TestKind = TestKind.All;
+const onlyRunMethod: MethodKind = MethodKind.All;
 
 describe('standard validators - valid values', () => {
   if (runThisValidator(ValidatorKind.Noncompiling)) {
@@ -66,7 +66,7 @@ function testValidator(
   function testValidSpecs(validSpecs: ValidTestSpec[]) {
     specsToRun(validSpecs).forEach((spec) => {
       describe('test()', () => {
-        if (runThisTest(TestKind.Test)) {
+        if (runThisTest(MethodKind.Test)) {
           it(`test() should accept ${spec.description}`, () => {
             const validator = createValidator(spec.schema);
             expect(validator.test(spec.value)).toBe(true);
@@ -75,14 +75,14 @@ function testValidator(
       });
 
       describe('no cleaning', () => {
-        if (runThisTest(TestKind.Assert)) {
+        if (runThisTest(MethodKind.Assert)) {
           it(`assert() should accept ${spec.description}`, () => {
             const validator = createValidator(spec.schema);
             expect(() => validator.assert(spec.value)).not.toThrow();
           });
         }
 
-        if (runThisTest(TestKind.Validate)) {
+        if (runThisTest(MethodKind.Validate)) {
           it(`validate() should accept ${spec.description}`, () => {
             const validator = createValidator(spec.schema);
             expect(() => validator.validate(spec.value)).not.toThrow();
@@ -91,7 +91,7 @@ function testValidator(
       });
 
       describe('cleaning provided value', () => {
-        if (runThisTest(TestKind.AssertAndClean)) {
+        if (runThisTest(MethodKind.AssertAndClean)) {
           it(`assertAndClean() should clean provided ${spec.description}`, () => {
             const validator = createValidator(spec.schema);
             const value = { ...spec.value };
@@ -102,7 +102,7 @@ function testValidator(
           });
         }
 
-        if (runThisTest(TestKind.ValidateAndClean)) {
+        if (runThisTest(MethodKind.ValidateAndClean)) {
           it(`validateAndClean() should clean provided ${spec.description}`, () => {
             const validator = createValidator(spec.schema);
             const value = { ...spec.value };
@@ -118,7 +118,7 @@ function testValidator(
       });
 
       describe('cleaning copy of value', () => {
-        if (runThisTest(TestKind.AssertAndCleanCopy)) {
+        if (runThisTest(MethodKind.AssertAndCleanCopy)) {
           it(`assertAndCleanCopy() should clean copy of ${spec.description}`, () => {
             const validator = createValidator(spec.schema);
             const value = validator.assertAndCleanCopy(spec.value) as object;
@@ -131,7 +131,7 @@ function testValidator(
           });
         }
 
-        if (runThisTest(TestKind.ValidateAndCleanCopy)) {
+        if (runThisTest(MethodKind.ValidateAndCleanCopy)) {
           it(`validateAndCleanCopy() should clean copy of ${spec.description}`, () => {
             const validator = createValidator(spec.schema);
             const value = validator.validateAndCleanCopy(spec.value) as object;
@@ -152,6 +152,6 @@ function runThisValidator(validatorKind: ValidatorKind): boolean {
   return [ValidatorKind.All, validatorKind].includes(onlyRunValidator);
 }
 
-function runThisTest(testKind: TestKind): boolean {
-  return [TestKind.All, testKind].includes(onlyRunTest);
+function runThisTest(methodKind: MethodKind): boolean {
+  return [MethodKind.All, methodKind].includes(onlyRunMethod);
 }
