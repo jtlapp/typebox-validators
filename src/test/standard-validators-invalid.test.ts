@@ -267,11 +267,9 @@ function testValidator(
 }
 
 function runThisValidator(validatorKind: ValidatorKind): boolean {
-  return (
-    onlyRunValidator === ValidatorKind.All || validatorKind === onlyRunValidator
-  );
+  return [ValidatorKind.All, validatorKind].includes(onlyRunValidator);
 }
 
 function runThisTest(testKind: TestKind): boolean {
-  return onlyRunTest === TestKind.All || testKind === onlyRunTest;
+  return [TestKind.All, testKind].includes(onlyRunTest);
 }
