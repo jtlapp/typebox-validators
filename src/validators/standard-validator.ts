@@ -31,7 +31,7 @@ export class StandardValidator<
   }
 
   /** @inheritdoc */
-  override getErrorIterator(value: Readonly<unknown>): Iterator<ValueError> {
-    return this.uncompiledGetErrorIterator(this.schema, value);
+  override errors(value: Readonly<unknown>): Iterable<ValueError> {
+    return this.uncompiledErrors(this.schema, value);
   }
 }

@@ -21,13 +21,13 @@ export class DiscriminatedUnionValidator<
   }
 
   /** @inheritdoc */
-  override getErrorIterator(value: Readonly<unknown>): Iterator<ValueError> {
+  override errors(value: Readonly<unknown>): Iterable<ValueError> {
     const indexOrError = this.findDiscriminatedUnionSchemaIndex(value);
     if (typeof indexOrError !== 'number') {
-      return this.createUnionTypeErrorIterator(indexOrError);
+      return this.createUnionTypeErrorIterable(indexOrError);
     }
     const schema = this.schema.anyOf[indexOrError] as TObject;
-    return this.uncompiledGetErrorIterator(schema, value);
+    return this.uncompiledErrors(schema, value);
   }
 
   override assertReturningSchema(

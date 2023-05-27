@@ -1,13 +1,15 @@
 import type { TSchema, Static } from '@sinclair/typebox';
-import {
-  Value as TypeBoxValue,
-  ValueError,
-  ValueErrorIterator,
-} from '@sinclair/typebox/value';
+import { Value as TypeBoxValue, ValueError } from '@sinclair/typebox/value';
 import { TypeCheck } from '@sinclair/typebox/compiler';
 
 import { ValidationException } from '../lib/validation-exception';
-import { DEFAULT_OVERALL_ERROR } from '../lib/constants';
+import {
+  DEFAULT_OVERALL_ERROR,
+  createErrorsIterable,
+  adjustErrorMessage,
+} from '../lib/errors';
+
+// TODO: "{field}" can occur in detail messages too
 
 /**
  * Abstract base class for validators, providing validation services for a
@@ -164,22 +166,22 @@ export abstract class AbstractValidator<S extends TSchema> {
   ): Static<S>;
 
   /**
-   * Validates a value against the schema and returns an iterator that yields
-   * the validation errors. The iterator examines the value for the next error
-   * on each call to `next()`, returning a `ValueError` for the error. It does
-   * not evaluate errors in advance of their being requested, allowing you to
-   * short-circuit validation by stopping iteration early. This method does
-   * not throw `ValidationException` and does not clean values of
+   * Validates a value against the schema and returns an iteratable whose
+   * iterator yields the validation errors. The iterator examines the value for
+   * the next error on each call to `next()`, returning a `ValueError` for the
+   * error. It does not evaluate errors in advance of their being requested,
+   * allowing you to short-circuit validation by stopping iteration early. This
+   * method does not throw `ValidationException` and does not clean values of
    * unrecognized properties.
    *
    * @param value Value to validate against the schema.
-   * @returns An iterator for all validation errors. However, upon detecting
-   *  one or more errors for a particular field, if that field's schema
-   *  provides an `errorMessage` property, only a single error is reported
-   *  for the field, and the `message` property of this error is set to the
-   *  `errorMessage`.
+   * @returns An iteratable yielding all validation errors. However, upon
+   *  detecting one or more errors for a particular field, if that field's
+   *  schema provides an `errorMessage` property, only a single error is
+   *  reported for the field, and the `message` property of this error is set to
+   *  the `errorMessage`.
    */
-  abstract getErrorIterator(value: Readonly<unknown>): Iterator<ValueError>;
+  abstract errors(value: Readonly<unknown>): Iterable<ValueError>;
 
   protected cleanCopyOfValue<VS extends TSchema>(
     schema: Readonly<VS>,
@@ -220,7 +222,7 @@ export abstract class AbstractValidator<S extends TSchema> {
     if (!compiledType.Check(value)) {
       const firstError = compiledType.Errors(value).First()!;
       throw new ValidationException(overallError ?? DEFAULT_OVERALL_ERROR, [
-        firstError,
+        adjustErrorMessage(firstError),
       ]);
     }
   }
@@ -232,23 +234,23 @@ export abstract class AbstractValidator<S extends TSchema> {
   ): void {
     if (!compiledType.Check(value)) {
       throw new ValidationException(overallError ?? DEFAULT_OVERALL_ERROR, [
-        ...compiledType.Errors(value),
+        ...createErrorsIterable(compiledType.Errors(value)),
       ]);
     }
   }
 
-  protected compiledGetErrorIterator(
+  protected compiledErrors(
     compiledType: TypeCheck<S>,
     value: Readonly<unknown>
-  ): Iterator<ValueError> {
-    return this._createErrorIterator(compiledType.Errors(value));
+  ): Iterable<ValueError> {
+    return createErrorsIterable(compiledType.Errors(value));
   }
 
-  protected uncompiledGetErrorIterator(
+  protected uncompiledErrors(
     schema: Readonly<TSchema>,
     value: Readonly<unknown>
-  ): Iterator<ValueError> {
-    return this._createErrorIterator(TypeBoxValue.Errors(schema, value));
+  ): Iterable<ValueError> {
+    return createErrorsIterable(TypeBoxValue.Errors(schema, value));
   }
 
   protected uncompiledAssert(
@@ -259,7 +261,7 @@ export abstract class AbstractValidator<S extends TSchema> {
     if (!TypeBoxValue.Check(schema, value)) {
       const firstError = TypeBoxValue.Errors(schema, value).First()!;
       throw new ValidationException(overallError ?? DEFAULT_OVERALL_ERROR, [
-        firstError,
+        adjustErrorMessage(firstError),
       ]);
     }
   }
@@ -271,30 +273,8 @@ export abstract class AbstractValidator<S extends TSchema> {
   ): void {
     if (!TypeBoxValue.Check(schema, value)) {
       throw new ValidationException(overallError ?? DEFAULT_OVERALL_ERROR, [
-        ...TypeBoxValue.Errors(schema, value),
+        ...createErrorsIterable(TypeBoxValue.Errors(schema, value)),
       ]);
     }
-  }
-
-  private _createErrorIterator(
-    typeboxErrorIterator: ValueErrorIterator
-  ): Iterator<ValueError> {
-    const errors = typeboxErrorIterator[Symbol.iterator]();
-    return {
-      next: () => {
-        const result = errors.next();
-        if (result.done) return result;
-
-        const error = result.value;
-        const schema = error.schema;
-        if (schema.errorMessage) {
-          error.message = schema.errorMessage;
-        }
-        return {
-          done: false,
-          value: error,
-        };
-      },
-    };
   }
 }

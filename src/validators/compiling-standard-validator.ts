@@ -39,9 +39,9 @@ export class CompilingStandardValidator<
   }
 
   /** @inheritdoc */
-  override getErrorIterator(value: Readonly<unknown>): Iterator<ValueError> {
+  override errors(value: Readonly<unknown>): Iterable<ValueError> {
     const compiledType = this.getCompiledType();
-    return this.compiledGetErrorIterator(compiledType, value);
+    return this.compiledErrors(compiledType, value);
   }
 
   private getCompiledType(): TypeCheck<S> {

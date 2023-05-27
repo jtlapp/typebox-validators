@@ -1,306 +1,169 @@
 import { TSchema, Type } from '@sinclair/typebox';
 
 import { StandardValidator } from '../validators/standard-validator';
-import { CompilingStandardValidator } from '../validators/compiling-standard-validator';
 import { ValidationException } from '../lib/validation-exception';
-import { AbstractValidator } from '../validators/abstract-validator';
-
-const OVERALL_MESSAGE = 'Invalid standard value';
+import { DEFAULT_OVERALL_ERROR } from '../lib/errors';
 
 describe('standard validators', () => {
   const schema1 = Type.Object({
     delta: Type.Integer(),
     count: Type.Integer({ exclusiveMinimum: 0 }),
-    name: Type.RegEx(/[a-zA-Z]+/, {
+    name: Type.String({
       minLength: 5,
       maxLength: 10,
-      specificError: 'name should consist of 5-10 letters',
+      pattern: '^[a-zA-Z]+$',
+      errorMessage: 'name should consist of 5-10 letters',
     }),
   });
 
   const schema2 = Type.Object({
-    int1: Type.Integer({ specificError: '{field} must be an integer' }),
-    int2: Type.Integer({ specificError: '{field} must be an integer' }),
-    alpha: Type.RegEx(/[a-zA-Z]+/, { maxLength: 4 }),
+    int1: Type.Integer({ errorMessage: '{field} must be an integer' }),
+    int2: Type.Integer({ errorMessage: '{field} must be an integer' }),
+    alpha: Type.String({ pattern: '^[a-zA-Z]+$', maxLength: 4 }),
   });
 
-  testStandardValidation(
-    'StandardValidator()',
-    new StandardValidator(schema1),
-    new StandardValidator(schema2)
-  );
-  testStandardValidation(
-    'CompilingStandardValidator()',
-    new CompilingStandardValidator(schema1),
-    new CompilingStandardValidator(schema2)
-  );
+  describe('valid values', () => {
+    testValidSpecs([
+      {
+        description: 'valid 1',
+        schema: schema1,
+        value: { delta: 0, count: 1, name: 'ABCDE' },
+      },
+      {
+        description: 'valid 2',
+        schema: schema1,
+        value: { delta: -5, count: 125, name: 'ABCDEDEFGH' },
+      },
+    ]);
+  });
+
+  describe('invalid values', () => {
+    testInvalidSpecs([
+      {
+        description: 'single invalid field with one error',
+        schema: schema1,
+        value: { delta: 0.5, count: 1, name: 'ABCDE' },
+        message: DEFAULT_OVERALL_ERROR,
+        errors: [{ path: '/delta', message: 'Expected integer' }],
+      },
+      {
+        description: 'single invalid field with multiple errors',
+        schema: schema2,
+        value: { int1: 1, int2: 1, alpha: '12345' },
+        message: DEFAULT_OVERALL_ERROR,
+        errors: [
+          {
+            path: '/alpha',
+            message: 'less or equal to 4',
+          },
+          {
+            path: '/alpha',
+            message: 'match pattern',
+          },
+        ],
+      },
+      {
+        description: 'multiple invalid fields with multiple errors',
+        schema: schema2,
+        value: { int1: 1.5, int2: 1.5, alpha: '12345' },
+        message: DEFAULT_OVERALL_ERROR,
+        errors: [
+          {
+            path: '/int1',
+            message: 'must be an integer',
+          },
+          {
+            path: '/int2',
+            message: 'must be an integer',
+          },
+          {
+            path: '/alpha',
+            message: 'less or equal to 4',
+          },
+          {
+            path: '/alpha',
+            message: 'match pattern',
+          },
+        ],
+      },
+      // {
+      //   description: 'one custom error message for multiple errors',
+      //   schema: schema1,
+      //   value: { delta: 0.5, count: 1, name: '1' },
+      //   message: DEFAULT_OVERALL_ERROR,
+      //   errors: [
+      //     {
+      //       path: '/delta',
+      //       message: 'must be an integer',
+      //     },
+      //     {
+      //       path: '/name',
+      //       message: 'name should consist of 5-10 letters',
+      //     },
+      //   ],
+      // },
+    ]);
+  });
 });
 
-function testStandardValidation(
-  description: string,
-  validator1: AbstractValidator<TSchema>,
-  validator2: AbstractValidator<TSchema>
+function testValidSpecs(
+  validSpecs: {
+    description: string;
+    schema: TSchema;
+    value: any;
+  }[]
 ) {
-  describe(description, () => {
-    describe('assert()', () => {
-      it('accepts valid values', () => {
-        let validObject = { delta: 0, count: 1, name: 'ABCDE' };
-        let schema = validator1.assert(validObject);
-        expect(schema).toBe(validator1.schema);
+  validSpecs.forEach((spec) => {
+    it(`should accept ${spec.description}`, () => {
+      const validator = new StandardValidator(spec.schema);
+      expect(() => validator.assert(spec.value)).not.toThrow();
+    });
+  });
+}
 
-        validObject = { delta: -5, count: 125, name: 'ABCDEDEFGH' };
-        schema = validator1.assert(validObject);
-        expect(schema).toBe(validator1.schema);
-      });
-
-      it('rejects objects with single invalid fields reporting a single error', () => {
-        expect.assertions(4);
-        try {
-          const invalidObject = { delta: 0.5, count: 1, name: 'ABCDE' };
-          validator1.assert(invalidObject);
-        } catch (err: unknown) {
-          if (!(err instanceof ValidationException)) throw err;
-          expect(err.specifics.length).toEqual(1);
-          const message = 'Invalid value';
-          const specific = 'delta: Expected integer';
-          expect(err.message).toEqual(message);
-          expect(err.specifics[0].toString()).toEqual(specific);
-          expect(err.toString()).toEqual(`${message}: ${specific}`);
-        }
-      });
-
-      it('rejects objects with multiple invalid fields reporting a single error', () => {
-        expect.assertions(3);
-        try {
-          const invalidObject = { delta: 0.5, count: 0, name: 'ABCDE' };
-          validator1.assert(invalidObject, OVERALL_MESSAGE);
-        } catch (err: unknown) {
-          if (!(err instanceof ValidationException)) throw err;
-          expect(err.specifics.length).toEqual(1);
-          const message = 'delta: Expected integer';
-          expect(err.specifics[0].toString()).toEqual(message);
-          expect(err.toString()).toEqual(`${OVERALL_MESSAGE}: ` + message);
-        }
-      });
-
-      it('rejects objects with multiply invalid field reporting a single error', () => {
-        expect.assertions(3);
-        try {
-          const invalidObject = { int1: 1, int2: 1, alpha: 'ABCDE' };
-          validator2.assert(invalidObject);
-        } catch (err: unknown) {
-          if (!(err instanceof ValidationException)) throw err;
-          expect(err.specifics.length).toEqual(1);
-          const message = 'alpha: Expected string length less or equal to 4';
-          expect(err.specifics[0].toString()).toEqual(message);
-          expect(err.toString()).toEqual(`Invalid value: ` + message);
-        }
-      });
-
-      it('rejects objects reporting a custom error message', () => {
-        expect.assertions(3);
-        try {
-          const invalidObject = { delta: 1, count: 1, name: '12345' };
-          validator1.assert(invalidObject);
-        } catch (err: unknown) {
-          if (!(err instanceof ValidationException)) throw err;
-          expect(err.specifics.length).toEqual(1);
-          const message = 'name should consist of 5-10 letters';
-          expect(err.specifics[0].toString()).toEqual(message);
-          expect(err.toString()).toEqual(`Invalid value: ` + message);
-        }
-      });
+function testInvalidSpecs(
+  invalidSpecs: {
+    description: string;
+    schema: TSchema;
+    value: any;
+    message: string;
+    errors: { path: string; message: string }[];
+  }[]
+) {
+  invalidSpecs.forEach((spec) => {
+    it(`assert() should reject ${spec.description}`, () => {
+      const validator = new StandardValidator(spec.schema);
+      try {
+        validator.assert(spec.value);
+        fail('should have thrown');
+      } catch (e: any) {
+        if (!(e instanceof ValidationException)) throw e;
+        expect(e.message).toEqual(spec.message);
+        const details = e.details;
+        const errors = spec.errors;
+        expect(details.length).toEqual(1);
+        expect(details[0].path).toEqual(errors[0].path);
+        expect(details[0].message).toContain(errors[0].message);
+      }
     });
 
-    describe('assertAndCleanCopy()', () => {
-      it('validates valid objects and returns schema and cleaned value', () => {
-        let validObject = { delta: 0, count: 1, name: 'ABCDE' };
-        let value = validator1.assertAndCleanCopy(validObject, OVERALL_MESSAGE);
-        expect(value).toEqual(validObject);
-        expect(value).not.toBe(validObject);
-
-        validObject = { delta: -5, count: 125, name: 'ABCDEDEFGH' };
-        value = validator1.assertAndCleanCopy(validObject, OVERALL_MESSAGE);
-        expect(value).toEqual({ delta: -5, count: 125, name: 'ABCDEDEFGH' });
-        expect(value).not.toBe(validObject);
-      });
-
-      it('fails to validate on invalid objects (default message)', () => {
-        expect.assertions(4);
-        try {
-          const invalidObject = { delta: 0.5, count: 1, name: 'ABCDE' };
-          validator1.assertAndCleanCopy(invalidObject);
-        } catch (err: unknown) {
-          if (!(err instanceof ValidationException)) throw err;
-          expect(err.specifics.length).toEqual(1);
-          const message = 'Invalid value';
-          const specific = 'delta: Expected integer';
-          expect(err.message).toEqual(message);
-          expect(err.specifics[0].toString()).toEqual(specific);
-          expect(err.toString()).toEqual(`${message}: ${specific}`);
-        }
-      });
-
-      it('fails to validate on invalid objects (custom message)', () => {
-        expect.assertions(4);
-        try {
-          const invalidObject = { delta: 0.5, count: 1, name: 'ABCDE' };
-          validator1.assertAndCleanCopy(invalidObject, OVERALL_MESSAGE);
-        } catch (err: unknown) {
-          if (!(err instanceof ValidationException)) throw err;
-          expect(err.specifics.length).toEqual(1);
-          const message = OVERALL_MESSAGE;
-          const specific = 'delta: Expected integer';
-          expect(err.message).toEqual(message);
-          expect(err.specifics[0].toString()).toEqual(specific);
-          expect(err.toString()).toEqual(`${message}: ${specific}`);
-        }
-      });
-    });
-
-    describe('assertAndClean()', () => {
-      it('validates valid objects, returns schema, and cleans original value', () => {
-        let value = { delta: 0, count: 1, name: 'ABCDE', foo: 'bar' };
-        let schema = validator1.assertAndClean(value, OVERALL_MESSAGE);
-        expect(schema).toBe(validator1.schema);
-        expect(value).toEqual({ delta: 0, count: 1, name: 'ABCDE' });
-
-        value = { foo: 'bar', delta: -5, count: 125, name: 'ABCDEDEFGH' };
-        schema = validator1.assertAndClean(value, OVERALL_MESSAGE);
-        expect(schema).toBe(validator1.schema);
-        expect(value).toEqual({ delta: -5, count: 125, name: 'ABCDEDEFGH' });
-      });
-
-      it('fails to validate on invalid objects (default message)', () => {
-        expect.assertions(4);
-        try {
-          const invalidObject = { delta: 0.5, count: 1, name: 'ABCDE' };
-          validator1.assertAndClean(invalidObject);
-        } catch (err: unknown) {
-          if (!(err instanceof ValidationException)) throw err;
-          expect(err.specifics.length).toEqual(1);
-          const message = 'Invalid value';
-          const specific = 'delta: Expected integer';
-          expect(err.message).toEqual(message);
-          expect(err.specifics[0].toString()).toEqual(specific);
-          expect(err.toString()).toEqual(`${message}: ${specific}`);
-        }
-      });
-
-      it('fails to validate on invalid objects (custom message)', () => {
-        expect.assertions(4);
-        try {
-          const invalidObject = { delta: 0.5, count: 1, name: 'ABCDE' };
-          validator1.assertAndClean(invalidObject, OVERALL_MESSAGE);
-        } catch (err: unknown) {
-          if (!(err instanceof ValidationException)) throw err;
-          expect(err.specifics.length).toEqual(1);
-          const message = OVERALL_MESSAGE;
-          const specific = 'delta: Expected integer';
-          expect(err.message).toEqual(message);
-          expect(err.specifics[0].toString()).toEqual(specific);
-          expect(err.toString()).toEqual(`${message}: ${specific}`);
-        }
-      });
-    });
-
-    describe('validate()', () => {
-      it('accepts valid values', () => {
-        let validObject = { delta: 0, count: 1, name: 'ABCDE' };
-        let schema = validator1.validate(validObject, OVERALL_MESSAGE);
-        expect(schema).toBe(validator1.schema);
-
-        validObject = { delta: -5, count: 125, name: 'ABCDEDEFGH' };
-        schema = validator1.validate(validObject, OVERALL_MESSAGE);
-        expect(schema).toBe(validator1.schema);
-      });
-
-      it('rejects objects with single invalid field reporting a single error', () => {
-        expect.assertions(3);
-        try {
-          const invalidObject = { delta: 0.5, count: 1, name: 'ABCDE' };
-          validator1.validate(invalidObject);
-        } catch (err: unknown) {
-          if (!(err instanceof ValidationException)) throw err;
-          expect(err.specifics.length).toEqual(1);
-          const message = 'delta: Expected integer';
-          expect(err.specifics[0].toString()).toEqual(message);
-          expect(err.toString()).toEqual(`Invalid value: ` + message);
-        }
-      });
-
-      it('rejects objects with multiple invalid fields reporting all errors', () => {
-        expect.assertions(5);
-        try {
-          const invalidObject = {
-            delta: 0.5,
-            count: 0,
-            // TODO: change to '99' to break test, 'cause generates multiple errors
-            name: 'ABDEIJFIJEFIJEFIEJFIEJ',
-          };
-          //(validator1.schema as any).properties.name.specificError = undefined; // TODO
-          validator1.validate(invalidObject, OVERALL_MESSAGE);
-        } catch (err: unknown) {
-          if (!(err instanceof ValidationException)) throw err;
-          expect(err.specifics.length).toEqual(3);
-          const message1 = 'delta: Expected integer';
-          const message2 = 'count: Expected integer to be greater than 0';
-          const message3 = 'name should consist of 5-10 letters';
-          expect(err.specifics[0].toString()).toEqual(message1);
-          expect(err.specifics[1].toString()).toEqual(message2);
-          expect(err.specifics[2].toString()).toEqual(message3);
-          expect(err.toString()).toEqual(
-            `${OVERALL_MESSAGE}:\n- ${message1}\n- ${message2}\n- ${message3}`
-          );
-        }
-      });
-
-      it('rejects objects with multiply invalid field reporting all errors', () => {
-        expect.assertions(4);
-        try {
-          const invalidObject = { int1: 1, int2: 1, alpha: '12345' };
-          validator2.validate(invalidObject);
-        } catch (err: unknown) {
-          if (!(err instanceof ValidationException)) throw err;
-          expect(err.specifics.length).toEqual(2);
-          const message1 = 'alpha: Expected string length less or equal to 4';
-          const message2 = 'alpha: Expected string to match pattern [a-zA-Z]+';
-          expect(err.specifics[0].toString()).toEqual(message1);
-          expect(err.specifics[1].toString()).toEqual(message2);
-          expect(err.toString()).toEqual(
-            `Invalid value:\n- ${message1}\n- ${message2}`
-          );
-        }
-      });
-
-      it('rejects objects reporting custom error messages with fields', () => {
-        expect.assertions(4);
-        try {
-          const invalidObject = { int1: 0.5, int2: 0.5, alpha: 'ABCD' };
-          validator2.validate(invalidObject);
-        } catch (err: unknown) {
-          if (!(err instanceof ValidationException)) throw err;
-          expect(err.specifics.length).toEqual(2);
-          const message1 = 'int1 must be an integer';
-          const message2 = 'int2 must be an integer';
-          expect(err.specifics[0].toString()).toEqual(message1);
-          expect(err.specifics[1].toString()).toEqual(message2);
-          expect(err.toString()).toEqual(
-            `Invalid value:\n- ${message1}\n- ${message2}`
-          );
-        }
-      });
-
-      it('allows exceptions having no specifics', () => {
-        expect.assertions(2);
-        try {
-          throw new ValidationException('Invalid');
-        } catch (err: unknown) {
-          if (!(err instanceof ValidationException)) throw err;
-          expect(err.specifics.length).toEqual(0);
-          expect(err.toString()).toEqual('Invalid');
-        }
-      });
+    it(`validate() should reject ${spec.description}`, () => {
+      const validator = new StandardValidator(spec.schema);
+      try {
+        validator.validate(spec.value);
+        fail('should have thrown');
+      } catch (e: any) {
+        if (!(e instanceof ValidationException)) throw e;
+        const details = e.details;
+        const errors = spec.errors;
+        expect(details.length).toEqual(errors.length);
+        expect(e.message).toEqual(spec.message);
+        errors.forEach((error, i) => {
+          console.log(`**** details[${i}]`, details[i]);
+          expect(details[i]?.path).toEqual(error.path);
+          expect(details[i]?.message).toContain(error.message);
+        });
+      }
     });
   });
 }

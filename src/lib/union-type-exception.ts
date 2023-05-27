@@ -1,6 +1,7 @@
 import { ValueError } from '@sinclair/typebox/errors';
 
 import { ValidationException } from './validation-exception';
+import { adjustErrorMessage } from './errors';
 
 /**
  * Exception thrown when a value is not a member of a typed member union.
@@ -9,6 +10,6 @@ import { ValidationException } from './validation-exception';
  */
 export class UnionTypeException extends ValidationException {
   constructor(overallError: string, error: ValueError) {
-    super(overallError, [error]);
+    super(overallError, [adjustErrorMessage(error)]);
   }
 }

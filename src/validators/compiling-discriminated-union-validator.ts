@@ -31,12 +31,12 @@ export class CompilingDiscriminatedUnionValidator<
   }
 
   /** @inheritdoc */
-  override getErrorIterator(value: Readonly<unknown>): Iterator<ValueError> {
+  override errors(value: Readonly<unknown>): Iterable<ValueError> {
     const indexOrError = this.findDiscriminatedUnionSchemaIndex(value);
     if (typeof indexOrError !== 'number') {
-      return this.createUnionTypeErrorIterator(indexOrError);
+      return this.createUnionTypeErrorIterable(indexOrError);
     }
-    return this.memberValidators[indexOrError].getErrorIterator(value);
+    return this.memberValidators[indexOrError].errors(value);
   }
 
   override assertReturningSchema(

@@ -85,9 +85,13 @@ export abstract class AbstractTypedUnionValidator<
     };
   }
 
-  protected createUnionTypeErrorIterator(
+  protected createUnionTypeErrorIterable(
     typeError: ValueError
-  ): Iterator<ValueError> {
-    return { next: () => ({ done: true, value: typeError }) };
+  ): Iterable<ValueError> {
+    return {
+      [Symbol.iterator]: () => ({
+        next: () => ({ done: true, value: typeError }),
+      }),
+    };
   }
 }
