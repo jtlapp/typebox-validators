@@ -22,24 +22,15 @@ export class ValidationException extends ExtendableError {
 
   /**
    * Returns a string representation of the error. Provides the overall
-   * error message, optionally followed by specific error messages. If
-   * there is only one error, the format is "{overall message}: {detail}".
-   * If there are multiple errors, the overall message is on the first
-   * line and the details are dash-bulleted on subsequent lines.
-   * @param includeDetails Whether to append to the error message
-   *  descriptions of the detail validation errors
+   * error message, followed by the specific error messages, one per line.
    * @returns a string representation of the error.
    */
-  override toString(includeDetails = true): string {
+  override toString(): string {
     let message = this.message;
-    if (includeDetails && this.details.length > 0) {
-      if (this.details.length == 1) {
-        message += ': ' + detailToString(this.details[0]);
-      } else {
-        message += ':';
-        for (const detail of this.details) {
-          message += '\n- ' + detailToString(detail);
-        }
+    if (this.details.length > 0) {
+      message += ':';
+      for (const detail of this.details) {
+        message += '\n- ' + detailToString(detail);
       }
     }
     return message;
@@ -47,5 +38,5 @@ export class ValidationException extends ExtendableError {
 }
 
 function detailToString(detail: ValueError): string {
-  return detail.path + ': ' + detail.message;
+  return detail.path.substring(1) + ': ' + detail.message;
 }

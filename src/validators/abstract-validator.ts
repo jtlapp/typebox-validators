@@ -9,7 +9,7 @@ import {
   adjustErrorMessage,
 } from '../lib/errors';
 
-// TODO: "{field}" can occur in detail messages too
+// TODO: docs: "{field}" can occur in detail messages too
 
 /**
  * Abstract base class for validators, providing validation services for a
@@ -221,9 +221,10 @@ export abstract class AbstractValidator<S extends TSchema> {
   ): void {
     if (!compiledType.Check(value)) {
       const firstError = compiledType.Errors(value).First()!;
-      throw new ValidationException(overallError ?? DEFAULT_OVERALL_ERROR, [
-        adjustErrorMessage(firstError),
-      ]);
+      throw new ValidationException(
+        adjustAssertMessage(firstError, overallError),
+        [adjustErrorMessage(firstError)]
+      );
     }
   }
 
@@ -260,9 +261,10 @@ export abstract class AbstractValidator<S extends TSchema> {
   ): void {
     if (!TypeBoxValue.Check(schema, value)) {
       const firstError = TypeBoxValue.Errors(schema, value).First()!;
-      throw new ValidationException(overallError ?? DEFAULT_OVERALL_ERROR, [
-        adjustErrorMessage(firstError),
-      ]);
+      throw new ValidationException(
+        adjustAssertMessage(firstError, overallError),
+        [adjustErrorMessage(firstError)]
+      );
     }
   }
 
@@ -277,4 +279,13 @@ export abstract class AbstractValidator<S extends TSchema> {
       ]);
     }
   }
+}
+
+function adjustAssertMessage(error: ValueError, overallError?: string): string {
+  if (overallError === undefined) {
+    return DEFAULT_OVERALL_ERROR;
+  }
+  return overallError
+    .replace('{field}', error.path.substring(1))
+    .replace('{detail}', error.message);
 }
