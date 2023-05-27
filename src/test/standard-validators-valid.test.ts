@@ -13,6 +13,17 @@ import {
 const onlyRunValidator = ValidatorKind.All;
 const onlyRunMethod = MethodKind.All;
 
+const schema1 = Type.Object({
+  delta: Type.Integer(),
+  count: Type.Integer({ exclusiveMinimum: 0 }),
+  name: Type.String({
+    minLength: 5,
+    maxLength: 10,
+    pattern: '^[a-zA-Z]+$',
+    errorMessage: 'name should consist of 5-10 letters',
+  }),
+});
+
 describe('standard validators - valid values', () => {
   if (runThisValidator(ValidatorKind.Noncompiling)) {
     describe('StandardValidator', () => {
@@ -31,17 +42,6 @@ describe('standard validators - valid values', () => {
 function testValidator(
   createValidator: (schema: TSchema) => AbstractStandardValidator<TSchema>
 ) {
-  const schema1 = Type.Object({
-    delta: Type.Integer(),
-    count: Type.Integer({ exclusiveMinimum: 0 }),
-    name: Type.String({
-      minLength: 5,
-      maxLength: 10,
-      pattern: '^[a-zA-Z]+$',
-      errorMessage: 'name should consist of 5-10 letters',
-    }),
-  });
-
   testValidSpecs([
     {
       description: 'valid value 1, no unrecognized fields',

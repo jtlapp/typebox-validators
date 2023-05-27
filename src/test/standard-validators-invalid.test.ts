@@ -16,6 +16,23 @@ import {
 const onlyRunValidator = ValidatorKind.All;
 const onlyRunMethod = MethodKind.All;
 
+const schema1 = Type.Object({
+  delta: Type.Integer(),
+  count: Type.Integer({ exclusiveMinimum: 0 }),
+  name: Type.String({
+    minLength: 5,
+    maxLength: 10,
+    pattern: '^[a-zA-Z]+$',
+    errorMessage: 'name should consist of 5-10 letters',
+  }),
+});
+
+const schema2 = Type.Object({
+  int1: Type.Integer({ errorMessage: '{field} must be an integer' }),
+  int2: Type.Integer({ errorMessage: '{field} must be an integer' }),
+  alpha: Type.String({ pattern: '^[a-zA-Z]+$', maxLength: 4 }),
+});
+
 describe('standard validators - invalid values', () => {
   if (runThisValidator(ValidatorKind.Noncompiling)) {
     describe('StandardValidator', () => {
@@ -35,23 +52,6 @@ describe('standard validators - invalid values', () => {
 function testValidator(
   createValidator: (schema: TSchema) => AbstractStandardValidator<TSchema>
 ) {
-  const schema1 = Type.Object({
-    delta: Type.Integer(),
-    count: Type.Integer({ exclusiveMinimum: 0 }),
-    name: Type.String({
-      minLength: 5,
-      maxLength: 10,
-      pattern: '^[a-zA-Z]+$',
-      errorMessage: 'name should consist of 5-10 letters',
-    }),
-  });
-
-  const schema2 = Type.Object({
-    int1: Type.Integer({ errorMessage: '{field} must be an integer' }),
-    int2: Type.Integer({ errorMessage: '{field} must be an integer' }),
-    alpha: Type.String({ pattern: '^[a-zA-Z]+$', maxLength: 4 }),
-  });
-
   testInvalidSpecs([
     {
       description: 'single invalid field with one error',
