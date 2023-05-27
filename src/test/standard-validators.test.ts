@@ -1,8 +1,10 @@
 import { TSchema, Type } from '@sinclair/typebox';
 
+import { AbstractStandardValidator } from '../validators/abstract-standard-validator';
 import { StandardValidator } from '../validators/standard-validator';
 import { ValidationException } from '../lib/validation-exception';
 import { DEFAULT_OVERALL_ERROR } from '../lib/errors';
+import { CompilingStandardValidator } from '../validators/compiling-standard-validator';
 
 type ValidatorMethodOfClass<T> = {
   [K in keyof T]: T[K] extends (value: any, errorMessage?: string) => any
@@ -28,6 +30,18 @@ interface InvalidTestSpec {
 }
 
 describe('standard validators', () => {
+  describe('StandardValidator', () => {
+    testValidator((schema: TSchema) => new StandardValidator(schema));
+  });
+
+  describe('CompilingStandardValidator', () => {
+    testValidator((schema: TSchema) => new CompilingStandardValidator(schema));
+  });
+});
+
+function testValidator(
+  createValidator: (schema: TSchema) => AbstractStandardValidator<TSchema>
+) {
   const schema1 = Type.Object({
     delta: Type.Integer(),
     count: Type.Integer({ exclusiveMinimum: 0 }),
@@ -161,159 +175,159 @@ describe('standard validators', () => {
       },
     ]);
   });
-});
 
-function testValidSpecs(validSpecs: ValidTestSpec[]) {
-  validSpecs.forEach((spec) => {
-    it(`assert() should accept ${spec.description}`, () => {
-      const validator = new StandardValidator(spec.schema);
-      expect(() => validator.assert(spec.value)).not.toThrow();
-    });
+  function testValidSpecs(validSpecs: ValidTestSpec[]) {
+    validSpecs.forEach((spec) => {
+      it(`assert() should accept ${spec.description}`, () => {
+        const validator = createValidator(spec.schema);
+        expect(() => validator.assert(spec.value)).not.toThrow();
+      });
 
-    it(`validate() should accept ${spec.description}`, () => {
-      const validator = new StandardValidator(spec.schema);
-      expect(() => validator.validate(spec.value)).not.toThrow();
-    });
+      it(`validate() should accept ${spec.description}`, () => {
+        const validator = createValidator(spec.schema);
+        expect(() => validator.validate(spec.value)).not.toThrow();
+      });
 
-    it(`assertAndClean() should clean provided ${spec.description}`, () => {
-      const validator = new StandardValidator(spec.schema);
-      const value = { ...spec.value };
-      expect(() => validator.assertAndClean(value)).not.toThrow();
-      for (const key in value) {
-        expect(key in spec.schema.properties).toBe(true);
-      }
-    });
+      it(`assertAndClean() should clean provided ${spec.description}`, () => {
+        const validator = createValidator(spec.schema);
+        const value = { ...spec.value };
+        expect(() => validator.assertAndClean(value)).not.toThrow();
+        for (const key in value) {
+          expect(key in spec.schema.properties).toBe(true);
+        }
+      });
 
-    it(`validateAndClean() should clean provided ${spec.description}`, () => {
-      const validator = new StandardValidator(spec.schema);
-      const value = { ...spec.value };
-      expect(() => validator.validateAndClean(value)).not.toThrow();
-      for (const key in value) {
-        expect(key in spec.schema.properties).toBe(true);
-      }
-      expect(Object.keys(value).length).toEqual(
-        Object.keys(spec.schema.properties).length
-      );
-    });
+      it(`validateAndClean() should clean provided ${spec.description}`, () => {
+        const validator = createValidator(spec.schema);
+        const value = { ...spec.value };
+        expect(() => validator.validateAndClean(value)).not.toThrow();
+        for (const key in value) {
+          expect(key in spec.schema.properties).toBe(true);
+        }
+        expect(Object.keys(value).length).toEqual(
+          Object.keys(spec.schema.properties).length
+        );
+      });
 
-    it(`assertAndCleanCopy() should clean copy of ${spec.description}`, () => {
-      const validator = new StandardValidator(spec.schema);
-      const value = validator.assertAndCleanCopy(spec.value) as object;
-      for (const key in value) {
-        expect(key in spec.schema.properties).toBe(true);
-      }
-      expect(Object.keys(value).length).toEqual(
-        Object.keys(spec.schema.properties).length
-      );
-    });
+      it(`assertAndCleanCopy() should clean copy of ${spec.description}`, () => {
+        const validator = createValidator(spec.schema);
+        const value = validator.assertAndCleanCopy(spec.value) as object;
+        for (const key in value) {
+          expect(key in spec.schema.properties).toBe(true);
+        }
+        expect(Object.keys(value).length).toEqual(
+          Object.keys(spec.schema.properties).length
+        );
+      });
 
-    it(`validateAndCleanCopy() should clean copy of ${spec.description}`, () => {
-      const validator = new StandardValidator(spec.schema);
-      const value = validator.validateAndCleanCopy(spec.value) as object;
-      for (const key in value) {
-        expect(key in spec.schema.properties).toBe(true);
-      }
-      expect(Object.keys(value).length).toEqual(
-        Object.keys(spec.schema.properties).length
-      );
-    });
-  });
-}
-
-function testInvalidSpecs(specs: InvalidTestSpec[]) {
-  describe('test() rejections', () => {
-    specs.forEach((spec) => {
-      it('test() should reject ' + spec.description, () => {
-        const validator = new StandardValidator(spec.schema);
-        expect(validator.test(spec.value)).toBe(false);
+      it(`validateAndCleanCopy() should clean copy of ${spec.description}`, () => {
+        const validator = createValidator(spec.schema);
+        const value = validator.validateAndCleanCopy(spec.value) as object;
+        for (const key in value) {
+          expect(key in spec.schema.properties).toBe(true);
+        }
+        expect(Object.keys(value).length).toEqual(
+          Object.keys(spec.schema.properties).length
+        );
       });
     });
-  });
+  }
 
-  testAssertMethodRejection('assert', specs);
-  testAssertMethodRejection('assertAndClean', specs);
-  testAssertMethodRejection('assertAndCleanCopy', specs);
-  testValidateMethodRejection('validate', specs);
-  testValidateMethodRejection('validateAndClean', specs);
-  testValidateMethodRejection('validateAndCleanCopy', specs);
-
-  describe('errors()', () => {
-    specs.forEach((spec) => {
-      it('errors() for ' + spec.description, () => {
-        const validator = new StandardValidator(spec.schema);
-        const errors = [...validator.errors(spec.value)];
-        expect(errors.length).toEqual(spec.errors.length);
-        errors.forEach((error, i) => {
-          expect(error.path).toEqual(spec.errors[i].path);
-          expect(error.message).toContain(spec.errors[i].message);
+  function testInvalidSpecs(specs: InvalidTestSpec[]) {
+    describe('test() rejections', () => {
+      specs.forEach((spec) => {
+        it('test() should reject ' + spec.description, () => {
+          const validator = createValidator(spec.schema);
+          expect(validator.test(spec.value)).toBe(false);
         });
       });
     });
-  });
-}
 
-function testAssertMethodRejection<S extends TSchema>(
-  method: ValidatorMethodOfClass<StandardValidator<S>>,
-  specs: InvalidTestSpec[]
-) {
-  describe(`${method}() rejections`, () => {
-    specs.forEach((spec) => {
-      it(`${method}() should reject ${spec.description}`, () => {
-        const validator = new StandardValidator(spec.schema);
-        try {
-          (validator[method] as any)(spec.value, spec.overallMessage);
-          fail('should have thrown');
-        } catch (e: any) {
-          if (!(e instanceof ValidationException)) throw e;
+    testAssertMethodRejection('assert', specs);
+    testAssertMethodRejection('assertAndClean', specs);
+    testAssertMethodRejection('assertAndCleanCopy', specs);
+    testValidateMethodRejection('validate', specs);
+    testValidateMethodRejection('validateAndClean', specs);
+    testValidateMethodRejection('validateAndCleanCopy', specs);
 
-          const details = e.details;
-          const errors = spec.errors;
-          expect(details.length).toEqual(1);
-          expect(details[0].path).toEqual(errors[0].path);
-          expect(details[0].message).toContain(errors[0].message);
-
-          if (spec.assertMessage !== undefined) {
-            expect(e.message).toEqual(spec.assertMessage);
-          }
-          if (spec.assertString !== undefined) {
-            expect(e.toString()).toEqual(spec.assertString);
-          }
-        }
-      });
-    });
-  });
-}
-
-function testValidateMethodRejection<S extends TSchema>(
-  method: ValidatorMethodOfClass<StandardValidator<S>>,
-  specs: InvalidTestSpec[]
-) {
-  describe(`${method}() rejections`, () => {
-    specs.forEach((spec) => {
-      it(`${method}() should reject ${spec.description}`, () => {
-        const validator = new StandardValidator(spec.schema);
-        try {
-          (validator[method] as any)(spec.value, spec.overallMessage);
-          fail('should have thrown');
-        } catch (e: any) {
-          if (!(e instanceof ValidationException)) throw e;
-
-          const details = e.details;
-          const errors = spec.errors;
-          expect(details.length).toEqual(errors.length);
+    describe('errors()', () => {
+      specs.forEach((spec) => {
+        it('errors() for ' + spec.description, () => {
+          const validator = createValidator(spec.schema);
+          const errors = [...validator.errors(spec.value)];
+          expect(errors.length).toEqual(spec.errors.length);
           errors.forEach((error, i) => {
-            expect(details[i]?.path).toEqual(error.path);
-            expect(details[i]?.message).toContain(error.message);
+            expect(error.path).toEqual(spec.errors[i].path);
+            expect(error.message).toContain(spec.errors[i].message);
           });
-
-          const expectedOverallMessage =
-            spec.overallMessage ?? DEFAULT_OVERALL_ERROR;
-          expect(e.message).toEqual(expectedOverallMessage);
-          if (spec.validateString !== undefined) {
-            expect(e.toString()).toEqual(spec.validateString);
-          }
-        }
+        });
       });
     });
-  });
+  }
+
+  function testAssertMethodRejection<S extends TSchema>(
+    method: ValidatorMethodOfClass<StandardValidator<S>>,
+    specs: InvalidTestSpec[]
+  ) {
+    describe(`${method}() rejections`, () => {
+      specs.forEach((spec) => {
+        it(`${method}() should reject ${spec.description}`, () => {
+          const validator = createValidator(spec.schema);
+          try {
+            (validator[method] as any)(spec.value, spec.overallMessage);
+            fail('should have thrown');
+          } catch (e: any) {
+            if (!(e instanceof ValidationException)) throw e;
+
+            const details = e.details;
+            const errors = spec.errors;
+            expect(details.length).toEqual(1);
+            expect(details[0].path).toEqual(errors[0].path);
+            expect(details[0].message).toContain(errors[0].message);
+
+            if (spec.assertMessage !== undefined) {
+              expect(e.message).toEqual(spec.assertMessage);
+            }
+            if (spec.assertString !== undefined) {
+              expect(e.toString()).toEqual(spec.assertString);
+            }
+          }
+        });
+      });
+    });
+  }
+
+  function testValidateMethodRejection<S extends TSchema>(
+    method: ValidatorMethodOfClass<StandardValidator<S>>,
+    specs: InvalidTestSpec[]
+  ) {
+    describe(`${method}() rejections`, () => {
+      specs.forEach((spec) => {
+        it(`${method}() should reject ${spec.description}`, () => {
+          const validator = createValidator(spec.schema);
+          try {
+            (validator[method] as any)(spec.value, spec.overallMessage);
+            fail('should have thrown');
+          } catch (e: any) {
+            if (!(e instanceof ValidationException)) throw e;
+
+            const details = e.details;
+            const errors = spec.errors;
+            expect(details.length).toEqual(errors.length);
+            errors.forEach((error, i) => {
+              expect(details[i]?.path).toEqual(error.path);
+              expect(details[i]?.message).toContain(error.message);
+            });
+
+            const expectedOverallMessage =
+              spec.overallMessage ?? DEFAULT_OVERALL_ERROR;
+            expect(e.message).toEqual(expectedOverallMessage);
+            if (spec.validateString !== undefined) {
+              expect(e.toString()).toEqual(spec.validateString);
+            }
+          }
+        });
+      });
+    });
+  }
 }
