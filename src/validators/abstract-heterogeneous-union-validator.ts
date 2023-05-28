@@ -7,7 +7,7 @@ import { ValueError } from '@sinclair/typebox/errors';
 
 import { AbstractTypedUnionValidator } from './abstract-typed-union-validator';
 import { UnionTypeException } from '../lib/union-type-exception';
-import { DEFAULT_OVERALL_ERROR } from '../lib/constants';
+import { DEFAULT_OVERALL_ERROR } from '../lib/errors';
 
 /**
  * Abstract validator for heterogeneous unions of objects.

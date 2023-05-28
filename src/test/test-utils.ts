@@ -31,15 +31,19 @@ export interface TestSpec {
   onlySpec: boolean;
 }
 
-export interface ValidTestSpec extends TestSpec {
+export interface ValidTestSpec<S extends TSchema> extends TestSpec {
   description: string;
-  schema: TSchema;
+  schema: S;
   value: any;
 }
 
-export interface InvalidTestSpec extends TestSpec {
+export interface ValidUnionTestSpec extends ValidTestSpec<TUnion<TObject[]>> {
+  selectedIndex: number;
+}
+
+export interface InvalidTestSpec<S extends TSchema> extends TestSpec {
   description: string;
-  schema: TSchema;
+  schema: S;
   value: any;
   overallMessage?: string;
   assertMessage?: string;
@@ -61,9 +65,9 @@ export class ValidatorCache {
   compilingValidators = new Map<TSchema, AbstractValidator<TSchema>>();
   nonCompilingValidators = new Map<TSchema, AbstractValidator<TSchema>>();
 
-  getCompiling(
-    schema: TSchema,
-    createValidator: (schema: TSchema) => AbstractValidator<TSchema>
+  getCompiling<S extends TSchema>(
+    schema: S,
+    createValidator: (schema: S) => AbstractValidator<S>
   ): AbstractValidator<TSchema> {
     return this._getCachedValidator(
       this.compilingValidators,
@@ -72,9 +76,9 @@ export class ValidatorCache {
     );
   }
 
-  getNonCompiling(
-    schema: TSchema,
-    createValidator: (schema: TSchema) => AbstractValidator<TSchema>
+  getNonCompiling<S extends TSchema>(
+    schema: S,
+    createValidator: (schema: S) => AbstractValidator<S>
   ): AbstractValidator<TSchema> {
     return this._getCachedValidator(
       this.nonCompilingValidators,
@@ -83,11 +87,11 @@ export class ValidatorCache {
     );
   }
 
-  private _getCachedValidator(
-    cache: Map<TSchema, AbstractValidator<any>>,
-    schema: TSchema,
-    createValidator: (schema: TSchema) => AbstractValidator<any>
-  ): AbstractValidator<any> {
+  private _getCachedValidator<S extends TSchema>(
+    cache: Map<TSchema, AbstractValidator<TSchema>>,
+    schema: S,
+    createValidator: (schema: S) => AbstractValidator<S>
+  ): AbstractValidator<TSchema> {
     let validator = cache.get(schema);
     if (validator === undefined) {
       validator = createValidator(schema);
