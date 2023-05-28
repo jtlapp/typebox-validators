@@ -3,8 +3,8 @@ import { TSchema, Type } from '@sinclair/typebox';
 import { AbstractStandardValidator } from '../validators/abstract-standard-validator';
 import { StandardValidator } from '../validators/standard-validator';
 import { ValidationException } from '../lib/validation-exception';
-import { DEFAULT_OVERALL_ERROR } from '../lib/errors';
 import { CompilingStandardValidator } from '../validators/compiling-standard-validator';
+import { DEFAULT_OVERALL_ERROR } from '../lib/errors';
 import {
   ValidatorKind,
   MethodKind,
@@ -162,7 +162,7 @@ function testValidator(
     },
   ]);
 
-  function testInvalidSpecs(specs: InvalidTestSpec[]) {
+  function testInvalidSpecs(specs: InvalidTestSpec<TSchema>[]) {
     if (runThisTest(MethodKind.Test)) {
       describe('test() rejections', () => {
         specsToRun(specs).forEach((spec) => {
@@ -212,7 +212,7 @@ function testValidator(
 
   function testAssertMethodRejection<S extends TSchema>(
     method: ValidatorMethodOfClass<StandardValidator<S>>,
-    specs: InvalidTestSpec[]
+    specs: InvalidTestSpec<TSchema>[]
   ) {
     describe(`${method}() rejections`, () => {
       specsToRun(specs).forEach((spec) => {
@@ -244,7 +244,7 @@ function testValidator(
 
   function testValidateMethodRejection<S extends TSchema>(
     method: ValidatorMethodOfClass<StandardValidator<S>>,
-    specs: InvalidTestSpec[]
+    specs: InvalidTestSpec<TSchema>[]
   ) {
     describe(`${method}() rejections`, () => {
       specsToRun(specs).forEach((spec) => {
