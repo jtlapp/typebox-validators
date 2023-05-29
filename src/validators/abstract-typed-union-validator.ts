@@ -3,8 +3,7 @@ import { ValueError, ValueErrorType } from '@sinclair/typebox/errors';
 
 import { AbstractValidator } from './abstract-validator';
 import { CompilingStandardValidator } from './compiling-standard-validator';
-
-const DEFAULT_UNKNOWN_TYPE_MESSAGE = 'not a type the union recognizes';
+import { DEFAULT_UNKNOWN_TYPE_MESSAGE } from '../lib/errors';
 
 /**
  * Abstract validator for values that are typed member unions of objects.

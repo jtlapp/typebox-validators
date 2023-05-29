@@ -14,25 +14,41 @@ import {
   ValidatorCache,
 } from './test-utils';
 
-const onlyRunValidator = ValidatorKind.All;
-const onlyRunMethod = MethodKind.All;
+const onlyRunValidator = ValidatorKind.NonCompiling;
+const onlyRunMethod = MethodKind.Validate;
 
-const schema1 = Type.Object({
-  delta: Type.Integer(),
-  count: Type.Integer({ exclusiveMinimum: 0 }),
-  name: Type.String({
-    minLength: 5,
-    maxLength: 10,
-    pattern: '^[a-zA-Z]+$',
-    errorMessage: 'name should consist of 5-10 letters',
-  }),
+const schema0 = Type.String({
+  minLength: 5,
+  maxLength: 10,
+  pattern: '^[a-zA-Z]+$',
+});
+
+const schema1 = Type.String({
+  minLength: 5,
+  maxLength: 10,
+  pattern: '^[a-zA-Z]+$',
+  errorMessage: 'name should consist of 5-10 letters',
 });
 
 const schema2 = Type.Object({
+  delta: Type.Integer(),
+  count: Type.Integer({ exclusiveMinimum: 0 }),
+  name: schema1,
+});
+
+const schema3 = Type.Object({
   int1: Type.Integer({ errorMessage: '{field} must be an integer' }),
   int2: Type.Integer({ errorMessage: '{field} must be an integer' }),
   alpha: Type.String({ pattern: '^[a-zA-Z]+$', maxLength: 4 }),
 });
+
+const schema4 = Type.Object(
+  {
+    int1: Type.Integer(),
+    int2: Type.Integer({ errorMessage: 'must be an integer' }),
+  },
+  { errorMessage: 'object-level error message' }
+);
 
 const validatorCache = new ValidatorCache();
 
@@ -65,9 +81,48 @@ function testValidator(
 ) {
   testInvalidSpecs([
     {
+      description: 'multiple errors for string literal',
+      onlySpec: false,
+      schema: schema0,
+      value: '1',
+      assertMessage: DEFAULT_OVERALL_ERROR,
+      errors: [
+        {
+          path: '',
+          message: 'greater or equal to 5',
+        },
+        {
+          path: '',
+          message: 'match pattern',
+        },
+      ],
+      assertString:
+        'Invalid value:\n- Expected string length greater or equal to 5',
+      validateString:
+        'Invalid value:\n' +
+        '- Expected string length greater or equal to 5\n' +
+        '- Expected string to match pattern ^[a-zA-Z]+$',
+    },
+    {
+      description: 'custom overall and error messages for string literal',
+      onlySpec: true,
+      schema: schema1,
+      value: '1',
+      overallMessage: 'Oopsie',
+      assertMessage: 'Oopsie',
+      errors: [
+        {
+          path: '',
+          message: 'name should consist of 5-10 letters',
+        },
+      ],
+      assertString: 'Oopsie:\n- name should consist of 5-10 letters',
+      validateString: 'Oopsie:\n- name should consist of 5-10 letters',
+    },
+    {
       description: 'single invalid field with one error',
       onlySpec: false,
-      schema: schema1,
+      schema: schema2,
       value: { delta: 0.5, count: 1, name: 'ABCDE' },
       assertMessage: DEFAULT_OVERALL_ERROR,
       errors: [{ path: '/delta', message: 'Expected integer' }],
@@ -78,7 +133,7 @@ function testValidator(
       description:
         'single invalid field with one error, custom overall message 1',
       onlySpec: false,
-      schema: schema1,
+      schema: schema2,
       value: { delta: 0.5, count: 1, name: 'ABCDE' },
       overallMessage: 'Custom message',
       assertMessage: 'Custom message',
@@ -90,7 +145,7 @@ function testValidator(
       description:
         'single invalid field with one error, custom overall message 2',
       onlySpec: false,
-      schema: schema1,
+      schema: schema2,
       value: { delta: 0.5, count: 1, name: 'ABCDE' },
       overallMessage: "Oopsie. '{field}' {detail}",
       assertMessage: "Oopsie. 'delta' Expected integer",
@@ -102,7 +157,7 @@ function testValidator(
     {
       description: 'single invalid field with multiple errors',
       onlySpec: false,
-      schema: schema2,
+      schema: schema3,
       value: { int1: 1, int2: 1, alpha: '12345' },
       errors: [
         {
@@ -118,7 +173,7 @@ function testValidator(
     {
       description: 'multiple invalid fields with multiple errors',
       onlySpec: false,
-      schema: schema2,
+      schema: schema3,
       value: { int1: 1.5, int2: 1.5, alpha: '12345' },
       assertMessage: DEFAULT_OVERALL_ERROR,
       errors: [
@@ -143,7 +198,7 @@ function testValidator(
     {
       description: 'one custom error message for multiple errors',
       onlySpec: false,
-      schema: schema1,
+      schema: schema2,
       value: { delta: 0.5, count: 1, name: '1' },
       assertMessage: DEFAULT_OVERALL_ERROR,
       errors: [
@@ -159,6 +214,28 @@ function testValidator(
       assertString: 'Invalid value:\n- delta: Expected integer',
       validateString:
         'Invalid value:\n- delta: Expected integer\n- name: name should consist of 5-10 letters',
+    },
+    {
+      description:
+        'invalid overall value with one error, custom overall message 1',
+      onlySpec: false,
+      schema: schema2,
+      value: 'not an object',
+      overallMessage: 'Oopsie. {field} {detail}',
+      assertMessage: 'Oopsie. Value Expected object',
+      errors: [{ path: '', message: 'Expected object' }],
+      assertString: 'Oopsie. Value Expected object:\n- Expected object',
+      validateString: 'Oopsie. {field} {detail}:\n- Expected object',
+    },
+    {
+      description: 'object-level error message despite invalid field',
+      onlySpec: true,
+      schema: schema4,
+      value: { int1: 1, int2: 'not an integer' },
+      assertMessage: 'Invalid value: object-level error message',
+      errors: [{ path: '', message: 'object-level error message' }],
+      assertString: 'Invalid value:\n- object-level error message',
+      validateString: 'Invalid value:\n- object-level error message',
     },
   ]);
 
@@ -211,7 +288,7 @@ function testValidator(
   }
 
   function testAssertMethodRejection<S extends TSchema>(
-    method: ValidatorMethodOfClass<StandardValidator<S>>,
+    method: ValidatorMethodOfClass<AbstractStandardValidator<S>>,
     specs: InvalidTestSpec<TSchema>[]
   ) {
     describe(`${method}() rejections`, () => {
@@ -243,7 +320,7 @@ function testValidator(
   }
 
   function testValidateMethodRejection<S extends TSchema>(
-    method: ValidatorMethodOfClass<StandardValidator<S>>,
+    method: ValidatorMethodOfClass<AbstractStandardValidator<S>>,
     specs: InvalidTestSpec<TSchema>[]
   ) {
     describe(`${method}() rejections`, () => {

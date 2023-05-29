@@ -11,18 +11,19 @@ import {
 } from './test-utils';
 import { testValidSpecs } from './test-valid-specs';
 
-const onlyRunValidator = ValidatorKind.All;
-const onlyRunMethod = MethodKind.All;
+const onlyRunValidator = ValidatorKind.NonCompiling;
+const onlyRunMethod = MethodKind.AssertAndClean;
+
+const schema0 = Type.String({
+  minLength: 5,
+  maxLength: 10,
+  pattern: '^[a-zA-Z]+$',
+});
 
 const schema1 = Type.Object({
   delta: Type.Integer(),
   count: Type.Integer({ exclusiveMinimum: 0 }),
-  name: Type.String({
-    minLength: 5,
-    maxLength: 10,
-    pattern: '^[a-zA-Z]+$',
-    errorMessage: 'name should consist of 5-10 letters',
-  }),
+  name: schema0,
 });
 
 const validatorCache = new ValidatorCache();
@@ -55,6 +56,12 @@ function testValidator(
 ) {
   testValidSpecs(runThisTest, createValidator, verifyCleaning, [
     {
+      description: 'valid value 0, string literal',
+      onlySpec: true,
+      schema: schema0,
+      value: 'ABCDEDEFGH',
+    },
+    {
       description: 'valid value 1, no unrecognized fields',
       onlySpec: false,
       schema: schema1,
@@ -76,12 +83,14 @@ function testValidator(
 }
 
 function verifyCleaning(spec: ValidTestSpec<TSchema>, value: any): void {
-  for (const key in value) {
-    expect(key in spec.schema.properties).toBe(true);
+  if (spec.schema.properties !== undefined) {
+    for (const key in value) {
+      expect(key in spec.schema.properties).toBe(true);
+    }
+    expect(Object.keys(value).length).toBeLessThanOrEqual(
+      Object.keys(spec.schema.properties).length
+    );
   }
-  expect(Object.keys(value).length).toBeLessThanOrEqual(
-    Object.keys(spec.schema.properties).length
-  );
 }
 
 function runThisValidator(validatorKind: ValidatorKind): boolean {

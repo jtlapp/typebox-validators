@@ -38,7 +38,8 @@ export function testValidSpecs<S extends ValidTestSpec<TSchema>>(
       if (runThisTest(MethodKind.AssertAndClean)) {
         it(`assertAndClean() should clean provided ${spec.description}`, () => {
           const validator = createValidator(spec.schema);
-          const value = { ...spec.value };
+          const value =
+            typeof spec.value == 'object' ? { ...spec.value } : spec.value;
           expect(() => validator.assertAndClean(value)).not.toThrow();
           verifyCleaning(spec, value);
         });
@@ -47,7 +48,9 @@ export function testValidSpecs<S extends ValidTestSpec<TSchema>>(
       if (runThisTest(MethodKind.ValidateAndClean)) {
         it(`validateAndClean() should clean provided ${spec.description}`, () => {
           const validator = createValidator(spec.schema);
-          const value = { ...spec.value };
+          const value =
+            typeof spec.value == 'object' ? { ...spec.value } : spec.value;
+          validator.validateAndClean(value); // TODO: remove
           expect(() => validator.validateAndClean(value)).not.toThrow();
           verifyCleaning(spec, value);
         });

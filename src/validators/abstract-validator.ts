@@ -7,9 +7,11 @@ import {
   DEFAULT_OVERALL_ERROR,
   createErrorsIterable,
   adjustErrorMessage,
+  substituteFieldInMessage,
 } from '../lib/errors';
 
-// TODO: docs: "{field}" can occur in detail messages too
+// TODO: docs: "{field}" can occur in detail messages too (keep this?)
+// TODO: docs: errorMessage works at root level too
 
 /**
  * Abstract base class for validators, providing validation services for a
@@ -188,7 +190,7 @@ export abstract class AbstractValidator<S extends TSchema> {
     value: Readonly<unknown>
   ): Static<VS> {
     // TODO: reimplement without 'in', cache when compiling; test performance
-    if (schema.type === 'object') {
+    if (schema.type === 'object' && typeof value === 'object') {
       const cleanedValue: Record<string, any> = {};
       for (const key in schema.properties) {
         cleanedValue[key] = (value as Record<string, any>)[key];
@@ -205,7 +207,7 @@ export abstract class AbstractValidator<S extends TSchema> {
     value: unknown
   ): void {
     // TODO: reimplement within 'in', cache when compiling; test performance
-    if (schema.type === 'object') {
+    if (schema.type === 'object' && typeof value === 'object') {
       for (const key in value as Record<string, any>) {
         if (!(key in schema.properties)) {
           delete (value as Record<string, any>)[key];
@@ -285,7 +287,8 @@ function adjustAssertMessage(error: ValueError, overallError?: string): string {
   if (overallError === undefined) {
     return DEFAULT_OVERALL_ERROR;
   }
-  return overallError
-    .replace('{field}', error.path.substring(1))
-    .replace('{detail}', error.message);
+  return substituteFieldInMessage(error.path, overallError).replace(
+    '{detail}',
+    error.message
+  );
 }
