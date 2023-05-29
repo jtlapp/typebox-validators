@@ -1,3 +1,4 @@
+import { Kind } from '@sinclair/typebox';
 import { ValueError, ValueErrorIterator } from '@sinclair/typebox/errors';
 
 // TODO: rename to _MESSAGE
@@ -13,23 +14,23 @@ export function createErrorsIterable(
     [Symbol.iterator]: function* () {
       const errors = typeboxErrorIterator[Symbol.iterator]();
       let result = errors.next();
-      let priorPath = '???'; // signals no prior path
-      let hadCustomError = false;
+      let customErrorPath = '???'; // signals no prior path ('' can be root path)
       while (result.value !== undefined) {
         const error = result.value;
         const standardMessage = error.message;
-        if (error.path !== priorPath) {
+        if (error.path !== customErrorPath) {
           adjustErrorMessage(error);
-          hadCustomError = error.message != standardMessage;
-          yield error;
-        } else if (
-          !hadCustomError &&
-          // drop 'required' errors that follow type errors
-          error.message != TYPEBOX_REQUIRED_ERROR_MESSAGE
-        ) {
-          yield error;
+          if (error.message != standardMessage) {
+            customErrorPath = error.path;
+            yield error;
+          } else if (
+            // drop 'required' errors for values that have constraints
+            error.message != TYPEBOX_REQUIRED_ERROR_MESSAGE ||
+            error.schema[Kind] == 'Any'
+          ) {
+            yield error;
+          }
         }
-        priorPath = error.path;
         result = errors.next();
       }
     },

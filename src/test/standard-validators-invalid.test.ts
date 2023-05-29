@@ -14,8 +14,8 @@ import {
   ValidatorCache,
 } from './test-utils';
 
-const onlyRunValidator = ValidatorKind.NonCompiling;
-const onlyRunMethod = MethodKind.Validate;
+const onlyRunValidator = ValidatorKind.All;
+const onlyRunMethod = MethodKind.All;
 
 const schema0 = Type.String({
   minLength: 5,
@@ -42,13 +42,15 @@ const schema3 = Type.Object({
   alpha: Type.String({ pattern: '^[a-zA-Z]+$', maxLength: 4 }),
 });
 
-const schema4 = Type.Object(
-  {
-    int1: Type.Integer(),
-    int2: Type.Integer({ errorMessage: 'must be an integer' }),
-  },
-  { errorMessage: 'object-level error message' }
-);
+// const schema4 = Type.Object({
+//   int1: Type.Integer(),
+//   whatever: Type.Any(),
+// });
+
+const schema5 = Type.Object({
+  int1: Type.Integer(),
+  whatever: Type.Any({ errorMessage: 'Missing whatever' }),
+});
 
 const validatorCache = new ValidatorCache();
 
@@ -105,7 +107,7 @@ function testValidator(
     },
     {
       description: 'custom overall and error messages for string literal',
-      onlySpec: true,
+      onlySpec: false,
       schema: schema1,
       value: '1',
       overallMessage: 'Oopsie',
@@ -227,15 +229,39 @@ function testValidator(
       assertString: 'Oopsie. Value Expected object:\n- Expected object',
       validateString: 'Oopsie. {field} {detail}:\n- Expected object',
     },
+    // TODO: add back in once TypeBox addresses the issue
+    // {
+    //   description: "reports default required message for 'any' field",
+    //   onlySpec: false,
+    //   schema: schema4,
+    //   value: { int1: 32 },
+    //   errors: [
+    //     {
+    //       path: '/whatever',
+    //       message: 'Expected required property',
+    //     },
+    //   ],
+    //   assertString: 'Invalid value:\n- whatever: Expected required property',
+    //   validateString: 'Invalid value:\n- whatever: Expected required property',
+    // },
     {
-      description: 'object-level error message despite invalid field',
-      onlySpec: true,
-      schema: schema4,
-      value: { int1: 1, int2: 'not an integer' },
-      assertMessage: 'Invalid value: object-level error message',
-      errors: [{ path: '', message: 'object-level error message' }],
-      assertString: 'Invalid value:\n- object-level error message',
-      validateString: 'Invalid value:\n- object-level error message',
+      description: "reports custom required message for 'any' field",
+      onlySpec: false,
+      schema: schema5,
+      value: { int1: 'not an integer' },
+      errors: [
+        {
+          path: '/int1',
+          message: 'Expected integer',
+        },
+        {
+          path: '/whatever',
+          message: 'Missing whatever',
+        },
+      ],
+      assertString: 'Invalid value:\n- int1: Expected integer',
+      validateString:
+        'Invalid value:\n- int1: Expected integer\n- whatever: Missing whatever',
     },
   ]);
 
@@ -297,7 +323,7 @@ function testValidator(
           const validator = createValidator(spec.schema);
           try {
             (validator[method] as any)(spec.value, spec.overallMessage);
-            fail('should have thrown');
+            expect(false).toBe(true);
           } catch (e: any) {
             if (!(e instanceof ValidationException)) throw e;
 
@@ -329,7 +355,7 @@ function testValidator(
           const validator = createValidator(spec.schema);
           try {
             (validator[method] as any)(spec.value, spec.overallMessage);
-            fail('should have thrown');
+            expect(false).toBe(true);
           } catch (e: any) {
             if (!(e instanceof ValidationException)) throw e;
 
