@@ -26,7 +26,7 @@ export function createErrorsIterable(
           } else if (
             // drop 'required' errors for values that have constraints
             error.message != TYPEBOX_REQUIRED_ERROR_MESSAGE ||
-            error.schema[Kind] == 'Any'
+            ['Any', 'Unknown'].includes(error.schema[Kind])
           ) {
             yield error;
           }
@@ -38,17 +38,8 @@ export function createErrorsIterable(
 }
 
 export function adjustErrorMessage(error: ValueError): ValueError {
-  const schema = error.schema;
-  if (schema.errorMessage !== undefined) {
-    error.message = substituteFieldInMessage(error.path, schema.errorMessage);
+  if (error.schema.errorMessage !== undefined) {
+    error.message = error.schema.errorMessage;
   }
   return error;
-}
-
-export function substituteFieldInMessage(
-  path: string,
-  message: string
-): string {
-  const field = path.length <= 1 ? 'Value' : path.substring(1);
-  return message.replace('{field}', field);
 }
