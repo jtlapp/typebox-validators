@@ -80,7 +80,7 @@ export abstract class AbstractTypedUnionValidator<
       path: '',
       schema: unionSchema,
       value,
-      message: unionSchema.typeError ?? DEFAULT_UNKNOWN_TYPE_MESSAGE,
+      message: unionSchema.errorMessage ?? DEFAULT_UNKNOWN_TYPE_MESSAGE,
     };
   }
 
@@ -88,9 +88,9 @@ export abstract class AbstractTypedUnionValidator<
     typeError: ValueError
   ): Iterable<ValueError> {
     return {
-      [Symbol.iterator]: () => ({
-        next: () => ({ done: true, value: typeError }),
-      }),
+      [Symbol.iterator]: function* () {
+        yield typeError;
+      },
     };
   }
 }
