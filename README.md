@@ -4,10 +4,16 @@ TypeBox validators with custom errors, discriminated unions, and safe multi-tier
 
 # TODO
 
+- probably restricted to use with TypeBox schemas because uses TypeBox validation and
+  TypeBox uses symbols
+- always call test() first.
 - write generic test tools that take examples for each kind of class and guarantee that common tests are done on these classes; reuse sample schemas/values as much as possible; maybe classify schema/value pairs by whether they're valid, expected error count, single-field multiple errors (and whether one is maxlength); maybe pair invalid schemas with their expected errors
 - rename specifics back to details; rename specificError to errorMessage
 - mention use of `additionalProperties` for preventing unrecognized properties
 - test in browser context. Maybe use https://github.com/egoist/tsup. But how to make it easy for devs to use this in a browser?
+- note about heavy setup in hetero and discrim unions
+- lowercase first character of TypeBox errors
+- performance tests
 
 ## Introduction
 
