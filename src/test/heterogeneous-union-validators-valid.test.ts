@@ -18,12 +18,12 @@ const onlyRunMethod = MethodKind.All;
 
 const wellFormedUnion1 = Type.Union([
   Type.Object({
-    s: Type.String(),
+    unique1: Type.String(),
     str1: Type.String(),
     str2: Type.Optional(Type.String()),
   }),
   Type.Object({
-    i: Type.Integer(),
+    unique2: Type.Integer(),
     int1: Type.Integer(),
     int2: Type.Optional(Type.Integer()),
   }),
@@ -34,18 +34,18 @@ const wellFormedUnion2 = Type.Union(
     Type.Object({
       str1: Type.String(),
       str2: Type.String(),
-      s1: Type.String(),
-      unique: Type.String(),
+      unique1: Type.String(),
+      unique3: Type.String(),
       opt: Type.Optional(Type.String()),
     }),
     Type.Object({
       str1: Type.String(),
-      s2: Type.String(),
+      unique2: Type.String(),
       str2: Type.String(),
       opt: Type.Optional(Type.Integer()),
     }),
   ],
-  { typeError: 'Unknown type' }
+  { errorMessage: 'Unknown type' }
 );
 
 const validatorCache = new ValidatorCache();
@@ -85,14 +85,14 @@ function testValidator(
       description: 'valid hetero union 1, no unrecognized fields',
       onlySpec: false,
       schema: wellFormedUnion1,
-      value: { s: 'hello', str1: 'hello' },
+      value: { unique1: 'hello', str1: 'hello' },
       selectedIndex: 0,
     },
     {
       description: 'valid hetero union 2, no unrecognized fields',
       onlySpec: false,
       schema: wellFormedUnion1,
-      value: { i: 1, int1: 1 },
+      value: { unique2: 1, int1: 1 },
       selectedIndex: 1,
     },
     {
@@ -100,7 +100,7 @@ function testValidator(
       onlySpec: false,
       schema: wellFormedUnion1,
       value: {
-        s: 'hello',
+        unique1: 'hello',
         str1: 'hello',
         int1: 1,
         unrecognized1: 1,
@@ -113,7 +113,7 @@ function testValidator(
       onlySpec: false,
       schema: wellFormedUnion1,
       value: {
-        i: 1,
+        unique2: 1,
         str1: 'hello',
         int1: 1,
         unrecognized1: 1,
@@ -125,7 +125,7 @@ function testValidator(
       description: 'valid hetero union 5, selecting by member keys',
       onlySpec: false,
       schema: wellFormedUnion2,
-      value: { str1: 'a', str2: 'b', s1: 'c', unique: 'd', opt: 'e' },
+      value: { str1: 'a', str2: 'b', unique1: 'c', unique3: 'd', opt: 'e' },
       selectedIndex: 0,
     },
     {
@@ -134,7 +134,7 @@ function testValidator(
       schema: wellFormedUnion2,
       value: {
         str1: 'a',
-        s2: 'b',
+        unique2: 'b',
         str2: 'c',
         opt: 32,
       },
