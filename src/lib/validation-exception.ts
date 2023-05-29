@@ -38,5 +38,7 @@ export class ValidationException extends ExtendableError {
 }
 
 function detailToString(detail: ValueError): string {
-  return detail.path.substring(1) + ': ' + detail.message;
+  return detail.path != ''
+    ? detail.path.substring(1) + ': ' + detail.message
+    : detail.message;
 }
