@@ -10,8 +10,12 @@ import {
   substituteFieldInMessage,
 } from '../lib/errors';
 
-// TODO: docs: "{field}" can occur in detail messages too (keep this?)
-// TODO: docs: errorMessage works at root level too
+// TODO: docs: replace {field} and {detail} with {error}, overall only.
+// TODO: docs: errorMessage only applies to the most specific value in error,
+//  so that objects can't error, and the union error message applies when
+//  when its type can't be determined.
+// TODO: docs: using TypeBox validation probably restricts schemas to being
+//  defined with TypeBox, because is uses symbols.
 
 /**
  * Abstract base class for validators, providing validation services for a
