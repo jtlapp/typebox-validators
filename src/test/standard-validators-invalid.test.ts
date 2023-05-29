@@ -42,10 +42,10 @@ const schema3 = Type.Object({
   alpha: Type.String({ pattern: '^[a-zA-Z]+$', maxLength: 4 }),
 });
 
-// const schema4 = Type.Object({
-//   int1: Type.Integer(),
-//   whatever: Type.Any(),
-// });
+const schema4 = Type.Object({
+  int1: Type.Integer(),
+  whatever: Type.Any(),
+});
 
 const schema5 = Type.Object({
   int1: Type.Integer(),
@@ -229,21 +229,20 @@ function testValidator(
       assertString: 'Oopsie. Value Expected object:\n- Expected object',
       validateString: 'Oopsie. {field} {detail}:\n- Expected object',
     },
-    // TODO: add back in once TypeBox addresses the issue
-    // {
-    //   description: "reports default required message for 'any' field",
-    //   onlySpec: false,
-    //   schema: schema4,
-    //   value: { int1: 32 },
-    //   errors: [
-    //     {
-    //       path: '/whatever',
-    //       message: 'Expected required property',
-    //     },
-    //   ],
-    //   assertString: 'Invalid value:\n- whatever: Expected required property',
-    //   validateString: 'Invalid value:\n- whatever: Expected required property',
-    // },
+    {
+      description: "reports default required message for 'any' field",
+      onlySpec: false,
+      schema: schema4,
+      value: { int1: 32 },
+      errors: [
+        {
+          path: '/whatever',
+          message: 'Expected required property',
+        },
+      ],
+      assertString: 'Invalid value:\n- whatever: Expected required property',
+      validateString: 'Invalid value:\n- whatever: Expected required property',
+    },
     {
       description: "reports custom required message for 'any' field",
       onlySpec: false,
