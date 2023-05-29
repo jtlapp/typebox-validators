@@ -33,7 +33,7 @@ describe('discriminated union validators', () => {
         int2: Type.Optional(Type.Integer()),
       }),
     ],
-    { discriminantKey: 't', typeError: 'Unknown type' }
+    { discriminantKey: 't', errorMessage: 'Unknown type' }
   );
   const illFormedUnion1 = Type.Union(
     [
