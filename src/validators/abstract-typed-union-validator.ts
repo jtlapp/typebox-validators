@@ -5,6 +5,9 @@ import { AbstractValidator } from './abstract-validator';
 import { CompilingStandardValidator } from './compiling-standard-validator';
 import { DEFAULT_UNKNOWN_TYPE_MESSAGE } from '../lib/errors';
 
+export type FindSchemaMemberIndex = (value: unknown) => number | null;
+export type SchemaMemberTest = (value: object) => boolean;
+
 /**
  * Abstract validator for values that are typed member unions of objects.
  */
@@ -92,5 +95,11 @@ export abstract class AbstractTypedUnionValidator<
         yield typeError;
       },
     };
+  }
+
+  protected toValueKeyDereference(key: string): string {
+    return /^[a-zA-Z_$][a-zA-Z_$0-9]*$/.test(key)
+      ? `value.${key}`
+      : `value['${key.replace(/'/g, "\\'")}']`;
   }
 }

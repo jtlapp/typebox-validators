@@ -19,12 +19,16 @@ export class DiscriminatedUnionValidator<
 
   /** @inheritdoc */
   override test(value: Readonly<unknown>): boolean {
-    return Value.Check(this.schema, value);
+    const indexOrError = this.findSchemaMemberIndex(value);
+    if (typeof indexOrError !== 'number') {
+      return false;
+    }
+    return Value.Check(this.schema.anyOf[indexOrError], value);
   }
 
   /** @inheritdoc */
   override errors(value: Readonly<unknown>): Iterable<ValueError> {
-    const indexOrError = this.findDiscriminatedUnionSchemaIndex(value);
+    const indexOrError = this.findSchemaMemberIndex(value);
     if (typeof indexOrError !== 'number') {
       return this.createUnionTypeErrorIterable(indexOrError);
     }
@@ -36,7 +40,7 @@ export class DiscriminatedUnionValidator<
     value: Readonly<unknown>,
     overallError?: string
   ): TObject {
-    const indexOrError = this.findDiscriminatedUnionSchemaIndex(value);
+    const indexOrError = this.findSchemaMemberIndex(value);
     if (typeof indexOrError !== 'number') {
       throwInvalidAssert(overallError, indexOrError);
     }
@@ -49,7 +53,7 @@ export class DiscriminatedUnionValidator<
     value: Readonly<unknown>,
     overallError?: string
   ): TObject {
-    const indexOrError = this.findDiscriminatedUnionSchemaIndex(value);
+    const indexOrError = this.findSchemaMemberIndex(value);
     if (typeof indexOrError !== 'number') {
       throwInvalidValidate(overallError, indexOrError);
     }

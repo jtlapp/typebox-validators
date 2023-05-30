@@ -19,9 +19,7 @@ export abstract class AbstractHeterogeneousUnionValidator<
     super(schema);
   }
 
-  protected findHeterogeneousUnionSchemaIndex(
-    value: Readonly<any>
-  ): number | ValueError {
+  protected findSchemaMemberIndex(value: Readonly<any>): number | ValueError {
     if (this.uniqueKeyByMemberIndex === undefined) {
       // only incur cost if validator is actually used
       this.cacheUniqueKeys();

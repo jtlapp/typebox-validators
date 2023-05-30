@@ -17,6 +17,7 @@ export enum MethodKind {
   ValidateAndClean,
   ValidateAndCleanCopy,
   Errors,
+  Other,
 }
 
 export type ValidatorMethodOfClass<T> = {

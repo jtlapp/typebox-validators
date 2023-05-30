@@ -1,9 +1,17 @@
 import { TObject, TUnion } from '@sinclair/typebox';
-import { ValueError } from '@sinclair/typebox/errors';
+import { Value, ValueError } from '@sinclair/typebox/value';
+import { TypeCompiler } from '@sinclair/typebox/compiler';
 
+import {
+  FindSchemaMemberIndex,
+  SchemaMemberTest,
+} from './abstract-typed-union-validator';
 import { AbstractDiscriminatedUnionValidator } from './abstract-discriminated-union-validator';
-import { CompilingStandardValidator } from './compiling-standard-validator';
-import { throwInvalidAssert, throwInvalidValidate } from '../lib/errors';
+import {
+  createErrorsIterable,
+  throwInvalidAssert,
+  throwInvalidValidate,
+} from '../lib/errors';
 
 /**
  * Lazily compiled validator for discriminated-union unions. To improve
@@ -13,53 +21,123 @@ import { throwInvalidAssert, throwInvalidValidate } from '../lib/errors';
 export class CompilingDiscriminatedUnionValidator<
   S extends TUnion<TObject[]>
 > extends AbstractDiscriminatedUnionValidator<S> {
-  protected memberValidators: CompilingStandardValidator<TObject>[];
+  #compiledFindSchemaMemberIndex?: FindSchemaMemberIndex;
+  #compiledSchemaMemberTests: (SchemaMemberTest | undefined)[];
 
   /** @inheritdoc */
   constructor(schema: Readonly<S>) {
     super(schema);
-    this.memberValidators = this.createMemberValidators();
+    this.#compiledSchemaMemberTests = new Array(schema.anyOf.length);
   }
 
   /** @inheritdoc */
   override test(value: Readonly<unknown>): boolean {
-    const indexOrError = this.findDiscriminatedUnionSchemaIndex(value);
-    if (typeof indexOrError !== 'number') {
-      return false;
-    }
-    return this.memberValidators[indexOrError].test(value);
+    const memberIndex = this.compiledFindSchemaMemberIndex(value);
+    return this.compiledSchemaMemberTest(memberIndex, value);
   }
 
   /** @inheritdoc */
   override errors(value: Readonly<unknown>): Iterable<ValueError> {
-    const indexOrError = this.findDiscriminatedUnionSchemaIndex(value);
+    const indexOrError = this.compiledFindSchemaMemberIndexOrError(value);
     if (typeof indexOrError !== 'number') {
       return this.createUnionTypeErrorIterable(indexOrError);
     }
-    return this.memberValidators[indexOrError].errors(value);
+    return createErrorsIterable(
+      Value.Errors(this.schema.anyOf[indexOrError], value)
+    );
   }
 
   override assertReturningSchema(
     value: Readonly<unknown>,
     overallError?: string
   ): TObject {
-    const indexOrError = this.findDiscriminatedUnionSchemaIndex(value);
+    const indexOrError = this.compiledFindSchemaMemberIndexOrError(value);
     if (typeof indexOrError !== 'number') {
       throwInvalidAssert(overallError, indexOrError);
     }
-    this.memberValidators[indexOrError].assert(value, overallError);
-    return this.schema.anyOf[indexOrError] as TObject;
+    const memberSchema = this.schema.anyOf[indexOrError];
+    if (!this.compiledSchemaMemberTest(indexOrError, value)) {
+      throwInvalidAssert(
+        overallError,
+        Value.Errors(memberSchema, value).First()!
+      );
+    }
+    return memberSchema;
   }
 
   override validateReturningSchema(
     value: Readonly<unknown>,
     overallError?: string
   ): TObject {
-    const indexOrError = this.findDiscriminatedUnionSchemaIndex(value);
+    const indexOrError = this.compiledFindSchemaMemberIndexOrError(value);
     if (typeof indexOrError !== 'number') {
       throwInvalidValidate(overallError, indexOrError);
     }
-    this.memberValidators[indexOrError].validate(value, overallError);
-    return this.schema.anyOf[indexOrError] as TObject;
+    const memberSchema = this.schema.anyOf[indexOrError];
+    if (!this.compiledSchemaMemberTest(indexOrError, value)) {
+      throwInvalidValidate(overallError, Value.Errors(memberSchema, value));
+    }
+    return memberSchema;
+  }
+
+  private compiledFindSchemaMemberIndex(
+    value: Readonly<unknown>
+  ): number | null {
+    if (this.#compiledFindSchemaMemberIndex === undefined) {
+      const codeParts: string[] = [
+        `(value) => {
+          if ((typeof value !== 'object' || value === null || Array.isArray(value)) return null;
+          switch (${this.toValueKeyDereference(this.discriminantKey)}) {\n`,
+      ];
+      for (let i = 0; i < this.schema.anyOf.length; ++i) {
+        const literal =
+          this.schema.anyOf[i].properties[this.discriminantKey].const;
+        if (typeof literal === 'string') {
+          codeParts.push(
+            `case '${literal.replace(/'/g, "\\'")}': return ${i};\n`
+          );
+        } else {
+          codeParts.push(`case ${literal}: return ${i};\n`);
+        }
+      }
+      this.#compiledFindSchemaMemberIndex = eval(
+        codeParts.join('') + 'default: return null; } }'
+      ) as FindSchemaMemberIndex;
+    }
+    return this.#compiledFindSchemaMemberIndex(value);
+  }
+
+  private compiledFindSchemaMemberIndexOrError(
+    value: Readonly<unknown>
+  ): number | ValueError {
+    const memberIndex = this.compiledFindSchemaMemberIndex(value);
+    if (memberIndex === null) {
+      return this.createUnionTypeError(this.schema, value);
+    }
+    return memberIndex;
+  }
+
+  private compiledSchemaMemberTest(
+    memberIndex: number | null,
+    value: Readonly<unknown>
+  ): boolean {
+    if (memberIndex === null) {
+      return false;
+    }
+    if (this.#compiledSchemaMemberTests[memberIndex] === undefined) {
+      let code = TypeCompiler.Compile(this.schema.anyOf[memberIndex]).Code();
+      code = code.replace(
+        `(typeof value === 'object' && value !== null && !Array.isArray(value)) &&`,
+        ''
+      );
+      // provide some resilience to change in TypeBox compiled code formatting
+      const startOfFunction = code.indexOf('function');
+      const startOfReturn = code.indexOf('return', startOfFunction);
+      code =
+        '(value) => ' +
+        code.substring(code.indexOf('(', startOfReturn), code.length - 1);
+      this.#compiledSchemaMemberTests[memberIndex] = eval(code);
+    }
+    return this.#compiledSchemaMemberTests[memberIndex]!(value);
   }
 }

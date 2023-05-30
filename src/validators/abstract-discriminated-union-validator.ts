@@ -11,26 +11,22 @@ const DEFAULT_DISCRIMINANT_KEY = 'kind';
 export abstract class AbstractDiscriminatedUnionValidator<
   S extends TUnion<TObject[]>
 > extends AbstractTypedUnionValidator<S> {
-  #discriminantKey: string;
+  protected discriminantKey: string;
   #unionIsWellformed: boolean = false;
 
   constructor(schema: Readonly<S>) {
     super(schema);
-    this.#discriminantKey =
+    this.discriminantKey =
       this.schema.discriminantKey ?? DEFAULT_DISCRIMINANT_KEY;
   }
 
-  protected findDiscriminatedUnionSchemaIndex(
-    subject: Readonly<any>
-  ): number | ValueError {
+  protected findSchemaMemberIndex(subject: Readonly<any>): number | ValueError {
     if (!this.#unionIsWellformed) {
       // only incur cost if validator is actually used
       for (const memberSchema of this.schema.anyOf) {
-        if (memberSchema.properties[this.#discriminantKey] === undefined) {
+        if (memberSchema.properties[this.discriminantKey] === undefined) {
           throw Error(
-            `Discriminant key '${
-              this.#discriminantKey
-            }' not present in all members of discriminated union`
+            `Discriminant key '${this.discriminantKey}' not present in all members of discriminated union`
           );
         }
       }
@@ -38,11 +34,11 @@ export abstract class AbstractDiscriminatedUnionValidator<
     }
 
     if (typeof subject === 'object' && subject !== null) {
-      const subjectKind = subject[this.#discriminantKey];
+      const subjectKind = subject[this.discriminantKey];
       if (subjectKind !== undefined) {
         for (let i = 0; i < this.schema.anyOf.length; ++i) {
           const memberKind =
-            this.schema.anyOf[i].properties[this.#discriminantKey];
+            this.schema.anyOf[i].properties[this.discriminantKey];
           if (memberKind !== undefined && memberKind.const === subjectKind) {
             return i;
           }

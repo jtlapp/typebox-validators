@@ -49,6 +49,17 @@ const wellFormedUnion2 = Type.Union(
   { errorMessage: 'Unknown type' }
 );
 
+const illFormedUnion = Type.Union([
+  Type.Object({
+    s: Type.String(),
+    str1: Type.Optional(Type.String()),
+  }),
+  Type.Object({
+    s: Type.Integer(),
+    int1: Type.Optional(Type.Integer()),
+  }),
+]);
+
 const validatorCache = new ValidatorCache();
 
 describe('heterogenous union validators - invalid values', () => {
@@ -223,11 +234,58 @@ function testValidator(
       assertString: 'Oopsie: Unknown type:\n * Unknown type',
       validateString: 'Oopsie:\n * Unknown type',
     },
-    // TODO: don't remove {error} from validate message; remove it before
-    //  calling validate in test suite.
-    // TODO: test ill-formed schema
     // TODO: any other tests I need (maybe check standard test suite)
   ]);
+
+  if ([MethodKind.All, MethodKind.Other].includes(onlyRunMethod)) {
+    const errorMessage = 'Heterogeneous union has members lacking unique keys';
+
+    describe('errors on invalid union schemas', () => {
+      it("union whose members aren't all unique, valid value", () => {
+        const validator = createValidator(illFormedUnion);
+        const validObject = { s: 'hello', str1: 'hello' };
+
+        expect(() => validator.test(validObject)).toThrow(errorMessage);
+        expect(() => validator.assert(validObject)).toThrow(errorMessage);
+        expect(() => validator.assertAndClean(validObject)).toThrow(
+          errorMessage
+        );
+        expect(() => validator.assertAndCleanCopy(validObject)).toThrow(
+          errorMessage
+        );
+        expect(() => validator.validate(validObject)).toThrow(errorMessage);
+        expect(() => validator.validateAndClean(validObject)).toThrow(
+          errorMessage
+        );
+        expect(() => validator.validateAndCleanCopy(validObject)).toThrow(
+          errorMessage
+        );
+        expect(() => validator.errors(validObject)).toThrow(errorMessage);
+      });
+
+      it("union whose members aren't all unique, invalid value", () => {
+        const validator = createValidator(illFormedUnion);
+        const validObject = { s: 'hello', str1: 32 };
+
+        expect(() => validator.test(validObject)).toThrow(errorMessage);
+        expect(() => validator.assert(validObject)).toThrow(errorMessage);
+        expect(() => validator.assertAndClean(validObject)).toThrow(
+          errorMessage
+        );
+        expect(() => validator.assertAndCleanCopy(validObject)).toThrow(
+          errorMessage
+        );
+        expect(() => validator.validate(validObject)).toThrow(errorMessage);
+        expect(() => validator.validateAndClean(validObject)).toThrow(
+          errorMessage
+        );
+        expect(() => validator.validateAndCleanCopy(validObject)).toThrow(
+          errorMessage
+        );
+        expect(() => validator.errors(validObject)).toThrow(errorMessage);
+      });
+    });
+  }
 }
 
 function runThisValidator(validatorKind: ValidatorKind): boolean {
