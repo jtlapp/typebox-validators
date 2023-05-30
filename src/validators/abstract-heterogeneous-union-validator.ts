@@ -6,8 +6,6 @@ import {
 import { ValueError } from '@sinclair/typebox/errors';
 
 import { AbstractTypedUnionValidator } from './abstract-typed-union-validator';
-import { UnionTypeException } from '../lib/union-type-exception';
-import { DEFAULT_OVERALL_ERROR } from '../lib/errors';
 
 /**
  * Abstract validator for heterogeneous unions of objects.
@@ -38,20 +36,6 @@ export abstract class AbstractHeterogeneousUnionValidator<
       }
     }
     return this.createUnionTypeError(this.schema, value);
-  }
-
-  protected findHeterogeneousUnionSchemaIndexOrThrow(
-    value: Readonly<any>,
-    overallError?: string
-  ): number {
-    const indexOrError = this.findHeterogeneousUnionSchemaIndex(value);
-    if (typeof indexOrError !== 'number') {
-      throw new UnionTypeException(
-        overallError ?? DEFAULT_OVERALL_ERROR,
-        indexOrError
-      );
-    }
-    return indexOrError;
   }
 
   protected cacheUniqueKeys(): void {

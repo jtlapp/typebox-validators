@@ -2,6 +2,7 @@ import { TObject, TUnion } from '@sinclair/typebox';
 
 import { AbstractHeterogeneousUnionValidator } from './abstract-heterogeneous-union-validator';
 import { Value, ValueError } from '@sinclair/typebox/value';
+import { throwInvalidAssert, throwInvalidValidate } from '../lib/errors';
 
 /**
  * Non-compiling validator for heterogeneous unions of objecs.
@@ -33,11 +34,11 @@ export class HeterogeneousUnionValidator<
     value: Readonly<unknown>,
     overallError?: string
   ): TObject {
-    const i = this.findHeterogeneousUnionSchemaIndexOrThrow(
-      value,
-      overallError
-    );
-    const schema = this.schema.anyOf[i] as TObject;
+    const indexOrError = this.findHeterogeneousUnionSchemaIndex(value);
+    if (typeof indexOrError !== 'number') {
+      throwInvalidAssert(overallError, indexOrError);
+    }
+    const schema = this.schema.anyOf[indexOrError] as TObject;
     this.uncompiledAssert(schema, value, overallError);
     return schema;
   }
@@ -46,11 +47,11 @@ export class HeterogeneousUnionValidator<
     value: Readonly<unknown>,
     overallError?: string
   ): TObject {
-    const i = this.findHeterogeneousUnionSchemaIndexOrThrow(
-      value,
-      overallError
-    );
-    const schema = this.schema.anyOf[i] as TObject;
+    const indexOrError = this.findHeterogeneousUnionSchemaIndex(value);
+    if (typeof indexOrError !== 'number') {
+      throwInvalidValidate(overallError, indexOrError);
+    }
+    const schema = this.schema.anyOf[indexOrError] as TObject;
     this.uncompiledValidate(schema, value, overallError);
     return schema;
   }

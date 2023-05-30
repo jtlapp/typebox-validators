@@ -2,8 +2,6 @@ import { TObject, TUnion } from '@sinclair/typebox';
 import { ValueError } from '@sinclair/typebox/errors';
 
 import { AbstractTypedUnionValidator } from './abstract-typed-union-validator';
-import { UnionTypeException } from '../lib/union-type-exception';
-import { DEFAULT_OVERALL_ERROR } from '../lib/constants';
 
 const DEFAULT_DISCRIMINANT_KEY = 'kind';
 
@@ -52,19 +50,5 @@ export abstract class AbstractDiscriminatedUnionValidator<
       }
     }
     return this.createUnionTypeError(this.schema, subject);
-  }
-
-  protected findDiscriminatedUnionSchemaIndexOrThrow(
-    value: Readonly<any>,
-    overallError?: string
-  ): number {
-    const indexOrError = this.findDiscriminatedUnionSchemaIndex(value);
-    if (typeof indexOrError !== 'number') {
-      throw new UnionTypeException(
-        overallError ?? DEFAULT_OVERALL_ERROR,
-        indexOrError
-      );
-    }
-    return indexOrError;
   }
 }

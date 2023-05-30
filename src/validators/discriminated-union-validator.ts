@@ -2,6 +2,7 @@ import { TObject, TUnion } from '@sinclair/typebox';
 import { Value, ValueError } from '@sinclair/typebox/value';
 
 import { AbstractDiscriminatedUnionValidator } from './abstract-discriminated-union-validator';
+import { throwInvalidAssert, throwInvalidValidate } from '../lib/errors';
 
 /**
  * Non-compiling validator for discriminated unions. List the more frequently
@@ -34,11 +35,11 @@ export class DiscriminatedUnionValidator<
     value: Readonly<unknown>,
     overallError?: string
   ): TObject {
-    const i = this.findDiscriminatedUnionSchemaIndexOrThrow(
-      value,
-      overallError
-    );
-    const schema = this.schema.anyOf[i] as TObject;
+    const indexOrError = this.findDiscriminatedUnionSchemaIndex(value);
+    if (typeof indexOrError !== 'number') {
+      throwInvalidAssert(overallError, indexOrError);
+    }
+    const schema = this.schema.anyOf[indexOrError] as TObject;
     this.uncompiledAssert(schema, value, overallError);
     return schema;
   }
@@ -47,11 +48,11 @@ export class DiscriminatedUnionValidator<
     value: Readonly<unknown>,
     overallError?: string
   ): TObject {
-    const i = this.findDiscriminatedUnionSchemaIndexOrThrow(
-      value,
-      overallError
-    );
-    const schema = this.schema.anyOf[i] as TObject;
+    const indexOrError = this.findDiscriminatedUnionSchemaIndex(value);
+    if (typeof indexOrError !== 'number') {
+      throwInvalidValidate(overallError, indexOrError);
+    }
+    const schema = this.schema.anyOf[indexOrError] as TObject;
     this.uncompiledValidate(schema, value, overallError);
     return schema;
   }

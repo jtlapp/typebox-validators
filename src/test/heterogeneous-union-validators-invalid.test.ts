@@ -31,7 +31,7 @@ const wellFormedUnion1 = Type.Union([
     int1: Type.Integer(),
     int2: Type.Optional(
       Type.Integer({
-        errorMessage: "'{field}' must be an integer",
+        errorMessage: 'must be an int',
       })
     ),
   }),
@@ -91,7 +91,7 @@ function testValidator(
     schema: TSchema
   ) => AbstractTypedUnionValidator<TUnion<TObject[]>>
 ) {
-  const defaultString = `${DEFAULT_OVERALL_ERROR}:\n- ${DEFAULT_UNKNOWN_TYPE_MESSAGE}`;
+  const defaultString = `${DEFAULT_OVERALL_ERROR}:\n * ${DEFAULT_UNKNOWN_TYPE_MESSAGE}`;
   testInvalidSpecs([
     {
       description: 'selects 1st union member, 1st key unique, single error',
@@ -100,8 +100,8 @@ function testValidator(
       value: { unique1: 'hello', int1: 1 },
       assertMessage: DEFAULT_OVERALL_ERROR,
       errors: [{ path: '/str1', message: 'Expected string' }],
-      assertString: 'Invalid value:\n- str1: Expected string',
-      validateString: 'Invalid value:\n- str1: Expected string',
+      assertString: 'Invalid value:\n * str1 - Expected string',
+      validateString: 'Invalid value:\n * str1 - Expected string',
     },
     {
       description: 'selects 2nd union member, 1st key unique, multiple errors',
@@ -111,11 +111,13 @@ function testValidator(
       assertMessage: DEFAULT_OVERALL_ERROR,
       errors: [
         { path: '/int1', message: 'Expected integer' },
-        { path: '/int2', message: "'int2' must be an integer" },
+        { path: '/int2', message: 'must be an int' },
       ],
-      assertString: 'Invalid value:\n- int1: Expected integer',
+      assertString: 'Invalid value:\n * int1 - Expected integer',
       validateString:
-        "Invalid value:\n- int1: Expected integer\n- int2: 'int2' must be an integer",
+        'Invalid value:\n' +
+        ' * int1 - Expected integer\n' +
+        ' * int2 - must be an int',
     },
     {
       description: 'unique field not selecting any union member',
@@ -192,8 +194,8 @@ function testValidator(
       overallMessage: 'Custom message',
       assertMessage: 'Custom message',
       errors: [{ path: '/opt', message: 'Expected string' }],
-      assertString: 'Custom message:\n- opt: Expected string',
-      validateString: 'Custom message:\n- opt: Expected string',
+      assertString: 'Custom message:\n * opt - Expected string',
+      validateString: 'Custom message:\n * opt - Expected string',
     },
     {
       description:
@@ -203,8 +205,8 @@ function testValidator(
       value: { str1: 'a', unique2: 1, str2: 'c', opt: 32 },
       assertMessage: DEFAULT_OVERALL_ERROR,
       errors: [{ path: '/unique2', message: 'Expected string' }],
-      assertString: 'Invalid value:\n- unique2: Expected string',
-      validateString: 'Invalid value:\n- unique2: Expected string',
+      assertString: 'Invalid value:\n * unique2 - Expected string',
+      validateString: 'Invalid value:\n * unique2 - Expected string',
     },
     {
       description: 'not selecting any union member, with custom type error',
@@ -213,21 +215,21 @@ function testValidator(
       value: { x: 'not-there' },
       assertMessage: DEFAULT_OVERALL_ERROR,
       errors: [{ path: '', message: 'Unknown type' }],
-      assertString: 'Invalid value:\n- Unknown type',
-      validateString: 'Invalid value:\n- Unknown type',
+      assertString: 'Invalid value:\n * Unknown type',
+      validateString: 'Invalid value:\n * Unknown type',
     },
-    // {
-    //   description:
-    //     'not selecting any union member, with custom overall and type errors',
-    //   onlySpec: false,
-    //   schema: wellFormedUnion2,
-    //   value: { opt: 32 },
-    //   overallMessage: "Oopsie. '{field}' {detail}",
-    //   assertMessage: "Oopsie. 'Value' Unknown type",
-    //   errors: [{ path: '', message: 'Unknown type' }],
-    //   assertString: "Oopsie. 'Value' Unknown type:\n- Unknown type",
-    //   validateString: "Oopsie. '{field}' {detail}:\n- Unknown type",
-    // },
+    {
+      description:
+        'not selecting any union member, with custom overall and type errors',
+      onlySpec: false,
+      schema: wellFormedUnion2,
+      value: { opt: 32 },
+      overallMessage: 'Oopsie: {error}',
+      assertMessage: 'Oopsie: Unknown type',
+      errors: [{ path: '', message: 'Unknown type' }],
+      assertString: 'Oopsie: Unknown type:\n * Unknown type',
+      validateString: 'Oopsie:\n * Unknown type',
+    },
   ]);
 
   function testInvalidSpecs(specs: InvalidTestSpec<TUnion<TObject[]>>[]) {
@@ -333,7 +335,9 @@ function testValidator(
             });
 
             const expectedOverallMessage =
-              spec.overallMessage ?? DEFAULT_OVERALL_ERROR;
+              spec.overallMessage === undefined
+                ? DEFAULT_OVERALL_ERROR
+                : spec.overallMessage.replace('{error}', '').trim();
             expect(e.message).toEqual(expectedOverallMessage);
             if (spec.validateString !== undefined) {
               expect(e.toString()).toEqual(spec.validateString);

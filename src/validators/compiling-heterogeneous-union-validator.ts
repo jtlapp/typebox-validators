@@ -3,6 +3,7 @@ import { ValueError } from '@sinclair/typebox/errors';
 
 import { AbstractHeterogeneousUnionValidator } from './abstract-heterogeneous-union-validator';
 import { CompilingStandardValidator } from './compiling-standard-validator';
+import { throwInvalidAssert, throwInvalidValidate } from '../lib/errors';
 
 /**
  * Lazily compiled validator for heterogeneous unions of objects.
@@ -40,23 +41,23 @@ export class CompilingHeterogeneousUnionValidator<
     value: Readonly<unknown>,
     overallError?: string
   ): TObject {
-    const i = this.findHeterogeneousUnionSchemaIndexOrThrow(
-      value,
-      overallError
-    );
-    this.memberValidators[i].assert(value, overallError);
-    return this.schema.anyOf[i] as TObject;
+    const indexOrError = this.findHeterogeneousUnionSchemaIndex(value);
+    if (typeof indexOrError !== 'number') {
+      throwInvalidAssert(overallError, indexOrError);
+    }
+    this.memberValidators[indexOrError].assert(value, overallError);
+    return this.schema.anyOf[indexOrError] as TObject;
   }
 
   override validateReturningSchema(
     value: Readonly<unknown>,
     overallError?: string
   ): TObject {
-    const i = this.findHeterogeneousUnionSchemaIndexOrThrow(
-      value,
-      overallError
-    );
-    this.memberValidators[i].validate(value, overallError);
-    return this.schema.anyOf[i] as TObject;
+    const indexOrError = this.findHeterogeneousUnionSchemaIndex(value);
+    if (typeof indexOrError !== 'number') {
+      throwInvalidValidate(overallError, indexOrError);
+    }
+    this.memberValidators[indexOrError].validate(value, overallError);
+    return this.schema.anyOf[indexOrError] as TObject;
   }
 }

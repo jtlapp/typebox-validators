@@ -11,8 +11,8 @@ import {
 } from './test-utils';
 import { testValidSpecs } from './test-valid-specs';
 
-const onlyRunValidator = ValidatorKind.NonCompiling;
-const onlyRunMethod = MethodKind.AssertAndClean;
+const onlyRunValidator = ValidatorKind.All;
+const onlyRunMethod = MethodKind.All;
 
 const schema0 = Type.String({
   minLength: 5,
@@ -57,7 +57,7 @@ function testValidator(
   testValidSpecs(runThisTest, createValidator, verifyCleaning, [
     {
       description: 'valid value 0, string literal',
-      onlySpec: true,
+      onlySpec: false,
       schema: schema0,
       value: 'ABCDEDEFGH',
     },

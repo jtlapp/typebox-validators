@@ -37,8 +37,8 @@ const schema2 = Type.Object({
 });
 
 const schema3 = Type.Object({
-  int1: Type.Integer({ errorMessage: '{field} must be an integer' }),
-  int2: Type.Integer({ errorMessage: '{field} must be an integer' }),
+  int1: Type.Integer({ errorMessage: 'must be an int' }),
+  int2: Type.Integer({ errorMessage: 'must be an int' }),
   alpha: Type.String({ pattern: '^[a-zA-Z]+$', maxLength: 4 }),
 });
 
@@ -49,7 +49,7 @@ const schema4 = Type.Object({
 
 const schema5 = Type.Object({
   int1: Type.Integer(),
-  whatever: Type.Any({ errorMessage: 'Missing whatever' }),
+  whatever: Type.Unknown({ errorMessage: 'Missing whatever' }),
 });
 
 const validatorCache = new ValidatorCache();
@@ -99,11 +99,11 @@ function testValidator(
         },
       ],
       assertString:
-        'Invalid value:\n- Expected string length greater or equal to 5',
+        'Invalid value:\n * Expected string length greater or equal to 5',
       validateString:
         'Invalid value:\n' +
-        '- Expected string length greater or equal to 5\n' +
-        '- Expected string to match pattern ^[a-zA-Z]+$',
+        ' * Expected string length greater or equal to 5\n' +
+        ' * Expected string to match pattern ^[a-zA-Z]+$',
     },
     {
       description: 'custom overall and error messages for string literal',
@@ -118,8 +118,8 @@ function testValidator(
           message: 'name should consist of 5-10 letters',
         },
       ],
-      assertString: 'Oopsie:\n- name should consist of 5-10 letters',
-      validateString: 'Oopsie:\n- name should consist of 5-10 letters',
+      assertString: 'Oopsie:\n * name should consist of 5-10 letters',
+      validateString: 'Oopsie:\n * name should consist of 5-10 letters',
     },
     {
       description: 'single invalid field with one error',
@@ -128,8 +128,8 @@ function testValidator(
       value: { delta: 0.5, count: 1, name: 'ABCDE' },
       assertMessage: DEFAULT_OVERALL_ERROR,
       errors: [{ path: '/delta', message: 'Expected integer' }],
-      assertString: 'Invalid value:\n- delta: Expected integer',
-      validateString: 'Invalid value:\n- delta: Expected integer',
+      assertString: 'Invalid value:\n * delta - Expected integer',
+      validateString: 'Invalid value:\n * delta - Expected integer',
     },
     {
       description:
@@ -140,8 +140,8 @@ function testValidator(
       overallMessage: 'Custom message',
       assertMessage: 'Custom message',
       errors: [{ path: '/delta', message: 'Expected integer' }],
-      assertString: 'Custom message:\n- delta: Expected integer',
-      validateString: 'Custom message:\n- delta: Expected integer',
+      assertString: 'Custom message:\n * delta - Expected integer',
+      validateString: 'Custom message:\n * delta - Expected integer',
     },
     {
       description:
@@ -149,12 +149,27 @@ function testValidator(
       onlySpec: false,
       schema: schema2,
       value: { delta: 0.5, count: 1, name: 'ABCDE' },
-      overallMessage: "Oopsie. '{field}' {detail}",
-      assertMessage: "Oopsie. 'delta' Expected integer",
+      overallMessage: 'Oopsie: {error}',
+      assertMessage: 'Oopsie: delta - Expected integer',
       errors: [{ path: '/delta', message: 'Expected integer' }],
       assertString:
-        "Oopsie. 'delta' Expected integer:\n- delta: Expected integer",
-      validateString: "Oopsie. '{field}' {detail}:\n- delta: Expected integer",
+        'Oopsie: delta - Expected integer:\n * delta - Expected integer',
+      validateString: 'Oopsie:\n * delta - Expected integer',
+    },
+    {
+      description: 'custom error message makes it into custom overall message',
+      onlySpec: false,
+      schema: schema2,
+      value: { delta: 1, count: 1, name: '1' },
+      overallMessage: 'Oopsie: {error}',
+      assertMessage: 'Oopsie: name - name should consist of 5-10 letters',
+      errors: [
+        { path: '/name', message: 'name should consist of 5-10 letters' },
+      ],
+      assertString:
+        'Oopsie: name - name should consist of 5-10 letters:\n' +
+        ' * name - name should consist of 5-10 letters',
+      validateString: 'Oopsie:\n * name - name should consist of 5-10 letters',
     },
     {
       description: 'single invalid field with multiple errors',
@@ -181,11 +196,11 @@ function testValidator(
       errors: [
         {
           path: '/int1',
-          message: 'int1 must be an integer',
+          message: 'must be an int',
         },
         {
           path: '/int2',
-          message: 'int2 must be an integer',
+          message: 'must be an int',
         },
         {
           path: '/alpha',
@@ -213,9 +228,11 @@ function testValidator(
           message: 'name should consist of 5-10 letters',
         },
       ],
-      assertString: 'Invalid value:\n- delta: Expected integer',
+      assertString: 'Invalid value:\n * delta - Expected integer',
       validateString:
-        'Invalid value:\n- delta: Expected integer\n- name: name should consist of 5-10 letters',
+        'Invalid value:\n' +
+        ' * delta - Expected integer\n' +
+        ' * name - name should consist of 5-10 letters',
     },
     {
       description:
@@ -223,11 +240,11 @@ function testValidator(
       onlySpec: false,
       schema: schema2,
       value: 'not an object',
-      overallMessage: 'Oopsie. {field} {detail}',
-      assertMessage: 'Oopsie. Value Expected object',
+      overallMessage: 'Oopsie: {error}',
+      assertMessage: 'Oopsie: Expected object',
       errors: [{ path: '', message: 'Expected object' }],
-      assertString: 'Oopsie. Value Expected object:\n- Expected object',
-      validateString: 'Oopsie. {field} {detail}:\n- Expected object',
+      assertString: 'Oopsie: Expected object:\n * Expected object',
+      validateString: 'Oopsie:\n * Expected object',
     },
     {
       description: "reports default required message for 'any' field",
@@ -240,11 +257,12 @@ function testValidator(
           message: 'Expected required property',
         },
       ],
-      assertString: 'Invalid value:\n- whatever: Expected required property',
-      validateString: 'Invalid value:\n- whatever: Expected required property',
+      assertString: 'Invalid value:\n * whatever - Expected required property',
+      validateString:
+        'Invalid value:\n * whatever - Expected required property',
     },
     {
-      description: "reports custom required message for 'any' field",
+      description: "reports custom required message for 'unknown' field",
       onlySpec: false,
       schema: schema5,
       value: { int1: 'not an integer' },
@@ -258,9 +276,11 @@ function testValidator(
           message: 'Missing whatever',
         },
       ],
-      assertString: 'Invalid value:\n- int1: Expected integer',
+      assertString: 'Invalid value:\n * int1 - Expected integer',
       validateString:
-        'Invalid value:\n- int1: Expected integer\n- whatever: Missing whatever',
+        'Invalid value:\n' +
+        ' * int1 - Expected integer\n' +
+        ' * whatever - Missing whatever',
     },
   ]);
 
@@ -367,7 +387,9 @@ function testValidator(
             });
 
             const expectedOverallMessage =
-              spec.overallMessage ?? DEFAULT_OVERALL_ERROR;
+              spec.overallMessage === undefined
+                ? DEFAULT_OVERALL_ERROR
+                : spec.overallMessage.replace('{error}', '').trim();
             expect(e.message).toEqual(expectedOverallMessage);
             if (spec.validateString !== undefined) {
               expect(e.toString()).toEqual(spec.validateString);

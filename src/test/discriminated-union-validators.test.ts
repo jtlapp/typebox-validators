@@ -339,7 +339,7 @@ function testDiscriminatedUnionValidation(
         expect(err.specifics[0].toString()).toEqual(specific1);
         expect(err.specifics[1].toString()).toEqual(specific2);
         expect(err.toString()).toEqual(
-          `${OVERALL_MESSAGE}:\n- ${specific1}\n- ${specific2}`
+          `${OVERALL_MESSAGE}:\n * ${specific1}\n * ${specific2}`
         );
       }
     });

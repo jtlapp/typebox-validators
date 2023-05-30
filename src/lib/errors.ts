@@ -1,11 +1,22 @@
 import { Kind } from '@sinclair/typebox';
 import { ValueError, ValueErrorIterator } from '@sinclair/typebox/errors';
 
+import { ValidationException } from './validation-exception';
+
+// TODO: rename file to error-utils.ts
+
 // TODO: rename to _MESSAGE
 export const DEFAULT_OVERALL_ERROR = 'Invalid value';
 export const DEFAULT_UNKNOWN_TYPE_MESSAGE = 'not a type the union recognizes';
 
 const TYPEBOX_REQUIRED_ERROR_MESSAGE = 'Expected required property';
+
+export function adjustErrorMessage(error: ValueError): ValueError {
+  if (error.schema.errorMessage !== undefined) {
+    error.message = error.schema.errorMessage;
+  }
+  return error;
+}
 
 export function createErrorsIterable(
   typeboxErrorIterator: ValueErrorIterator
@@ -37,9 +48,32 @@ export function createErrorsIterable(
   };
 }
 
-export function adjustErrorMessage(error: ValueError): ValueError {
-  if (error.schema.errorMessage !== undefined) {
-    error.message = error.schema.errorMessage;
-  }
-  return error;
+export function throwInvalidAssert(
+  overallError: string | undefined,
+  firstError: ValueError
+): never {
+  adjustErrorMessage(firstError);
+  throw new ValidationException(
+    overallError === undefined
+      ? DEFAULT_OVERALL_ERROR
+      : overallError.replace(
+          '{error}',
+          ValidationException.errorToString(firstError)
+        ),
+    [firstError]
+  );
+}
+
+export function throwInvalidValidate(
+  overallError: string | undefined,
+  errorOrErrors: ValueError | ValueErrorIterator
+): never {
+  throw new ValidationException(
+    overallError === undefined
+      ? DEFAULT_OVERALL_ERROR
+      : overallError.replace('{error}', '').trim(),
+    errorOrErrors instanceof ValueErrorIterator
+      ? [...createErrorsIterable(errorOrErrors)]
+      : [errorOrErrors]
+  );
 }
