@@ -105,8 +105,7 @@ export abstract class AbstractValidator<S extends TSchema> {
    * values of unrecognized properties.
    *
    * @param value Value to validate against the schema.
-   * @param errorMessage Overall error message to report in the exception. If
-   *  present, the "{errors}" substring is removed. Defaults to "Invalid value".
+   * @param errorMessage Overall error message to report in the exception.
    * @throws ValidationException when the value is invalid, reporting all
    *  validation errors in the `details` property. The `errorMessage`
    *  parameter provides the exception's overall error message.
@@ -119,8 +118,7 @@ export abstract class AbstractValidator<S extends TSchema> {
    * validation, removes unrecognized properties from the provided value.
    *
    * @param value Value to validate against the schema.
-   * @param errorMessage Overall error message to report in the exception. If
-   *  present, the "{errors}" substring is removed. Defaults to "Invalid value".
+   * @param errorMessage Overall error message to report in the exception.=
    * @throws ValidationException when the value is invalid, reporting all
    *  validation errors in the `details` property. The `errorMessage`
    *  parameter provides the exception's overall error message.
@@ -134,8 +132,7 @@ export abstract class AbstractValidator<S extends TSchema> {
    * returns the original value if there are no unrecognized properties.
    *
    * @param value Value to validate against the schema.
-   * @param errorMessage Overall error message to report in the exception. If
-   *  present, the "{errors}" substring is removed. Defaults to "Invalid value".
+   * @param errorMessage Overall error message to report in the exception.
    * @returns The provided value itself if the value is not an object or if
    *  the value is an object having no unrecognized properties. If the value
    *  is an object having at least one unrecognized property, returns a copy

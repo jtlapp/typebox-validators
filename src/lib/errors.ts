@@ -69,9 +69,7 @@ export function throwInvalidValidate(
   errorOrErrors: ValueError | ValueErrorIterator
 ): never {
   throw new ValidationException(
-    overallError === undefined
-      ? DEFAULT_OVERALL_ERROR
-      : overallError.replace('{error}', '').trim(),
+    overallError ?? DEFAULT_OVERALL_ERROR,
     errorOrErrors instanceof ValueErrorIterator
       ? [...createErrorsIterable(errorOrErrors)]
       : [errorOrErrors]

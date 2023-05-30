@@ -3,19 +3,12 @@ import { TSchema, TObject, Type, TUnion } from '@sinclair/typebox';
 import { AbstractTypedUnionValidator } from '../validators/abstract-typed-union-validator';
 import { HeterogeneousUnionValidator } from '../validators/heterogeneous-union-validator';
 import { CompilingHeterogeneousUnionValidator } from '../validators/compiling-heterogeneous-union-validator';
-import { ValidationException } from '../lib/validation-exception';
 import {
   DEFAULT_OVERALL_ERROR,
   DEFAULT_UNKNOWN_TYPE_MESSAGE,
 } from '../lib/errors';
-import {
-  ValidatorKind,
-  MethodKind,
-  ValidatorMethodOfClass,
-  InvalidTestSpec,
-  specsToRun,
-  ValidatorCache,
-} from './test-utils';
+import { ValidatorKind, MethodKind, ValidatorCache } from './test-utils';
+import { testInvalidSpecs } from './test-invalid-specs';
 
 const onlyRunValidator = ValidatorKind.All;
 const onlyRunMethod = MethodKind.All;
@@ -92,7 +85,7 @@ function testValidator(
   ) => AbstractTypedUnionValidator<TUnion<TObject[]>>
 ) {
   const defaultString = `${DEFAULT_OVERALL_ERROR}:\n * ${DEFAULT_UNKNOWN_TYPE_MESSAGE}`;
-  testInvalidSpecs([
+  testInvalidSpecs(runThisTest, createValidator, [
     {
       description: 'selects 1st union member, 1st key unique, single error',
       onlySpec: false,
@@ -230,123 +223,11 @@ function testValidator(
       assertString: 'Oopsie: Unknown type:\n * Unknown type',
       validateString: 'Oopsie:\n * Unknown type',
     },
+    // TODO: don't remove {error} from validate message; remove it before
+    //  calling validate in test suite.
+    // TODO: test ill-formed schema
+    // TODO: any other tests I need (maybe check standard test suite)
   ]);
-
-  function testInvalidSpecs(specs: InvalidTestSpec<TUnion<TObject[]>>[]) {
-    if (runThisTest(MethodKind.Test)) {
-      describe('test() rejections', () => {
-        specsToRun(specs).forEach((spec) => {
-          it('test() should reject ' + spec.description, () => {
-            const validator = createValidator(spec.schema);
-            expect(validator.test(spec.value)).toBe(false);
-          });
-        });
-      });
-    }
-
-    if (runThisTest(MethodKind.Assert)) {
-      testAssertMethodRejection('assert', specs);
-    }
-    if (runThisTest(MethodKind.AssertAndClean)) {
-      testAssertMethodRejection('assertAndClean', specs);
-    }
-    if (runThisTest(MethodKind.AssertAndCleanCopy)) {
-      testAssertMethodRejection('assertAndCleanCopy', specs);
-    }
-    if (runThisTest(MethodKind.Validate)) {
-      testValidateMethodRejection('validate', specs);
-    }
-    if (runThisTest(MethodKind.ValidateAndClean)) {
-      testValidateMethodRejection('validateAndClean', specs);
-    }
-    if (runThisTest(MethodKind.ValidateAndCleanCopy)) {
-      testValidateMethodRejection('validateAndCleanCopy', specs);
-    }
-
-    if (runThisTest(MethodKind.Errors)) {
-      describe('errors()', () => {
-        specsToRun(specs).forEach((spec) => {
-          it('errors() for ' + spec.description, () => {
-            const validator = createValidator(spec.schema);
-            const errors = [...validator.errors(spec.value)];
-            expect(errors.length).toEqual(spec.errors.length);
-            errors.forEach((error, i) => {
-              expect(error.path).toEqual(spec.errors[i].path);
-              expect(error.message).toContain(spec.errors[i].message);
-            });
-          });
-        });
-      });
-    }
-  }
-
-  function testAssertMethodRejection<S extends TUnion<TObject[]>>(
-    method: ValidatorMethodOfClass<AbstractTypedUnionValidator<S>>,
-    specs: InvalidTestSpec<TSchema>[]
-  ) {
-    describe(`${method}() rejections`, () => {
-      specsToRun(specs).forEach((spec) => {
-        it(`${method}() should reject ${spec.description}`, () => {
-          const validator = createValidator(spec.schema);
-          try {
-            (validator[method] as any)(spec.value, spec.overallMessage);
-            expect(false).toBe(true);
-          } catch (e: any) {
-            if (!(e instanceof ValidationException)) throw e;
-
-            const details = e.details;
-            const errors = spec.errors;
-            expect(details.length).toEqual(1);
-            expect(details[0].path).toEqual(errors[0].path);
-            expect(details[0].message).toContain(errors[0].message);
-
-            if (spec.assertMessage !== undefined) {
-              expect(e.message).toEqual(spec.assertMessage);
-            }
-            if (spec.assertString !== undefined) {
-              expect(e.toString()).toEqual(spec.assertString);
-            }
-          }
-        });
-      });
-    });
-  }
-
-  function testValidateMethodRejection<S extends TUnion<TObject[]>>(
-    method: ValidatorMethodOfClass<AbstractTypedUnionValidator<S>>,
-    specs: InvalidTestSpec<TSchema>[]
-  ) {
-    describe(`${method}() rejections`, () => {
-      specsToRun(specs).forEach((spec) => {
-        it(`${method}() should reject ${spec.description}`, () => {
-          const validator = createValidator(spec.schema);
-          try {
-            (validator[method] as any)(spec.value, spec.overallMessage);
-            expect(false).toBe(true);
-          } catch (e: any) {
-            if (!(e instanceof ValidationException)) throw e;
-
-            const details = e.details;
-            const errors = spec.errors;
-            expect(details.length).toEqual(errors.length);
-            errors.forEach((error, i) => {
-              expect(details[i]?.path).toEqual(error.path);
-              expect(details[i]?.message).toContain(error.message);
-            });
-
-            const expectedOverallMessage =
-              spec.overallMessage === undefined
-                ? DEFAULT_OVERALL_ERROR
-                : spec.overallMessage.replace('{error}', '').trim();
-            expect(e.message).toEqual(expectedOverallMessage);
-            if (spec.validateString !== undefined) {
-              expect(e.toString()).toEqual(spec.validateString);
-            }
-          }
-        });
-      });
-    });
-  }
 }
 
 function runThisValidator(validatorKind: ValidatorKind): boolean {
