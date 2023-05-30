@@ -44,6 +44,7 @@ export abstract class AbstractHeterogeneousUnionValidator<
 
     for (let i = 0; i < unionSize; ++i) {
       const memberSchema = this.schema.anyOf[i];
+      // TODO: replace 'in'
       for (const key in memberSchema.properties) {
         if (!keyToMemberIndexMap.has(key)) {
           const property = memberSchema.properties[key];

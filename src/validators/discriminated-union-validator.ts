@@ -5,8 +5,9 @@ import { AbstractDiscriminatedUnionValidator } from './abstract-discriminated-un
 import { throwInvalidAssert, throwInvalidValidate } from '../lib/errors';
 
 /**
- * Non-compiling validator for discriminated unions. List the more frequently
- * used types earlier in the union to improve performance.
+ * Non-compiling validator for discriminated unions. To improve performance,
+ * list the more frequently used types earlier in the union, and list each
+ * object's discriminant key first in its properties.
  */
 export class DiscriminatedUnionValidator<
   S extends TUnion<TObject[]>

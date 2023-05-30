@@ -6,7 +6,9 @@ import { CompilingStandardValidator } from './compiling-standard-validator';
 import { throwInvalidAssert, throwInvalidValidate } from '../lib/errors';
 
 /**
- * Lazily compiled validator for heterogeneous unions of objects.
+ * Lazily compiled validator for heterogeneous unions of objects. To improve
+ * performance, list the more frequently used types earlier in the union, and
+ * list each object's unique key first in its properties.
  */
 export class CompilingHeterogeneousUnionValidator<
   S extends TUnion<TObject[]>

@@ -6,10 +6,9 @@ import { CompilingStandardValidator } from './compiling-standard-validator';
 import { throwInvalidAssert, throwInvalidValidate } from '../lib/errors';
 
 /**
- * Lazily compiled validator for discriminated-union unions, providing
- * safe and unsafe validation, supporting custom error messages, and
- * cleaning values of unrecognized properties. List the more frequently
- * used types earlier in the union to improve performance.
+ * Lazily compiled validator for discriminated-union unions. To improve
+ * performance, list the more frequently used types earlier in the union,
+ * and list each object's discriminant key first in its properties.
  */
 export class CompilingDiscriminatedUnionValidator<
   S extends TUnion<TObject[]>

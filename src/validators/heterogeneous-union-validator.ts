@@ -5,7 +5,9 @@ import { Value, ValueError } from '@sinclair/typebox/value';
 import { throwInvalidAssert, throwInvalidValidate } from '../lib/errors';
 
 /**
- * Non-compiling validator for heterogeneous unions of objecs.
+ * Non-compiling validator for heterogeneous unions of objects. To improve
+ * performance, list the more frequently used types earlier in the union, and
+ * list each object's unique key first in its properties.
  */
 export class HeterogeneousUnionValidator<
   S extends TUnion<TObject[]>
