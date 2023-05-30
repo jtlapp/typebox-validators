@@ -1,12 +1,7 @@
 import type { TSchema, Static } from '@sinclair/typebox';
 import { Value as TypeBoxValue, ValueError } from '@sinclair/typebox/value';
-import { TypeCheck } from '@sinclair/typebox/compiler';
 
-import {
-  createErrorsIterable,
-  throwInvalidAssert,
-  throwInvalidValidate,
-} from '../lib/errors';
+import { throwInvalidAssert, throwInvalidValidate } from '../lib/errors';
 
 /**
  * Abstract base class for validators, providing validation services for a
@@ -211,17 +206,6 @@ export abstract class AbstractValidator<S extends TSchema> {
     }
   }
 
-  // TODO: these are so short now, move them to the subclasses?
-  protected compiledAssert(
-    compiledType: TypeCheck<S>,
-    value: Readonly<unknown>,
-    overallError?: string
-  ): void {
-    if (!compiledType.Check(value)) {
-      throwInvalidAssert(overallError, compiledType.Errors(value).First()!);
-    }
-  }
-
   protected uncompiledValidate(
     schema: Readonly<TSchema>,
     value: Readonly<unknown>,
@@ -230,29 +214,5 @@ export abstract class AbstractValidator<S extends TSchema> {
     if (!TypeBoxValue.Check(schema, value)) {
       throwInvalidValidate(overallError, TypeBoxValue.Errors(schema, value));
     }
-  }
-
-  protected compiledValidate(
-    compiledType: TypeCheck<S>,
-    value: Readonly<unknown>,
-    overallError?: string
-  ): void {
-    if (!compiledType.Check(value)) {
-      throwInvalidValidate(overallError, compiledType.Errors(value));
-    }
-  }
-
-  protected compiledErrors(
-    compiledType: TypeCheck<S>,
-    value: Readonly<unknown>
-  ): Iterable<ValueError> {
-    return createErrorsIterable(compiledType.Errors(value));
-  }
-
-  protected uncompiledErrors(
-    schema: Readonly<TSchema>,
-    value: Readonly<unknown>
-  ): Iterable<ValueError> {
-    return createErrorsIterable(TypeBoxValue.Errors(schema, value));
   }
 }

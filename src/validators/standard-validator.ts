@@ -3,6 +3,7 @@ import type { TSchema } from '@sinclair/typebox';
 import { AbstractStandardValidator } from './abstract-standard-validator';
 import { ValueError } from '@sinclair/typebox/errors';
 import { Value } from '@sinclair/typebox/value';
+import { createErrorsIterable } from '../lib/errors';
 
 /**
  * Non-compiling validator for standard TypeBox values.
@@ -32,6 +33,6 @@ export class StandardValidator<
 
   /** @inheritdoc */
   override errors(value: Readonly<unknown>): Iterable<ValueError> {
-    return this.uncompiledErrors(this.schema, value);
+    return createErrorsIterable(Value.Errors(this.schema, value));
   }
 }

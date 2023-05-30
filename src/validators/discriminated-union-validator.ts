@@ -2,7 +2,11 @@ import { TObject, TUnion } from '@sinclair/typebox';
 import { Value, ValueError } from '@sinclair/typebox/value';
 
 import { AbstractDiscriminatedUnionValidator } from './abstract-discriminated-union-validator';
-import { throwInvalidAssert, throwInvalidValidate } from '../lib/errors';
+import {
+  createErrorsIterable,
+  throwInvalidAssert,
+  throwInvalidValidate,
+} from '../lib/errors';
 
 /**
  * Non-compiling validator for discriminated unions. To improve performance,
@@ -33,7 +37,7 @@ export class DiscriminatedUnionValidator<
       return this.createUnionTypeErrorIterable(indexOrError);
     }
     const schema = this.schema.anyOf[indexOrError] as TObject;
-    return this.uncompiledErrors(schema, value);
+    return createErrorsIterable(Value.Errors(schema, value));
   }
 
   override assertReturningSchema(

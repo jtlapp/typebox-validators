@@ -6,6 +6,11 @@ import {
 } from '@sinclair/typebox/compiler';
 
 import { AbstractStandardValidator } from './abstract-standard-validator';
+import {
+  createErrorsIterable,
+  throwInvalidAssert,
+  throwInvalidValidate,
+} from '../lib/errors';
 
 /**
  * Lazily compiled validator for standard TypeBox values.
@@ -29,19 +34,23 @@ export class CompilingStandardValidator<
   /** @inheritdoc */
   override assert(value: Readonly<unknown>, overallError?: string): void {
     const compiledType = this.getCompiledType();
-    this.compiledAssert(compiledType, value, overallError);
+    if (!compiledType.Check(value)) {
+      throwInvalidAssert(overallError, compiledType.Errors(value).First()!);
+    }
   }
 
   /** @inheritdoc */
   override validate(value: Readonly<unknown>, overallError?: string): void {
     const compiledType = this.getCompiledType();
-    this.compiledValidate(compiledType, value, overallError);
+    if (!compiledType.Check(value)) {
+      throwInvalidValidate(overallError, compiledType.Errors(value));
+    }
   }
 
   /** @inheritdoc */
   override errors(value: Readonly<unknown>): Iterable<ValueError> {
     const compiledType = this.getCompiledType();
-    return this.compiledErrors(compiledType, value);
+    return createErrorsIterable(compiledType.Errors(value));
   }
 
   private getCompiledType(): TypeCheck<S> {

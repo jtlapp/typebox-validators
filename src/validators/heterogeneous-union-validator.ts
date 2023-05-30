@@ -2,7 +2,11 @@ import { TObject, TUnion } from '@sinclair/typebox';
 
 import { AbstractHeterogeneousUnionValidator } from './abstract-heterogeneous-union-validator';
 import { Value, ValueError } from '@sinclair/typebox/value';
-import { throwInvalidAssert, throwInvalidValidate } from '../lib/errors';
+import {
+  createErrorsIterable,
+  throwInvalidAssert,
+  throwInvalidValidate,
+} from '../lib/errors';
 
 /**
  * Non-compiling validator for heterogeneous unions of objects. To improve
@@ -33,7 +37,7 @@ export class HeterogeneousUnionValidator<
       return this.createUnionTypeErrorIterable(indexOrError);
     }
     const schema = this.schema.anyOf[indexOrError] as TObject;
-    return this.uncompiledErrors(schema, value);
+    return createErrorsIterable(Value.Errors(schema, value));
   }
 
   override assertReturningSchema(
