@@ -177,8 +177,6 @@ export abstract class AbstractValidator<S extends TSchema> {
     return value;
   }
 
-  // TODO: make sure these methods are multiply used
-
   protected cleanValue<VS extends TSchema>(
     schema: Readonly<VS>,
     value: unknown

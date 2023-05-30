@@ -3,7 +3,7 @@ import { TSchema, Type } from '@sinclair/typebox';
 import { AbstractStandardValidator } from '../validators/abstract-standard-validator';
 import { StandardValidator } from '../validators/standard-validator';
 import { CompilingStandardValidator } from '../validators/compiling-standard-validator';
-import { DEFAULT_OVERALL_ERROR } from '../lib/error-utils';
+import { DEFAULT_OVERALL_MESSAGE } from '../lib/error-utils';
 import { ValidatorKind, MethodKind, ValidatorCache } from './test-utils';
 import { testInvalidSpecs } from './test-invalid-specs';
 
@@ -80,7 +80,7 @@ function testValidator(
       onlySpec: false,
       schema: schema0,
       value: '1',
-      assertMessage: DEFAULT_OVERALL_ERROR,
+      assertMessage: DEFAULT_OVERALL_MESSAGE,
       errors: [
         {
           path: '',
@@ -119,7 +119,7 @@ function testValidator(
       onlySpec: false,
       schema: schema2,
       value: { delta: 0.5, count: 1, name: 'ABCDE' },
-      assertMessage: DEFAULT_OVERALL_ERROR,
+      assertMessage: DEFAULT_OVERALL_MESSAGE,
       errors: [{ path: '/delta', message: 'Expected integer' }],
       assertString: 'Invalid value:\n * delta - Expected integer',
       validateString: 'Invalid value:\n * delta - Expected integer',
@@ -185,7 +185,7 @@ function testValidator(
       onlySpec: false,
       schema: schema3,
       value: { int1: 1.5, int2: 1.5, alpha: '12345' },
-      assertMessage: DEFAULT_OVERALL_ERROR,
+      assertMessage: DEFAULT_OVERALL_MESSAGE,
       errors: [
         {
           path: '/int1',
@@ -210,7 +210,7 @@ function testValidator(
       onlySpec: false,
       schema: schema2,
       value: { delta: 0.5, count: 1, name: '1' },
-      assertMessage: DEFAULT_OVERALL_ERROR,
+      assertMessage: DEFAULT_OVERALL_MESSAGE,
       errors: [
         {
           path: '/delta',

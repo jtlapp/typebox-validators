@@ -50,7 +50,6 @@ export function testValidSpecs<S extends ValidTestSpec<TSchema>>(
           const validator = createValidator(spec.schema);
           const value =
             typeof spec.value == 'object' ? { ...spec.value } : spec.value;
-          validator.validateAndClean(value); // TODO: remove
           expect(() => validator.validateAndClean(value)).not.toThrow();
           verifyCleaning(spec, value);
         });

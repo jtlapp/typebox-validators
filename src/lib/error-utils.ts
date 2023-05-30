@@ -3,8 +3,7 @@ import { ValueError, ValueErrorIterator } from '@sinclair/typebox/errors';
 
 import { ValidationException } from './validation-exception';
 
-// TODO: rename to _MESSAGE
-export const DEFAULT_OVERALL_ERROR = 'Invalid value';
+export const DEFAULT_OVERALL_MESSAGE = 'Invalid value';
 export const DEFAULT_UNKNOWN_TYPE_MESSAGE = 'not a type the union recognizes';
 
 const TYPEBOX_REQUIRED_ERROR_MESSAGE = 'Expected required property';
@@ -53,7 +52,7 @@ export function throwInvalidAssert(
   adjustErrorMessage(firstError);
   throw new ValidationException(
     overallError === undefined
-      ? DEFAULT_OVERALL_ERROR
+      ? DEFAULT_OVERALL_MESSAGE
       : overallError.replace(
           '{error}',
           ValidationException.errorToString(firstError)
@@ -67,7 +66,7 @@ export function throwInvalidValidate(
   errorOrErrors: ValueError | ValueErrorIterator
 ): never {
   throw new ValidationException(
-    overallError ?? DEFAULT_OVERALL_ERROR,
+    overallError ?? DEFAULT_OVERALL_MESSAGE,
     errorOrErrors instanceof ValueErrorIterator
       ? [...createErrorsIterable(errorOrErrors)]
       : [errorOrErrors]

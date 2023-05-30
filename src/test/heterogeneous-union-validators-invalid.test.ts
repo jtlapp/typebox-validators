@@ -4,7 +4,7 @@ import { AbstractTypedUnionValidator } from '../validators/abstract-typed-union-
 import { HeterogeneousUnionValidator } from '../validators/heterogeneous-union-validator';
 import { CompilingHeterogeneousUnionValidator } from '../validators/compiling-heterogeneous-union-validator';
 import {
-  DEFAULT_OVERALL_ERROR,
+  DEFAULT_OVERALL_MESSAGE,
   DEFAULT_UNKNOWN_TYPE_MESSAGE,
 } from '../lib/error-utils';
 import { ValidatorKind, MethodKind, ValidatorCache } from './test-utils';
@@ -95,14 +95,14 @@ function testValidator(
     schema: TSchema
   ) => AbstractTypedUnionValidator<TUnion<TObject[]>>
 ) {
-  const defaultString = `${DEFAULT_OVERALL_ERROR}:\n * ${DEFAULT_UNKNOWN_TYPE_MESSAGE}`;
+  const defaultString = `${DEFAULT_OVERALL_MESSAGE}:\n * ${DEFAULT_UNKNOWN_TYPE_MESSAGE}`;
   testInvalidSpecs(runThisTest, createValidator, [
     {
       description: 'selects 1st union member, 1st key unique, single error',
       onlySpec: false,
       schema: wellFormedUnion1,
       value: { unique1: 'hello', int1: 1 },
-      assertMessage: DEFAULT_OVERALL_ERROR,
+      assertMessage: DEFAULT_OVERALL_MESSAGE,
       errors: [{ path: '/str1', message: 'Expected string' }],
       assertString: 'Invalid value:\n * str1 - Expected string',
       validateString: 'Invalid value:\n * str1 - Expected string',
@@ -112,7 +112,7 @@ function testValidator(
       onlySpec: false,
       schema: wellFormedUnion1,
       value: { unique2: 1, str1: 'hello', int2: 'hello' },
-      assertMessage: DEFAULT_OVERALL_ERROR,
+      assertMessage: DEFAULT_OVERALL_MESSAGE,
       errors: [
         { path: '/int1', message: 'Expected integer' },
         { path: '/int2', message: 'must be an int' },
@@ -128,7 +128,7 @@ function testValidator(
       onlySpec: false,
       schema: wellFormedUnion1,
       value: { x: 'hello', str1: 'hello', int1: 1 },
-      assertMessage: DEFAULT_OVERALL_ERROR,
+      assertMessage: DEFAULT_OVERALL_MESSAGE,
       errors: [{ path: '', message: DEFAULT_UNKNOWN_TYPE_MESSAGE }],
       assertString: defaultString,
       validateString: defaultString,
@@ -138,7 +138,7 @@ function testValidator(
       onlySpec: false,
       schema: wellFormedUnion1,
       value: { str1: 'hello', int1: 1 },
-      assertMessage: DEFAULT_OVERALL_ERROR,
+      assertMessage: DEFAULT_OVERALL_MESSAGE,
       errors: [{ path: '', message: DEFAULT_UNKNOWN_TYPE_MESSAGE }],
       assertString: defaultString,
       validateString: defaultString,
@@ -148,7 +148,7 @@ function testValidator(
       onlySpec: false,
       schema: wellFormedUnion1,
       value: {},
-      assertMessage: DEFAULT_OVERALL_ERROR,
+      assertMessage: DEFAULT_OVERALL_MESSAGE,
       errors: [{ path: '', message: DEFAULT_UNKNOWN_TYPE_MESSAGE }],
       assertString: defaultString,
       validateString: defaultString,
@@ -158,7 +158,7 @@ function testValidator(
       onlySpec: false,
       schema: wellFormedUnion1,
       value: undefined,
-      assertMessage: DEFAULT_OVERALL_ERROR,
+      assertMessage: DEFAULT_OVERALL_MESSAGE,
       errors: [{ path: '', message: DEFAULT_UNKNOWN_TYPE_MESSAGE }],
       assertString: defaultString,
       validateString: defaultString,
@@ -168,7 +168,7 @@ function testValidator(
       onlySpec: false,
       schema: wellFormedUnion1,
       value: null,
-      assertMessage: DEFAULT_OVERALL_ERROR,
+      assertMessage: DEFAULT_OVERALL_MESSAGE,
       errors: [{ path: '', message: DEFAULT_UNKNOWN_TYPE_MESSAGE }],
       assertString: defaultString,
       validateString: defaultString,
@@ -178,7 +178,7 @@ function testValidator(
       onlySpec: false,
       schema: wellFormedUnion1,
       value: 'hello',
-      assertMessage: DEFAULT_OVERALL_ERROR,
+      assertMessage: DEFAULT_OVERALL_MESSAGE,
       errors: [{ path: '', message: DEFAULT_UNKNOWN_TYPE_MESSAGE }],
       assertString: defaultString,
       validateString: defaultString,
@@ -207,7 +207,7 @@ function testValidator(
       onlySpec: false,
       schema: wellFormedUnion2,
       value: { str1: 'a', unique2: 1, str2: 'c', opt: 32 },
-      assertMessage: DEFAULT_OVERALL_ERROR,
+      assertMessage: DEFAULT_OVERALL_MESSAGE,
       errors: [{ path: '/unique2', message: 'Expected string' }],
       assertString: 'Invalid value:\n * unique2 - Expected string',
       validateString: 'Invalid value:\n * unique2 - Expected string',
@@ -217,7 +217,7 @@ function testValidator(
       onlySpec: false,
       schema: wellFormedUnion2,
       value: { x: 'not-there' },
-      assertMessage: DEFAULT_OVERALL_ERROR,
+      assertMessage: DEFAULT_OVERALL_MESSAGE,
       errors: [{ path: '', message: 'Unknown type' }],
       assertString: 'Invalid value:\n * Unknown type',
       validateString: 'Invalid value:\n * Unknown type',
@@ -234,7 +234,6 @@ function testValidator(
       assertString: 'Oopsie: Unknown type:\n * Unknown type',
       validateString: 'Oopsie:\n * Unknown type',
     },
-    // TODO: any other tests I need (maybe check standard test suite)
   ]);
 
   if ([MethodKind.All, MethodKind.Other].includes(onlyRunMethod)) {

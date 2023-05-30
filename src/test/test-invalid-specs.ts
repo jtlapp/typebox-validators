@@ -7,7 +7,7 @@ import {
   ValidatorMethodOfClass,
   specsToRun,
 } from './test-utils';
-import { DEFAULT_OVERALL_ERROR } from '../lib/error-utils';
+import { DEFAULT_OVERALL_MESSAGE } from '../lib/error-utils';
 import { ValidationException } from '../lib/validation-exception';
 
 export function testInvalidSpecs<S extends InvalidTestSpec<TSchema>>(
@@ -118,7 +118,9 @@ export function testInvalidSpecs<S extends InvalidTestSpec<TSchema>>(
               expect(details[i]?.message).toContain(error.message);
             });
 
-            expect(e.message).toEqual(overallMessage ?? DEFAULT_OVERALL_ERROR);
+            expect(e.message).toEqual(
+              overallMessage ?? DEFAULT_OVERALL_MESSAGE
+            );
             if (spec.validateString !== undefined) {
               expect(e.toString()).toEqual(spec.validateString);
             }
