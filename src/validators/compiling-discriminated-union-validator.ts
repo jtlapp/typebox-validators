@@ -86,7 +86,7 @@ export class CompilingDiscriminatedUnionValidator<
     if (this.#compiledFindSchemaMemberIndex === undefined) {
       const codeParts: string[] = [
         `(value) => {
-          if ((typeof value !== 'object' || value === null || Array.isArray(value)) return null;
+          if (typeof value !== 'object' || value === null || Array.isArray(value)) return null;
           switch (${this.toValueKeyDereference(this.discriminantKey)}) {\n`,
       ];
       for (let i = 0; i < this.schema.anyOf.length; ++i) {
@@ -100,9 +100,8 @@ export class CompilingDiscriminatedUnionValidator<
           codeParts.push(`case ${literal}: return ${i};\n`);
         }
       }
-      this.#compiledFindSchemaMemberIndex = eval(
-        codeParts.join('') + 'default: return null; } }'
-      ) as FindSchemaMemberIndex;
+      const code = codeParts.join('') + 'default: return null; } }';
+      this.#compiledFindSchemaMemberIndex = eval(code) as FindSchemaMemberIndex;
     }
     return this.#compiledFindSchemaMemberIndex(value);
   }
