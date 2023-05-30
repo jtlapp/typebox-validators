@@ -6,10 +6,7 @@
  */
 
 import { TSchema, Type } from '@sinclair/typebox';
-import {
-  Value as TypeBoxValue,
-  ValueErrorIterator,
-} from '@sinclair/typebox/value';
+import { Value, ValueErrorIterator } from '@sinclair/typebox/value';
 import { TypeCheck, TypeCompiler } from '@sinclair/typebox/compiler';
 //import { performance } from 'node:perf_hooks';
 
@@ -38,7 +35,7 @@ describe('TypeBox value size checks', () => {
     const compiledType = TypeCompiler.Compile(schema);
 
     // it('should have uncompiled Check() test maxLength first', () => {
-    //   const check = TypeBoxValue.Check.bind(TypeBoxValue, schema);
+    //   const check = Value.Check.bind(Value, schema);
     //   testCheckViaTiming(
     //     check,
     //     badSizeValue,
@@ -59,7 +56,7 @@ describe('TypeBox value size checks', () => {
     });
 
     it('should have First() return a maxLength error', () => {
-      let error = TypeBoxValue.Errors(schema, badSizeValue).First();
+      let error = Value.Errors(schema, badSizeValue).First();
       expect(error?.message).toContain(ERROR_SUBSTRING);
 
       error = compiledType.Errors(badSizeValue).First();
@@ -76,7 +73,7 @@ describe('TypeBox value size checks', () => {
           }
         }
       };
-      verifyErrors(TypeBoxValue.Errors(schema, badSizeValue));
+      verifyErrors(Value.Errors(schema, badSizeValue));
       verifyErrors(compiledType.Errors(badSizeValue));
     });
   });
@@ -96,7 +93,7 @@ describe('TypeBox value size checks', () => {
     const compiledType = TypeCompiler.Compile(schema);
 
     // it('should have uncompiled Check() test maxItems first', () => {
-    //   const check = TypeBoxValue.Check.bind(TypeBoxValue, schema);
+    //   const check = Value.Check.bind(Value, schema);
     //   testCheckViaTiming(
     //     check,
     //     badSizeValue,
@@ -117,7 +114,7 @@ describe('TypeBox value size checks', () => {
     });
 
     it('should have First() return a maxItems error', () => {
-      let error = TypeBoxValue.Errors(schema, badSizeValue).First();
+      let error = Value.Errors(schema, badSizeValue).First();
       expect(error?.message).toContain(ERROR_SUBSTRING);
 
       error = compiledType.Errors(badSizeValue).First();

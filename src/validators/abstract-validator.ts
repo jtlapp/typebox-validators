@@ -1,5 +1,5 @@
 import type { TSchema, Static } from '@sinclair/typebox';
-import { Value as TypeBoxValue, ValueError } from '@sinclair/typebox/value';
+import { Value, ValueError } from '@sinclair/typebox/value';
 
 import { throwInvalidAssert, throwInvalidValidate } from '../lib/errors';
 
@@ -198,11 +198,8 @@ export abstract class AbstractValidator<S extends TSchema> {
     value: Readonly<unknown>,
     overallError?: string
   ): void {
-    if (!TypeBoxValue.Check(schema, value)) {
-      throwInvalidAssert(
-        overallError,
-        TypeBoxValue.Errors(schema, value).First()!
-      );
+    if (!Value.Check(schema, value)) {
+      throwInvalidAssert(overallError, Value.Errors(schema, value).First()!);
     }
   }
 
@@ -211,8 +208,8 @@ export abstract class AbstractValidator<S extends TSchema> {
     value: Readonly<unknown>,
     overallError?: string
   ): void {
-    if (!TypeBoxValue.Check(schema, value)) {
-      throwInvalidValidate(overallError, TypeBoxValue.Errors(schema, value));
+    if (!Value.Check(schema, value)) {
+      throwInvalidValidate(overallError, Value.Errors(schema, value));
     }
   }
 }
