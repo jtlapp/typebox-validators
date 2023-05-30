@@ -6,7 +6,7 @@ import {
   createErrorsIterable,
   throwInvalidAssert,
   throwInvalidValidate,
-} from '../lib/errors';
+} from '../lib/error-utils';
 
 /**
  * Non-compiling validator for heterogeneous unions of objects. To improve

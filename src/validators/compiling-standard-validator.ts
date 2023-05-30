@@ -10,7 +10,7 @@ import {
   createErrorsIterable,
   throwInvalidAssert,
   throwInvalidValidate,
-} from '../lib/errors';
+} from '../lib/error-utils';
 
 /**
  * Lazily compiled validator for standard TypeBox values.

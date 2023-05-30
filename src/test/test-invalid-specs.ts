@@ -7,7 +7,7 @@ import {
   ValidatorMethodOfClass,
   specsToRun,
 } from './test-utils';
-import { DEFAULT_OVERALL_ERROR } from '../lib/errors';
+import { DEFAULT_OVERALL_ERROR } from '../lib/error-utils';
 import { ValidationException } from '../lib/validation-exception';
 
 export function testInvalidSpecs<S extends InvalidTestSpec<TSchema>>(

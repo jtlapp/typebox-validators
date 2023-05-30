@@ -11,7 +11,7 @@ import {
   createErrorsIterable,
   throwInvalidAssert,
   throwInvalidValidate,
-} from '../lib/errors';
+} from '../lib/error-utils';
 
 // TODO: It looks like many of these methods can be shared with discriminated unions,
 // except that they are calling different base methods having the same name.

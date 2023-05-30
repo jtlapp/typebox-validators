@@ -3,7 +3,7 @@ import { ValueError, ValueErrorType } from '@sinclair/typebox/errors';
 
 import { AbstractValidator } from './abstract-validator';
 import { CompilingStandardValidator } from './compiling-standard-validator';
-import { DEFAULT_UNKNOWN_TYPE_MESSAGE } from '../lib/errors';
+import { DEFAULT_UNKNOWN_TYPE_MESSAGE } from '../lib/error-utils';
 
 export type FindSchemaMemberIndex = (value: unknown) => number | null;
 export type SchemaMemberTest = (value: object) => boolean;

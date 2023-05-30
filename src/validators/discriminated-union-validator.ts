@@ -6,7 +6,7 @@ import {
   createErrorsIterable,
   throwInvalidAssert,
   throwInvalidValidate,
-} from '../lib/errors';
+} from '../lib/error-utils';
 
 /**
  * Non-compiling validator for discriminated unions. To improve performance,

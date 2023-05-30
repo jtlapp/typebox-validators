@@ -11,7 +11,7 @@ import {
   createErrorsIterable,
   throwInvalidAssert,
   throwInvalidValidate,
-} from '../lib/errors';
+} from '../lib/error-utils';
 
 /**
  * Lazily compiled validator for discriminated-union unions. To improve

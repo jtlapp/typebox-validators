@@ -6,7 +6,7 @@ import { CompilingHeterogeneousUnionValidator } from '../validators/compiling-he
 import {
   DEFAULT_OVERALL_ERROR,
   DEFAULT_UNKNOWN_TYPE_MESSAGE,
-} from '../lib/errors';
+} from '../lib/error-utils';
 import { ValidatorKind, MethodKind, ValidatorCache } from './test-utils';
 import { testInvalidSpecs } from './test-invalid-specs';
 
