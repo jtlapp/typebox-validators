@@ -5,9 +5,6 @@ export * from './validators/compiling-standard-validator';
 export * from './validators/discriminated-union-validator';
 export * from './validators/heterogeneous-union-validator';
 export * from './validators/standard-validator';
-
-export * from './lib/union-type-exception';
-export * from './lib/specific-validation-error';
 export * from './lib/validation-exception';
 
 export { ValueError } from '@sinclair/typebox/value';
