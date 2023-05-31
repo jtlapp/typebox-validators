@@ -91,14 +91,14 @@ The validators all offer the same methods:
 <!-- prettier-ignore -->
 | Method | Description |
 | --- | --- |
-| `test(value)` | Fast test of whether the value satisfies the schema. Returns a boolean, with `true` meaning valid. |
-| `assert(value, msg?)` | Checks for at most one error and throws [`ValidationException`](https://github.com/jtlapp/typebox-validators/blob/main/src/lib/validation-exception.ts) to report the error. If `msg` is provided, this becomes the `message` of the exception, except that the substring `{error}` (if present) is replaced with the specific error message. The exception's `details` property provides the details of the error. |
-| `assertAndClean(value, msg?)` | Same as `assert`, except that when valid, the method also removes unrecognized properties from the value, if the value is an object. |
-| `assertAndCleanCopy(value, msg?)` | Same as `assert`, except that when valid, the method returns a copy of the value with unrecognized properties removed. |
-| `validate(value, msg?)` | Checks for all errors and throws [`ValidationException`](https://github.com/jtlapp/typebox-validators/blob/main/src/lib/validation-exception.ts) to report them. If `msg` is provided, this becomes the `message` of the exception. The exception's `details` property provides the details of the errors. |
-| `validateAndClean(value, msg?)` | Same as `validate`, except that when valid, the method also removes unrecognized properties from the value, if the value is an object. |
-| `validateAndCleanCopy(value, msg?)` | Same as `validate`, except that when valid, the method returns a copy of the value with unrecognized properties removed. |
-| `errors(value)` | Returns an iterable that yields all validation errors as instances of [`ValueError`](https://github.com/sinclairzx81/typebox/blob/master/src/errors/errors.ts#L99). When there are no errors, the iterable yields no values. |
+| `test`(value) | Fast test of whether the value satisfies the schema. Returns a boolean, with `true` meaning valid. |
+| `assert`(value, msg?) | Checks for at most one error and throws [`ValidationException`](https://github.com/jtlapp/typebox-validators/blob/main/src/lib/validation-exception.ts) to report the error. If `msg` is provided, this becomes the `message` of the exception, except that the substring `{error}` (if present) is replaced with the specific error message. The exception's `details` property provides the details of the error. |
+| `assertAndClean`(value, msg?) | Same as `assert`, except that when valid, the method also removes unrecognized properties from the value, if the value is an object. |
+| `assertAndCleanCopy`(value, msg?) | Same as `assert`, except that when valid, the method returns a copy of the value with unrecognized properties removed. |
+| `validate`(value, msg?) | Checks for all errors and throws [`ValidationException`](https://github.com/jtlapp/typebox-validators/blob/main/src/lib/validation-exception.ts) to report them. If `msg` is provided, this becomes the `message` of the exception. The exception's `details` property provides the details of the errors. |
+| `validateAndClean`(value, msg?) | Same as `validate`, except that when valid, the method also removes unrecognized properties from the value, if the value is an object. |
+| `validateAndCleanCopy`(value, msg?) | Same as `validate`, except that when valid, the method returns a copy of the value with unrecognized properties removed. |
+| `errors`(value) | Returns an iterable that yields all validation errors as instances of [`ValueError`](https://github.com/sinclairzx81/typebox/blob/master/src/errors/errors.ts#L99). When there are no errors, the iterable yields no values. |
 
 If you want validation to fail when an object has properties not given by the schema, use the [`additionalProperties`](https://json-schema.org/understanding-json-schema/reference/object.html#additional-properties) option in the object's schema. In this case, there would be no need to use the various "clean" methods.
 
