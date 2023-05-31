@@ -17,7 +17,8 @@
     "server",
     "security",
     "secure",
-    "discriminated unions"
+    "discriminated unions",
+    "branded types"
   ],
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
