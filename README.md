@@ -178,7 +178,7 @@ const schema3 = Type.Union([
   }),
 ]);
 
-const validator3 = new DiscriminatedUnionValidator(schema3);
+const validator3 = new HeterogeneousUnionValidator(schema3);
 
 // throws exception with message "Bad info" and the single error
 //  "Object type not recognized" for path "":
@@ -206,7 +206,7 @@ const schema4 = Type.Union([
   }),
 ]);
 
-const validator4 = new DiscriminatedUnionValidator(schema4);
+const validator4 = new HeterogeneousUnionValidator(schema4);
 
 // throws exception with message "Bad info" and the single error
 //  "Required string" for path "/address":
