@@ -27,6 +27,10 @@ const wellFormedUnion1 = Type.Union([
     int1: Type.Integer(),
     int2: Type.Optional(Type.Integer()),
   }),
+  Type.Object({
+    "s'quote": Type.String(),
+    str1: Type.String(),
+  }),
 ]);
 
 const wellFormedUnion2 = Type.Union(
@@ -139,6 +143,13 @@ function testValidator(
         opt: 32,
       },
       selectedIndex: 1,
+    },
+    {
+      description: 'valid hetero union 7, selecting quoted key',
+      onlySpec: false,
+      schema: wellFormedUnion1,
+      value: { "s'quote": 'a', str1: 'b' },
+      selectedIndex: 2,
     },
   ]);
 }
