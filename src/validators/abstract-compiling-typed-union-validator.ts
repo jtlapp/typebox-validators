@@ -45,7 +45,7 @@ export abstract class AbstractCompilingTypedUnionValidator<
     );
   }
 
-  override assertReturningSchema(
+  protected override assertReturningSchema(
     value: Readonly<unknown>,
     overallError?: string
   ): TObject {
@@ -63,7 +63,7 @@ export abstract class AbstractCompilingTypedUnionValidator<
     return memberSchema;
   }
 
-  override validateReturningSchema(
+  protected override validateReturningSchema(
     value: Readonly<unknown>,
     overallError?: string
   ): TObject {
