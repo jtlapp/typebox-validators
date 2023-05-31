@@ -21,7 +21,7 @@ The library provides the following abilities, each of which is optional:
 3. Collect all validation errors, such as for feedback on form user input in a browser.
 4. Remove unrecognized properties from validated objects, which is important for Internet APIs.
 5. Validate discriminated unions, yielding only errors for the matching member schema.
-6. Validate heterogeneous unions of objects that need not have any properties in common, yielding only errors for the matching member schema.
+6. Validate heterogeneous unions of objects that need not have any properties in common, yielding only errors for the matching member schema. Useful for branded types.
 7. Compile a TypeBox schema on its first use, subsequently using the cached compilation (lazy compilation).
 8. Report all validation errors within a single string, such as for debugging purposes.
 
@@ -44,10 +44,10 @@ Select the validator or validators you want to use. The following classes are av
 - `AbstractValidator` &mdash; Abstract base class of all validators.
 - `StandardValidator` &mdash; Non-compiling validator that validates TypeBox schemas using TypeBox validation behavior.
 - `CompilingStandardValiator` &mdash; Compiling validator that validates TypeBox schemas using TypeBox validation behavior. This validator compiles the schema on the first validation, caches the compilation, and thereafter uses the cached compilation.
-- `DiscriminatedUnionValidator` &mdash; Non-compiling validator that validates a union of object types, each of which has a discriminant key whose value identifies the object type. This validator only yields errors associated with the object's type.
-- `CompilingDiscriminatedUnionValidator` &mdash; Compiling validator that validates a union of object types, each of which has a discriminant key whose value identifies the object type. This validator only yields errors associated with the object's type. It compiles the schema for an object type on the first validaton of an object of that type, caches the compilation, and thereafter uses the cached compilation for objects of that type.
-- `HeterogeneousUnionValidator` &mdash; Non-compiling validator that validates a union of object types, each of which has at least one property unique to the object type among all object types of the union. This validator only yields errors associated with the object's type.
-- `CompilingHeterogeneousUnionValidator` &mdash; Compiling validator that validates a union of object types, each of which has at least one property unique to the object type among all object types of the union. This validator only yields errors associated with the object's type. It compiles the schema for an object type on the first validaton of an object of that type, caches the compilation, and thereafter uses the cached compilation for objects of that type.
+- `DiscriminatedUnionValidator` &mdash; Non-compiling validator that validates a union of object types, each of which has a discriminant key whose value identifies the object type. This validator validates objects against the schema for the object's type, yielding only errors relevant to that type.
+- `CompilingDiscriminatedUnionValidator` &mdash; Compiling validator that validates a union of object types, each of which has a discriminant key whose value identifies the object type. This validator validates objects against the schema for the object's type, yielding only errors relevant to that type. It compiles the schema for an object type on the first validaton of that type, caches the compilation, and thereafter uses the cached compilation for objects of that type.
+- `HeterogeneousUnionValidator` &mdash; Non-compiling validator that validates a union of object types, each of which has at least one required property name unique to the object type among all object types of the union. This validator validates objects against the schema for the object's type, yielding only errors relevant to that type.
+- `CompilingHeterogeneousUnionValidator` &mdash; Compiling validator that validates a union of object types, each of which has at least one required property name unique to the object type among all object types of the union. This validator validates objects against the schema for the object's type, yielding only errors relevant to that type. It compiles the schema for an object type on the first validaton of that type, caches the compilation, and thereafter uses the cached compilation for objects of that type.
 
 Create a validator for a particular schema and use that validator to validate a value against its schema:
 
@@ -110,7 +110,118 @@ If you want validation to fail when an object has properties not given by the sc
 
 The `details` property of a [`ValidationException`](https://github.com/jtlapp/typebox-validators/blob/main/src/lib/validation-exception.ts) contains an array of [`ValueError`](https://github.com/sinclairzx81/typebox/blob/master/src/errors/errors.ts#L99) instances, one for each detected error. Call `toString()` on the exception to get a single string that describes all of the errors found in `details`.
 
-## Example Unions
+## Discriminated Union Examples
+
+```ts
+const schema1 = Type.Union([
+  Type.Object({
+    kind: Type.Literal('string'),
+    val: Type.String(),
+  }),
+  Type.Object({
+    kind: Type.Literal('integer'),
+    val: Type.Integer(),
+    units: Type.Optional(Type.String()),
+  }),
+]);
+
+const validator1 = new DiscriminatedUnionValidator(schema1);
+
+// throws exception with message "Invalid value" and the single error
+//  "Object type not recognized" for path "":
+validator1.assert({ kind: 'float', val: 1.5 });
+
+// throws exception with message "Oopsie! val - Expected integer"
+//  and the single error "Expected integer" for path "/val":
+validator1.assert({ kind: 'integer', val: 1.5 }, 'Oopsie! {error}');
+```
+
+```ts
+const schema2 = Type.Union(
+  [
+    Type.Object({
+      __type: Type.Literal('string'),
+      val: Type.String({ errorMessage: 'Must be a string' }),
+    }),
+    Type.Object({
+      __type: Type.Literal('integer'),
+      val: Type.Integer({ errorMessage: 'Must be an integer' }),
+      units: Type.Optional(Type.String()),
+    }),
+  ],
+  { discriminantKey: '__type', errorMessage: 'Unknown type' }
+);
+
+const validator2 = new DiscriminatedUnionValidator(schema2);
+
+// throws exception with message "Invalid value" and the single error
+//  "Unknown type" for path "":
+validator2.assert({ __type: 'float', val: 1.5 });
+
+// throws exception with message "Oopsie! val - Must be an integer"
+//  and the single error "Must be an integer" for path "/val":
+validator2.assert({ __type: 'integer', val: 1.5 }, 'Oopsie! {error}');
+```
+
+## Heterogeneous Union Examples
+
+```ts
+const schema3 = Type.Union([
+  Type.Object({
+    summaryBrand: Type.String(),
+    name: Type.String(),
+    address: Type.String()
+    zipCode: Type.String()
+  }),
+  Type.Object({
+    detailedBrand: Type.String(),
+    firstName: Type.String(),
+    lastName: Type.String(),
+    streetAddress: Type.String(),
+    city: Type.String(),
+    state: Type.String(),
+    zipCode: Type.String()
+  }),
+]);
+
+const validator3 = new DiscriminatedUnionValidator(schema3);
+
+// throws exception with message "Bad info" and the single error
+//  "Object type not recognized" for path "":
+validator3.assert({ name: 'Jane Doe', zipcode: 12345 }, "Bad info");
+
+// throws exception with message "Bad info: address - Expected string"
+//  and the single error "Expected string" for path "/address":
+validator3.assert({ summaryBrand: '', name: 'Jane Doe' }, 'Bad info: {error}');
+```
+
+```ts
+const schema4 = Type.Union([
+  Type.Object({
+    name: Type.String(),
+    address: Type.String({ errorMessage: 'Required string' })
+    zipCode: Type.String()
+  }),
+  Type.Object({
+    firstName: Type.String(),
+    lastName: Type.String({ errorMessage: 'Required string' }),
+    streetAddress: Type.String(),
+    city: Type.String(),
+    state: Type.String(),
+    zipCode: Type.String()
+  }),
+]);
+
+const validator4 = new DiscriminatedUnionValidator(schema4);
+
+// throws exception with message "Bad info" and the single error
+//  "Required string" for path "/address":
+validator4.assert({ name: 'Jane Doe', zipcode: 12345 }, "Bad info");
+
+// throws exception with message "Bad info: lastName - Required string"
+//  and the single error "Required string" for path "/lastName":
+validator4.assert({ firstName: 'Jane', zipcode: 12345 }, 'Bad info: {error}');
+```
 
 ## License
 
