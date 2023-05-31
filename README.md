@@ -2,12 +2,6 @@
 
 TypeBox validators with custom errors, safe multi-tier error handling, discriminated unions
 
-# TODO
-
-- probably restricted to use with TypeBox schemas because uses TypeBox validation and
-  TypeBox uses symbols
-- test in browser context. Maybe use https://github.com/egoist/tsup. But how to make it easy for devs to use this in a browser?
-
 ## Overview
 
 The [TypeBox](https://github.com/sinclairzx81/typebox) JSON Schema validator may be the [fastest JSON validator](https://moltar.github.io/typescript-runtime-type-benchmarks/) for JavaScript/TypeScript not requiring a development-time precompilation step. TypeBox provides the ability to both construct and validate JSON, but it is strictly standards compliant and does not offer commonly needed additional functionality.
