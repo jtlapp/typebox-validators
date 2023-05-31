@@ -184,6 +184,7 @@ export abstract class AbstractValidator<S extends TSchema> {
     if (schema.type === 'object' && typeof value === 'object') {
       // TODO: reimplement within 'in', cache when compiling; test performance
       for (const key in value as Record<string, any>) {
+        // TODO: replace 'in'
         if (!(key in schema.properties)) {
           delete (value as Record<string, any>)[key];
         }
