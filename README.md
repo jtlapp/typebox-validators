@@ -1,31 +1,117 @@
 # typebox-errors
 
-TypeBox validators with custom errors, discriminated unions, and safe multi-tier handling
+TypeBox validators with custom errors, safe multi-tier error handling, discriminated unions
 
 # TODO
 
 - probably restricted to use with TypeBox schemas because uses TypeBox validation and
   TypeBox uses symbols
-- always call test() first.
-- write generic test tools that take examples for each kind of class and guarantee that common tests are done on these classes; reuse sample schemas/values as much as possible; maybe classify schema/value pairs by whether they're valid, expected error count, single-field multiple errors (and whether one is maxlength); maybe pair invalid schemas with their expected errors
-- rename specifics back to details; rename specificError to errorMessage
-- mention use of `additionalProperties` for preventing unrecognized properties
 - test in browser context. Maybe use https://github.com/egoist/tsup. But how to make it easy for devs to use this in a browser?
-- note about heavy setup in hetero and discrim unions
-- lowercase first character of TypeBox errors
-- performance tests
 
-## Introduction
+## Overview
 
-The [TypeBox](https://github.com/sinclairzx81/typebox) JSON Schema validator may be the [fastest JSON validator](https://moltar.github.io/typescript-runtime-type-benchmarks/) for JavaScript/TypeScript not requiring a development-time precompilation step. TypeBox provides both the ability to construct and validate JSON, but it is strictly standards compliant and does not offer additional functionality that is commonly needed.
+The [TypeBox](https://github.com/sinclairzx81/typebox) JSON Schema validator may be the [fastest JSON validator](https://moltar.github.io/typescript-runtime-type-benchmarks/) for JavaScript/TypeScript not requiring a development-time precompilation step. TypeBox provides the ability to both construct and validate JSON, but it is strictly standards compliant and does not offer commonly needed additional functionality.
 
-This library provides JSON Schema validators having this additional functionality. It wraps TypeBox validation so you can get TypeBox validation performance and limit your use of TypeBox to just JSON Schema specification. The library provides the following abilities, each of which is optional:
+This library provides JSON Schema validators having this additional functionality. It wraps TypeBox so you can get TypeBox validation performance and limit your use of TypeBox to just JSON Schema specification.
+
+The library provides the following abilities, each of which is optional:
 
 1. Replace TypeBox's validation error messages with your own error messages.
-2. Fail validation at the first encountered validation error. This minimizes server resources consumed by faulty or malevolent clients.
+2. Fail validation at the first encountered validation error, reporting just this error. This minimizes server resources consumed by faulty or malevolent clients.
 3. Collect all validation errors, such as for feedback on form user input in a browser.
-4. Remove unrecognized properties from validated objects, which is important for APIs.
-5. Validate discriminated unions, yielding only errors for the schema indicated by the object's discriminant key.
-6. Validate heterogeneous unions of objects that need not have any properties in common, yielding only errors for the matching schema.
-7. Compile the underlying TypeBox validator only on the first use of a schema (lazy compilation), thereafter caching the compilation for subsequent use.
+4. Remove unrecognized properties from validated objects, which is important for Internet APIs.
+5. Validate discriminated unions, yielding only errors for the matching member schema.
+6. Validate heterogeneous unions of objects that need not have any properties in common, yielding only errors for the matching member schema.
+7. Compile a TypeBox schema on its first use, subsequently using the cached compilation (lazy compilation).
 8. Report all validation errors within a single string, such as for debugging purposes.
+
+## Installation
+
+Install with your preferred dependency manager:
+
+```
+npm install typebox-validators
+
+yarn add typebox-validators
+
+pnpm add typebox-validators
+```
+
+## Usage
+
+Select the validator or validators you want to use. The following classes are available:
+
+- `AbstractValidator` &mdash; Abstract base class of all validators.
+- `StandardValidator` &mdash; Non-compiling validator that validates TypeBox schemas using TypeBox validation behavior.
+- `CompilingStandardValiator` &mdash; Compiling validator that validates TypeBox schemas using TypeBox validation behavior. This validator compiles the schema on the first validation, caches the compilation, and thereafter uses the cached compilation.
+- `DiscriminatedUnionValidator` &mdash; Non-compiling validator that validates a union of object types, each of which has a discriminant key whose value identifies the object type. This validator only yields errors associated with the object's type.
+- `CompilingDiscriminatedUnionValidator` &mdash; Compiling validator that validates a union of object types, each of which has a discriminant key whose value identifies the object type. This validator only yields errors associated with the object's type. It compiles the schema for an object type on the first validaton of an object of that type, caches the compilation, and thereafter uses the cached compilation for objects of that type.
+- `HeterogeneousUnionValidator` &mdash; Non-compiling validator that validates a union of object types, each of which has at least one property unique to the object type among all object types of the union. This validator only yields errors associated with the object's type.
+- `CompilingHeterogeneousUnionValidator` &mdash; Compiling validator that validates a union of object types, each of which has at least one property unique to the object type among all object types of the union. This validator only yields errors associated with the object's type. It compiles the schema for an object type on the first validaton of an object of that type, caches the compilation, and thereafter uses the cached compilation for objects of that type.
+
+Create a validator for a particular schema and use that validator to validate a value against its schema:
+
+```ts
+import { Type } from '@sinclaim/typebox';
+import { StandardValidator } from 'typebox-validators';
+
+const schema = Type.Object({
+  handle: Type.String(
+    {
+      minLength: 5,
+      maxLength: 10,
+      pattern: '^[a-zA-Z]+$',
+    },
+    {
+      errorMessage: 'must be a string of 5 to 10 letters',
+    }
+  ),
+  count: Type.Integer({ minimum: 0 }),
+});
+
+const validator = new StandardValidator(schema);
+const value = { handle: '1234', count: -1 };
+
+// returns false:
+validator.test(value);
+
+// throws with only error 'must be a string of 5 to 10 letters':
+validator.assert(value);
+
+// throws with error 'must be a string of 5 to 10 letters' and TypeBox's
+//  default error message for an integer being less than the minimum:
+validator.validate(value);
+
+// returns an iterable providing the two errors:
+validator.errors(value);
+```
+
+`assert` and `validate` methods throw a [`ValidationException`](https://github.com/jtlapp/typebox-validators/blob/main/src/lib/validation-exception.ts) error when validation fails, reporting only the first error for `assert` methods and reporting all errors for `validate` methods. `assert` methods are safer to use on the server because TypeBox ensures that the `maxLength` and `maxItems` contraints are tested before testing regular expressions. `test` is faster than `assert`, which is faster than `validate` when a least one error occurs.
+
+The union validators only work on schemas of type `TUnion<TObject[]>`. The discriminated union validators assume the discriminant key is named `kind`, unless you provide a `discriminantKey` option indicating otherwise. The discriminated and heterogeneous union validators both report an error when the value is not one of the types in the union. To override the default message for this error, specify your message in an `errorMessage` option on the union's schema.
+
+Any schema can provide an `errorMessage` option to indicate what error message should be used when a value doesn't satify the constraints of that particular schema. If provided, this message causes all errors reported for that schema to be collapsed into a single error having the message. The error message does not apply if the failed constraints are actually on a further nested schema.
+
+The validators all offer the same methods:
+
+<!-- prettier-ignore -->
+| Method | Description |
+| --- | --- |
+| test(value) | Fast test of whether the value satisfies the schema. Returns a boolean, with `true` meaning valid. |
+| assert(value, msg?) | Checks for at most one error and throws [`ValidationException`](https://github.com/jtlapp/typebox-validators/blob/main/src/lib/validation-exception.ts) to report the error. If `msg` is provided, this becomes the `message` of the exception, except that the substring `{error}` (if present) is replaced with the specific error message. The exception's `details` property provides the details of the error. |
+| assertAndClean(value, msg?) | Same as `assert`, except that when valid, the method also removes unrecognized properties from the value, if the value is an object. |
+| assertAndCleanCopy(value, msg?) | Same as `assert`, except that when valid, the method returns a copy of the value with unrecognized properties removed. |
+| validate(value, msg?) | Checks for all errors and throws [`ValidationException`](https://github.com/jtlapp/typebox-validators/blob/main/src/lib/validation-exception.ts) to report them. If `msg` is provided, this becomes the `message` of the exception. The exception's `details` property provides the details of the errors. |
+| validateAndClean(value, msg?) | Same as `validate`, except that when valid, the method also removes unrecognized properties from the value, if the value is an object. |
+| validateAndCleanCopy(value, msg?) | Same as `validate`, except that when valid, the method returns a copy of the value with unrecognized properties removed. |
+| errors(value) | Returns an iterable that yields all validation errors as instances of [`ValueError`](https://github.com/sinclairzx81/typebox/blob/master/src/errors/errors.ts#L99). When there are no errors, the iterable yields no values. |
+
+If you want validation to fail when an object has properties not given by the schema, use the [`additionalProperties`](https://json-schema.org/understanding-json-schema/reference/object.html#additional-properties) option in the object's schema. In this case, there would be no need to use the various "clean" methods.
+
+The `details` property of a [`ValidationException`](https://github.com/jtlapp/typebox-validators/blob/main/src/lib/validation-exception.ts) contains an array of [`ValueError`](https://github.com/sinclairzx81/typebox/blob/master/src/errors/errors.ts#L99) instances, one for each detected error. Call `toString()` on the exception to get a single string that describes all of the errors found in `details`.
+
+## Example Unions
+
+## License
+
+MIT License. Copyright &copy; 2023 Joseph T. Lapp
