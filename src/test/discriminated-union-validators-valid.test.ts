@@ -45,6 +45,20 @@ const wellFormedUnion2 = Type.Union(
   { discriminantKey: 't', typeError: 'Unknown type' }
 );
 
+const wellFormedUnion3 = Type.Union(
+  [
+    Type.Object({
+      "s'quote": Type.Literal(100),
+      str1: Type.String(),
+    }),
+    Type.Object({
+      "s'quote": Type.Literal(200),
+      int1: Type.Integer(),
+    }),
+  ],
+  { discriminantKey: "s'quote" }
+);
+
 const validatorCache = new ValidatorCache();
 
 describe('discriminated union validators - valid values', () => {
@@ -130,6 +144,13 @@ function testValidator(
       onlySpec: false,
       schema: wellFormedUnion2,
       value: { t: 'i', str1: 'hello', int1: 1 },
+      selectedIndex: 1,
+    },
+    {
+      description: 'valid discrim union 7, quoted discriminant key',
+      onlySpec: false,
+      schema: wellFormedUnion3,
+      value: { "s'quote": 200, int1: 1 },
       selectedIndex: 1,
     },
   ]);
