@@ -1,14 +1,15 @@
 import { TObject, TUnion } from '@sinclair/typebox';
+import { Value, ValueError } from '@sinclair/typebox/value';
 
 import { AbstractTypedUnionValidator } from './abstract-typed-union-validator';
-import { Value, ValueError } from '@sinclair/typebox/value';
 import {
   createErrorsIterable,
+  createUnionTypeError,
   createUnionTypeErrorIterable,
   throwInvalidAssert,
   throwInvalidValidate,
 } from '../lib/error-utils';
-import { HeterogeneousMemberFinder } from '../lib/heterogeneous-member-finder';
+import { UniqueKeyIndex } from '../lib/unique-key-index';
 
 /**
  * Non-compiling validator for heterogeneous unions of objects. To improve
@@ -18,17 +19,17 @@ import { HeterogeneousMemberFinder } from '../lib/heterogeneous-member-finder';
 export class HeterogeneousUnionValidator<
   S extends TUnion<TObject[]>
 > extends AbstractTypedUnionValidator<S> {
-  #memberFinder: HeterogeneousMemberFinder;
+  #uniqueKeyIndex: UniqueKeyIndex;
 
   /** @inheritdoc */
   constructor(schema: S) {
     super(schema);
-    this.#memberFinder = new HeterogeneousMemberFinder(schema);
+    this.#uniqueKeyIndex = new UniqueKeyIndex(schema);
   }
 
   /** @inheritdoc */
   override test(value: Readonly<unknown>): boolean {
-    const indexOrError = this.#memberFinder.findSchemaMemberIndex(value);
+    const indexOrError = this.findSchemaMemberIndex(value);
     if (typeof indexOrError !== 'number') {
       return false;
     }
@@ -37,7 +38,7 @@ export class HeterogeneousUnionValidator<
 
   /** @inheritdoc */
   override errors(value: Readonly<unknown>): Iterable<ValueError> {
-    const indexOrError = this.#memberFinder.findSchemaMemberIndex(value);
+    const indexOrError = this.findSchemaMemberIndex(value);
     if (typeof indexOrError !== 'number') {
       return createUnionTypeErrorIterable(indexOrError);
     }
@@ -49,7 +50,7 @@ export class HeterogeneousUnionValidator<
     value: Readonly<unknown>,
     overallError?: string
   ): TObject {
-    const indexOrError = this.#memberFinder.findSchemaMemberIndex(value);
+    const indexOrError = this.findSchemaMemberIndex(value);
     if (typeof indexOrError !== 'number') {
       throwInvalidAssert(overallError, indexOrError);
     }
@@ -62,12 +63,29 @@ export class HeterogeneousUnionValidator<
     value: Readonly<unknown>,
     overallError?: string
   ): TObject {
-    const indexOrError = this.#memberFinder.findSchemaMemberIndex(value);
+    const indexOrError = this.findSchemaMemberIndex(value);
     if (typeof indexOrError !== 'number') {
       throwInvalidValidate(overallError, indexOrError);
     }
     const schema = this.schema.anyOf[indexOrError] as TObject;
     this.uncompiledValidate(schema, value, overallError);
     return schema;
+  }
+
+  private findSchemaMemberIndex(value: Readonly<any>): number | ValueError {
+    if (this.#uniqueKeyIndex.keyByMemberIndex === undefined) {
+      // only incur cost if validator is actually used
+      this.#uniqueKeyIndex.cacheUniqueKeys();
+    }
+
+    if (typeof value === 'object' && value !== null) {
+      for (let i = 0; i < this.schema.anyOf.length; ++i) {
+        const uniqueKey = this.#uniqueKeyIndex.keyByMemberIndex![i];
+        if (value[uniqueKey] !== undefined) {
+          return i;
+        }
+      }
+    }
+    return createUnionTypeError(this.schema, value);
   }
 }
