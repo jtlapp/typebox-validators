@@ -8,7 +8,7 @@ import {
 import { ValidationException } from './validation-exception';
 
 export const DEFAULT_OVERALL_MESSAGE = 'Invalid value';
-export const DEFAULT_UNKNOWN_TYPE_MESSAGE = 'not a type the union recognizes';
+export const DEFAULT_UNKNOWN_TYPE_MESSAGE = 'Object type not recognized';
 
 const TYPEBOX_REQUIRED_ERROR_MESSAGE = 'Expected required property';
 
