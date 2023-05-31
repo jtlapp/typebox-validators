@@ -1,12 +1,7 @@
 import { Static, TObject, TUnion } from '@sinclair/typebox';
-import { ValueError, ValueErrorType } from '@sinclair/typebox/errors';
 
 import { AbstractValidator } from './abstract-validator';
 import { CompilingStandardValidator } from './compiling-standard-validator';
-import { DEFAULT_UNKNOWN_TYPE_MESSAGE } from '../lib/error-utils';
-
-export type FindSchemaMemberIndex = (value: unknown) => number | null;
-export type SchemaMemberTest = (value: object) => boolean;
 
 /**
  * Abstract validator for values that are typed member unions of objects.
@@ -72,29 +67,6 @@ export abstract class AbstractTypedUnionValidator<
     return this.schema.anyOf.map(
       (memberSchema) => new CompilingStandardValidator(memberSchema)
     );
-  }
-
-  protected createUnionTypeError(
-    unionSchema: Readonly<TUnion<TObject[]>>,
-    value: Readonly<unknown>
-  ): ValueError {
-    return {
-      type: ValueErrorType.Union,
-      path: '',
-      schema: unionSchema,
-      value,
-      message: unionSchema.errorMessage ?? DEFAULT_UNKNOWN_TYPE_MESSAGE,
-    };
-  }
-
-  protected createUnionTypeErrorIterable(
-    typeError: ValueError
-  ): Iterable<ValueError> {
-    return {
-      [Symbol.iterator]: function* () {
-        yield typeError;
-      },
-    };
   }
 
   protected toValueKeyDereference(key: string): string {

@@ -1,5 +1,9 @@
-import { Kind } from '@sinclair/typebox';
-import { ValueError, ValueErrorIterator } from '@sinclair/typebox/errors';
+import { Kind, TObject, TUnion } from '@sinclair/typebox';
+import {
+  ValueError,
+  ValueErrorIterator,
+  ValueErrorType,
+} from '@sinclair/typebox/errors';
 
 import { ValidationException } from './validation-exception';
 
@@ -41,6 +45,29 @@ export function createErrorsIterable(
         }
         result = errors.next();
       }
+    },
+  };
+}
+
+export function createUnionTypeError(
+  unionSchema: Readonly<TUnion<TObject[]>>,
+  value: Readonly<unknown>
+): ValueError {
+  return {
+    type: ValueErrorType.Union,
+    path: '',
+    schema: unionSchema,
+    value,
+    message: unionSchema.errorMessage ?? DEFAULT_UNKNOWN_TYPE_MESSAGE,
+  };
+}
+
+export function createUnionTypeErrorIterable(
+  typeError: ValueError
+): Iterable<ValueError> {
+  return {
+    [Symbol.iterator]: function* () {
+      yield typeError;
     },
   };
 }

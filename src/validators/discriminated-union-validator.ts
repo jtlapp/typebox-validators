@@ -1,12 +1,14 @@
 import { TObject, TUnion } from '@sinclair/typebox';
 import { Value, ValueError } from '@sinclair/typebox/value';
 
-import { AbstractDiscriminatedUnionValidator } from './abstract-discriminated-union-validator';
+import { AbstractTypedUnionValidator } from './abstract-typed-union-validator';
 import {
   createErrorsIterable,
+  createUnionTypeErrorIterable,
   throwInvalidAssert,
   throwInvalidValidate,
 } from '../lib/error-utils';
+import { DiscriminatedMemberFinder } from '../lib/discriminated-member-finder';
 
 /**
  * Non-compiling validator for discriminated unions. To improve performance,
@@ -15,15 +17,18 @@ import {
  */
 export class DiscriminatedUnionValidator<
   S extends TUnion<TObject[]>
-> extends AbstractDiscriminatedUnionValidator<S> {
+> extends AbstractTypedUnionValidator<S> {
+  #memberFinder: DiscriminatedMemberFinder;
+
   /** @inheritdoc */
   constructor(schema: S) {
     super(schema);
+    this.#memberFinder = new DiscriminatedMemberFinder(schema);
   }
 
   /** @inheritdoc */
   override test(value: Readonly<unknown>): boolean {
-    const indexOrError = this.findSchemaMemberIndex(value);
+    const indexOrError = this.#memberFinder.findSchemaMemberIndex(value);
     if (typeof indexOrError !== 'number') {
       return false;
     }
@@ -32,11 +37,11 @@ export class DiscriminatedUnionValidator<
 
   /** @inheritdoc */
   override errors(value: Readonly<unknown>): Iterable<ValueError> {
-    const indexOrError = this.findSchemaMemberIndex(value);
+    const indexOrError = this.#memberFinder.findSchemaMemberIndex(value);
     if (typeof indexOrError !== 'number') {
-      return this.createUnionTypeErrorIterable(indexOrError);
+      return createUnionTypeErrorIterable(indexOrError);
     }
-    const schema = this.schema.anyOf[indexOrError] as TObject;
+    const schema = this.#memberFinder.schema.anyOf[indexOrError] as TObject;
     return createErrorsIterable(Value.Errors(schema, value));
   }
 
@@ -44,7 +49,7 @@ export class DiscriminatedUnionValidator<
     value: Readonly<unknown>,
     overallError?: string
   ): TObject {
-    const indexOrError = this.findSchemaMemberIndex(value);
+    const indexOrError = this.#memberFinder.findSchemaMemberIndex(value);
     if (typeof indexOrError !== 'number') {
       throwInvalidAssert(overallError, indexOrError);
     }
@@ -57,7 +62,7 @@ export class DiscriminatedUnionValidator<
     value: Readonly<unknown>,
     overallError?: string
   ): TObject {
-    const indexOrError = this.findSchemaMemberIndex(value);
+    const indexOrError = this.#memberFinder.findSchemaMemberIndex(value);
     if (typeof indexOrError !== 'number') {
       throwInvalidValidate(overallError, indexOrError);
     }

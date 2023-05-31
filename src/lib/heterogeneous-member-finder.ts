@@ -5,21 +5,14 @@ import {
 } from '@sinclair/typebox';
 import { ValueError } from '@sinclair/typebox/errors';
 
-import { AbstractTypedUnionValidator } from './abstract-typed-union-validator';
+import { createUnionTypeError } from './error-utils';
 
-/**
- * Abstract validator for heterogeneous unions of objects.
- */
-export abstract class AbstractHeterogeneousUnionValidator<
-  S extends TUnion<TObject[]>
-> extends AbstractTypedUnionValidator<S> {
-  protected uniqueKeyByMemberIndex?: string[];
+export class HeterogeneousMemberFinder {
+  uniqueKeyByMemberIndex?: string[];
 
-  constructor(schema: Readonly<S>) {
-    super(schema);
-  }
+  constructor(readonly schema: Readonly<TUnion<TObject[]>>) {}
 
-  protected findSchemaMemberIndex(value: Readonly<any>): number | ValueError {
+  findSchemaMemberIndex(value: Readonly<any>): number | ValueError {
     if (this.uniqueKeyByMemberIndex === undefined) {
       // only incur cost if validator is actually used
       this.cacheUniqueKeys();
@@ -33,10 +26,10 @@ export abstract class AbstractHeterogeneousUnionValidator<
         }
       }
     }
-    return this.createUnionTypeError(this.schema, value);
+    return createUnionTypeError(this.schema, value);
   }
 
-  protected cacheUniqueKeys(): void {
+  cacheUniqueKeys(): void {
     const keyToMemberIndexMap = new Map<string, number>();
     const unionSize = this.schema.anyOf.length;
 
