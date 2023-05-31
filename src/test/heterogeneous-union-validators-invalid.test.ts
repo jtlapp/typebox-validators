@@ -264,24 +264,24 @@ function testValidator(
 
       it("union whose members aren't all unique, invalid value", () => {
         const validator = createValidator(illFormedUnion);
-        const validObject = { s: 'hello', str1: 32 };
+        const invalidObject = { s: 'hello', str1: 32 };
 
-        expect(() => validator.test(validObject)).toThrow(errorMessage);
-        expect(() => validator.assert(validObject)).toThrow(errorMessage);
-        expect(() => validator.assertAndClean(validObject)).toThrow(
+        expect(() => validator.test(invalidObject)).toThrow(errorMessage);
+        expect(() => validator.assert(invalidObject)).toThrow(errorMessage);
+        expect(() => validator.assertAndClean(invalidObject)).toThrow(
           errorMessage
         );
-        expect(() => validator.assertAndCleanCopy(validObject)).toThrow(
+        expect(() => validator.assertAndCleanCopy(invalidObject)).toThrow(
           errorMessage
         );
-        expect(() => validator.validate(validObject)).toThrow(errorMessage);
-        expect(() => validator.validateAndClean(validObject)).toThrow(
+        expect(() => validator.validate(invalidObject)).toThrow(errorMessage);
+        expect(() => validator.validateAndClean(invalidObject)).toThrow(
           errorMessage
         );
-        expect(() => validator.validateAndCleanCopy(validObject)).toThrow(
+        expect(() => validator.validateAndCleanCopy(invalidObject)).toThrow(
           errorMessage
         );
-        expect(() => validator.errors(validObject)).toThrow(errorMessage);
+        expect(() => validator.errors(invalidObject)).toThrow(errorMessage);
       });
     });
   }
