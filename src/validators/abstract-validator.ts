@@ -168,10 +168,9 @@ export abstract class AbstractValidator<S extends TSchema> {
   ): Static<VS> {
     if (schema.type === 'object' && typeof value === 'object') {
       const cleanedValue: Record<string, any> = {};
-      // TODO: reimplement without 'in', cache when compiling; test performance
-      for (const key in schema.properties) {
+      Object.keys(schema.properties).forEach((key) => {
         cleanedValue[key] = (value as Record<string, any>)[key];
-      }
+      });
       return cleanedValue;
     }
     return value;
@@ -182,13 +181,12 @@ export abstract class AbstractValidator<S extends TSchema> {
     value: unknown
   ): void {
     if (schema.type === 'object' && typeof value === 'object') {
-      // TODO: reimplement within 'in', cache when compiling; test performance
-      for (const key in value as Record<string, any>) {
-        // TODO: replace 'in'
-        if (!(key in schema.properties)) {
+      const schemaKeys = Object.keys(schema.properties);
+      Object.getOwnPropertyNames(value).forEach((key) => {
+        if (!schemaKeys.includes(key)) {
           delete (value as Record<string, any>)[key];
         }
-      }
+      });
     }
   }
 

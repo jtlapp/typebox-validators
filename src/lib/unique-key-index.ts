@@ -15,8 +15,7 @@ export class UniqueKeyIndex {
 
     for (let i = 0; i < unionSize; ++i) {
       const memberSchema = this.schema.anyOf[i];
-      // TODO: replace 'in'
-      for (const key in memberSchema.properties) {
+      Object.getOwnPropertyNames(memberSchema.properties).forEach((key) => {
         if (!keyToMemberIndexMap.has(key)) {
           const property = memberSchema.properties[key];
           if (property[TypeBoxModifier] !== 'Optional') {
@@ -25,7 +24,7 @@ export class UniqueKeyIndex {
         } else {
           keyToMemberIndexMap.set(key, -1);
         }
-      }
+      });
     }
 
     let uniqueKeyCount = 0;
