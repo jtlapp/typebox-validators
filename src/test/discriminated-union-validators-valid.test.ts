@@ -42,7 +42,7 @@ const wellFormedUnion2 = Type.Union(
       t: Type.Literal('i'),
     }),
   ],
-  { discriminantKey: 't', typeError: 'Unknown type' }
+  { discriminantKey: 't', errorMessage: 'Unknown type' }
 );
 
 const wellFormedUnion3 = Type.Union(
