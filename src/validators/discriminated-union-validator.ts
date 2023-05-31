@@ -1,14 +1,17 @@
 import { TObject, TUnion } from '@sinclair/typebox';
 import { Value, ValueError } from '@sinclair/typebox/value';
 
-import { AbstractTypedUnionValidator } from './abstract-typed-union-validator';
+import {
+  AbstractTypedUnionValidator,
+  DEFAULT_DISCRIMINANT_KEY,
+} from './abstract-typed-union-validator';
 import {
   createErrorsIterable,
+  createUnionTypeError,
   createUnionTypeErrorIterable,
   throwInvalidAssert,
   throwInvalidValidate,
 } from '../lib/error-utils';
-import { DiscriminatedMemberFinder } from '../lib/discriminated-member-finder';
 
 /**
  * Non-compiling validator for discriminated unions. To improve performance,
@@ -18,17 +21,19 @@ import { DiscriminatedMemberFinder } from '../lib/discriminated-member-finder';
 export class DiscriminatedUnionValidator<
   S extends TUnion<TObject[]>
 > extends AbstractTypedUnionValidator<S> {
-  #memberFinder: DiscriminatedMemberFinder;
+  discriminantKey: string;
+  #unionIsWellformed: boolean = false;
 
   /** @inheritdoc */
   constructor(schema: S) {
     super(schema);
-    this.#memberFinder = new DiscriminatedMemberFinder(schema);
+    this.discriminantKey =
+      this.schema.discriminantKey ?? DEFAULT_DISCRIMINANT_KEY;
   }
 
   /** @inheritdoc */
   override test(value: Readonly<unknown>): boolean {
-    const indexOrError = this.#memberFinder.findSchemaMemberIndex(value);
+    const indexOrError = this.findSchemaMemberIndex(value);
     if (typeof indexOrError !== 'number') {
       return false;
     }
@@ -37,11 +42,11 @@ export class DiscriminatedUnionValidator<
 
   /** @inheritdoc */
   override errors(value: Readonly<unknown>): Iterable<ValueError> {
-    const indexOrError = this.#memberFinder.findSchemaMemberIndex(value);
+    const indexOrError = this.findSchemaMemberIndex(value);
     if (typeof indexOrError !== 'number') {
       return createUnionTypeErrorIterable(indexOrError);
     }
-    const schema = this.#memberFinder.schema.anyOf[indexOrError] as TObject;
+    const schema = this.schema.anyOf[indexOrError] as TObject;
     return createErrorsIterable(Value.Errors(schema, value));
   }
 
@@ -49,7 +54,7 @@ export class DiscriminatedUnionValidator<
     value: Readonly<unknown>,
     overallError?: string
   ): TObject {
-    const indexOrError = this.#memberFinder.findSchemaMemberIndex(value);
+    const indexOrError = this.findSchemaMemberIndex(value);
     if (typeof indexOrError !== 'number') {
       throwInvalidAssert(overallError, indexOrError);
     }
@@ -62,12 +67,40 @@ export class DiscriminatedUnionValidator<
     value: Readonly<unknown>,
     overallError?: string
   ): TObject {
-    const indexOrError = this.#memberFinder.findSchemaMemberIndex(value);
+    const indexOrError = this.findSchemaMemberIndex(value);
     if (typeof indexOrError !== 'number') {
       throwInvalidValidate(overallError, indexOrError);
     }
     const schema = this.schema.anyOf[indexOrError] as TObject;
     this.uncompiledValidate(schema, value, overallError);
     return schema;
+  }
+
+  private findSchemaMemberIndex(subject: Readonly<any>): number | ValueError {
+    if (!this.#unionIsWellformed) {
+      // only incur cost if validator is actually used
+      for (const memberSchema of this.schema.anyOf) {
+        if (memberSchema.properties[this.discriminantKey] === undefined) {
+          throw Error(
+            `Discriminant key '${this.discriminantKey}' not present in all members of discriminated union`
+          );
+        }
+      }
+      this.#unionIsWellformed = true;
+    }
+
+    if (typeof subject === 'object' && subject !== null) {
+      const subjectKind = subject[this.discriminantKey];
+      if (subjectKind !== undefined) {
+        for (let i = 0; i < this.schema.anyOf.length; ++i) {
+          const memberKind =
+            this.schema.anyOf[i].properties[this.discriminantKey];
+          if (memberKind !== undefined && memberKind.const === subjectKind) {
+            return i;
+          }
+        }
+      }
+    }
+    return createUnionTypeError(this.schema, subject);
   }
 }

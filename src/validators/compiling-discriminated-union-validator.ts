@@ -1,10 +1,10 @@
 import { TObject, TUnion } from '@sinclair/typebox';
 
+import { DEFAULT_DISCRIMINANT_KEY } from '../validators/abstract-typed-union-validator';
 import {
   AbstractCompilingTypedUnionValidator,
   FindSchemaMemberIndex,
 } from './abstract-compiling-typed-union-validator';
-import { DEFAULT_DISCRIMINANT_KEY } from '../lib/discriminated-member-finder';
 
 /**
  * Lazily compiled validator for discriminated-union unions. To improve

@@ -3,6 +3,8 @@ import { Static, TObject, TUnion } from '@sinclair/typebox';
 import { AbstractValidator } from './abstract-validator';
 import { CompilingStandardValidator } from './compiling-standard-validator';
 
+export const DEFAULT_DISCRIMINANT_KEY = 'kind';
+
 /**
  * Abstract validator for values that are typed member unions of objects.
  */
