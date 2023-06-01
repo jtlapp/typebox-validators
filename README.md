@@ -40,8 +40,8 @@ Select the validator or validators you want to use. The following classes are av
 - `CompilingStandardValiator` &mdash; Compiling validator that validates TypeBox schemas using TypeBox validation behavior. This validator compiles the schema on the first validation, caches the compilation, and thereafter uses the cached compilation.
 - `DiscriminatedUnionValidator` &mdash; Non-compiling validator that validates a union of object types, each of which has a discriminant key whose value identifies the object type. This validator validates objects against the schema for the object's type, yielding only errors relevant to that type.
 - `CompilingDiscriminatedUnionValidator` &mdash; Compiling validator that validates a union of object types, each of which has a discriminant key whose value identifies the object type. This validator validates objects against the schema for the object's type, yielding only errors relevant to that type. It compiles the schema for an object type on the first validaton of that type, caches the compilation, and thereafter uses the cached compilation for objects of that type.
-- `HeterogeneousUnionValidator` &mdash; Non-compiling validator that validates a union of object types, each of which has at least one required property name unique to the object type among all object types of the union. This validator validates objects against the schema for the object's type, yielding only errors relevant to that type.
-- `CompilingHeterogeneousUnionValidator` &mdash; Compiling validator that validates a union of object types, each of which has at least one required property name unique to the object type among all object types of the union. This validator validates objects against the schema for the object's type, yielding only errors relevant to that type. It compiles the schema for an object type on the first validaton of that type, caches the compilation, and thereafter uses the cached compilation for objects of that type.
+- `HeterogeneousUnionValidator` &mdash; Non-compiling validator that validates a union of object types, each of which has at least one type identifying key. This key is the name of a required property that is unique among all object types of the union, whose schema includes `typeIdentifyingKey: true`. This validator validates objects against the schema for the object's type, yielding only errors relevant to that type.
+- `CompilingHeterogeneousUnionValidator` &mdash; Compiling validator that validates a union of object types, each of which has at least one type identifying key. This key is the name of a required property that is unique among all object types of the union, whose schema includes `typeIdentifyingKey: true`. This validator validates objects against the schema for the object's type, yielding only errors relevant to that type. It compiles the schema for an object type on the first validaton of that type, caches the compilation, and thereafter uses the cached compilation for objects of that type.
 
 Create a validator for a particular schema and use that validator to validate a value against its schema:
 
@@ -82,7 +82,7 @@ validator.errors(value);
 
 `assert` and `validate` methods throw a [`ValidationException`](https://github.com/jtlapp/typebox-validators/blob/main/src/lib/validation-exception.ts) error when validation fails, reporting only the first error for `assert` methods and reporting all errors for `validate` methods. `assert` methods are safer to use on the server because TypeBox ensures that the `maxLength` and `maxItems` contraints are tested before testing regular expressions. `test` is faster than `assert`, which is faster than `validate` when a least one error occurs.
 
-The union validators only work on schemas of type `TUnion<TObject[]>`. The discriminated union validators assume the discriminant key is named `kind`, unless you provide a `discriminantKey` option indicating otherwise. The discriminated and heterogeneous union validators both report an error when the value is not one of the types in the union. To override the default message for this error, specify your message in an `errorMessage` option on the union's schema.
+The union validators only work on schemas of type `TUnion<TObject[]>`. Discriminated union validators assume the discriminant key is named `kind`, unless you provide a `discriminantKey` option indicating otherwise. The type identifying key of each heterogeneous union member can be assigned either by giving the key's schema a `typeIdentifyingKey: true` option or by wrapping the key's schema in a `TypeIdentifyinKeys(schema)` call (which assigns this option). The discriminated and heterogeneous union validators both report an error when the value is not one of the types in the union. To override the default message for this error, specify your message in an `errorMessage` option on the union's schema.
 
 Any schema can provide an `errorMessage` option to indicate what error message should be used when a value doesn't satify the constraints of that particular schema. If provided, this message causes all errors reported for that schema to be collapsed into a single error having the message. The error message does not apply if the failed constraints are actually on a further nested schema.
 
@@ -107,6 +107,9 @@ The `details` property of a [`ValidationException`](https://github.com/jtlapp/ty
 ## Discriminated Union Examples
 
 ```ts
+import { Type } from '@sinclaim/typebox';
+import { DiscriminatedUnionValidator } from 'typebox-validators';
+
 const schema1 = Type.Union([
   Type.Object({
     kind: Type.Literal('string'),
@@ -160,15 +163,21 @@ validator2.assert({ __type: 'integer', val: 1.5 }, 'Oopsie! {error}');
 ## Heterogeneous Union Examples
 
 ```ts
+import { Type } from '@sinclaim/typebox';
+import {
+  TypeIdentifyingKey,
+  HeterogeneousUnionValidator
+} from 'typebox-validators';
+
 const schema3 = Type.Union([
   Type.Object({
-    summaryBrand: Type.String(),
+    summaryBrand: TypeIdentifyingKey(Type.String()),
     name: Type.String(),
     address: Type.String()
     zipCode: Type.String()
   }),
   Type.Object({
-    detailedBrand: Type.String(),
+    detailedBrand: TypeIdentifyingKey(Type.String()),
     firstName: Type.String(),
     lastName: Type.String(),
     streetAddress: Type.String(),
@@ -192,12 +201,12 @@ validator3.assert({ summaryBrand: '', name: 'Jane Doe' }, 'Bad info: {error}');
 ```ts
 const schema4 = Type.Union([
   Type.Object({
-    name: Type.String(),
+    name: TypeIdentifyingKey(Type.String()),
     address: Type.String({ errorMessage: 'Required string' })
     zipCode: Type.String()
   }),
   Type.Object({
-    firstName: Type.String(),
+    firstName: TypeIdentifyingKey(Type.String()),
     lastName: Type.String({ errorMessage: 'Required string' }),
     streetAddress: Type.String(),
     city: Type.String(),
@@ -215,6 +224,11 @@ validator4.assert({ name: 'Jane Doe', zipcode: 12345 }, "Bad info");
 // throws exception with message "Bad info: lastName - Required string"
 //  and the single error "Required string" for path "/lastName":
 validator4.assert({ firstName: 'Jane', zipcode: 12345 }, 'Bad info: {error}');
+
+// throws exception with message "Invalid value" and the single error
+//  "Object type not recognized" for path "":
+validator1.assert({ address: "123 Some Str, etc.", zipcode: 12345 });
+
 ```
 
 ## License

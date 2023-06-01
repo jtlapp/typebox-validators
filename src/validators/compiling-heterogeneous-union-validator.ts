@@ -4,7 +4,7 @@ import {
   AbstractCompilingTypedUnionValidator,
   FindSchemaMemberIndex,
 } from './abstract-compiling-typed-union-validator';
-import { UniqueKeyIndex } from '../lib/unique-key-index';
+import { TypeIdentifyingKeyIndex } from '../lib/type-identifying-key-index';
 
 /**
  * Lazily compiled validator for heterogeneous unions of objects. To improve
@@ -14,25 +14,25 @@ import { UniqueKeyIndex } from '../lib/unique-key-index';
 export class CompilingHeterogeneousUnionValidator<
   S extends TUnion<TObject[]>
 > extends AbstractCompilingTypedUnionValidator<S> {
-  #uniqueKeyIndex: UniqueKeyIndex;
+  #typeIdentifyingKeyIndex: TypeIdentifyingKeyIndex;
   #compiledFindSchemaMemberIndex?: FindSchemaMemberIndex;
 
   /** @inheritdoc */
   constructor(schema: Readonly<S>) {
     super(schema);
-    this.#uniqueKeyIndex = new UniqueKeyIndex(schema);
+    this.#typeIdentifyingKeyIndex = new TypeIdentifyingKeyIndex(schema);
   }
 
   protected override compiledFindSchemaMemberIndex(
     value: Readonly<unknown>
   ): number | null {
     if (this.#compiledFindSchemaMemberIndex === undefined) {
-      this.#uniqueKeyIndex.cacheUniqueKeys();
+      this.#typeIdentifyingKeyIndex.cacheKeys();
       const codeParts: string[] = [
         `(value) => ((typeof value !== 'object' || value === null || Array.isArray(value)) ? null : `,
       ];
       for (let i = 0; i < this.schema.anyOf.length; ++i) {
-        const uniqueKey = this.#uniqueKeyIndex.keyByMemberIndex![i];
+        const uniqueKey = this.#typeIdentifyingKeyIndex.keyByMemberIndex![i];
         codeParts.push(
           `${this.toValueKeyDereference(uniqueKey)} !== undefined ? ${i} : `
         );

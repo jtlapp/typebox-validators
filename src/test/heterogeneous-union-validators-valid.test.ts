@@ -1,8 +1,10 @@
 import { TObject, TSchema, TUnion, Type } from '@sinclair/typebox';
 
+import { AbstractValidator } from '../validators/abstract-validator';
 import { AbstractTypedUnionValidator } from '../validators/abstract-typed-union-validator';
 import { HeterogeneousUnionValidator } from '../validators/heterogeneous-union-validator';
 import { CompilingHeterogeneousUnionValidator } from '../validators/compiling-heterogeneous-union-validator';
+import { TypeIdentifyingKey } from '../lib/type-identifying-key';
 import {
   ValidUnionTestSpec,
   ValidatorKind,
@@ -11,24 +13,23 @@ import {
   ValidTestSpec,
 } from './test-utils';
 import { testValidSpecs } from './test-valid-specs';
-import { AbstractValidator } from '../validators/abstract-validator';
 
 const onlyRunValidator = ValidatorKind.All;
 const onlyRunMethod = MethodKind.All;
 
 const wellFormedUnion1 = Type.Union([
   Type.Object({
-    unique1: Type.String(),
+    unique1: TypeIdentifyingKey(Type.String()),
     str1: Type.String(),
     str2: Type.Optional(Type.String()),
   }),
   Type.Object({
-    unique2: Type.Integer(),
+    unique2: TypeIdentifyingKey(Type.Integer()),
     int1: Type.Integer(),
     int2: Type.Optional(Type.Integer()),
   }),
   Type.Object({
-    "s'quote": Type.String(),
+    "s'quote": TypeIdentifyingKey(Type.String()),
     str1: Type.String(),
   }),
 ]);
@@ -38,13 +39,13 @@ const wellFormedUnion2 = Type.Union(
     Type.Object({
       str1: Type.String(),
       str2: Type.String(),
-      unique1: Type.String(),
       unique3: Type.String(),
+      unique1: TypeIdentifyingKey(Type.String()),
       opt: Type.Optional(Type.String()),
     }),
     Type.Object({
       str1: Type.String(),
-      unique2: Type.String(),
+      unique2: TypeIdentifyingKey(Type.String()),
       str2: Type.String(),
       opt: Type.Optional(Type.Integer()),
     }),

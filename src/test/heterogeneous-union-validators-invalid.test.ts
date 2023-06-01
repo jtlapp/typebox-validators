@@ -3,24 +3,31 @@ import { TSchema, TObject, Type, TUnion } from '@sinclair/typebox';
 import { AbstractTypedUnionValidator } from '../validators/abstract-typed-union-validator';
 import { HeterogeneousUnionValidator } from '../validators/heterogeneous-union-validator';
 import { CompilingHeterogeneousUnionValidator } from '../validators/compiling-heterogeneous-union-validator';
+import { TypeIdentifyingKey } from '../lib/type-identifying-key';
 import {
   DEFAULT_OVERALL_MESSAGE,
   DEFAULT_UNKNOWN_TYPE_MESSAGE,
 } from '../lib/error-utils';
 import { ValidatorKind, MethodKind, ValidatorCache } from './test-utils';
 import { testInvalidSpecs } from './test-invalid-specs';
+import {
+  MESSAGE_MEMBERS_MISSING_KEY,
+  MESSAGE_MULTIPLE_MEMBERS_WITH_SAME_KEY,
+  MESSAGE_MEMBER_WITH_MULTIPLE_KEYS,
+  MESSAGE_OPTIONAL_TYPE_ID_KEY,
+} from '../lib/type-identifying-key-index';
 
-const onlyRunValidator = ValidatorKind.All;
-const onlyRunMethod = MethodKind.All;
+const onlyRunValidator = ValidatorKind.NonCompiling;
+const onlyRunMethod = MethodKind.InvalidSchema;
 
 const wellFormedUnion1 = Type.Union([
   Type.Object({
-    unique1: Type.String(),
+    unique1: TypeIdentifyingKey(Type.String()),
     str1: Type.String(),
     str2: Type.Optional(Type.String()),
   }),
   Type.Object({
-    unique2: Type.Integer(),
+    unique2: TypeIdentifyingKey(Type.Integer()),
     int1: Type.Integer(),
     int2: Type.Optional(
       Type.Integer({
@@ -35,13 +42,13 @@ const wellFormedUnion2 = Type.Union(
     Type.Object({
       str1: Type.String(),
       str2: Type.String(),
-      unique1: Type.String(),
       unique3: Type.String(),
+      unique1: TypeIdentifyingKey(Type.String()),
       opt: Type.Optional(Type.String()),
     }),
     Type.Object({
       str1: Type.String(),
-      unique2: Type.String(),
+      unique2: TypeIdentifyingKey(Type.String()),
       str2: Type.String(),
       opt: Type.Optional(Type.Integer()),
     }),
@@ -49,13 +56,47 @@ const wellFormedUnion2 = Type.Union(
   { errorMessage: 'Unknown type' }
 );
 
-const illFormedUnion = Type.Union([
+const unionDupTypeKeysMultipleMembers = Type.Union([
   Type.Object({
-    s: Type.String(),
+    s: TypeIdentifyingKey(Type.String()),
     str1: Type.Optional(Type.String()),
   }),
   Type.Object({
-    s: Type.Integer(),
+    s: TypeIdentifyingKey(Type.Integer()),
+    int1: Type.Optional(Type.Integer()),
+  }),
+]);
+
+const unionDupTypeKeysSingleMembers = Type.Union([
+  Type.Object({
+    s1: TypeIdentifyingKey(Type.String()),
+    s3: TypeIdentifyingKey(Type.String()),
+    str1: Type.Optional(Type.String()),
+  }),
+  Type.Object({
+    s2: TypeIdentifyingKey(Type.Integer()),
+    int1: Type.Optional(Type.Integer()),
+  }),
+]);
+
+const unionMissingTypeKeys = Type.Union([
+  Type.Object({
+    s1: TypeIdentifyingKey(Type.String()),
+    str1: Type.Optional(Type.String()),
+  }),
+  Type.Object({
+    s2: Type.String(),
+    int1: Type.Optional(Type.Integer()),
+  }),
+]);
+
+const unionOptionalTypeKey = Type.Union([
+  Type.Object({
+    s1: TypeIdentifyingKey(Type.String()),
+    str1: Type.Optional(Type.String()),
+  }),
+  Type.Object({
+    s2: TypeIdentifyingKey(Type.Optional(Type.Integer())),
     int1: Type.Optional(Type.Integer()),
   }),
 ]);
@@ -234,54 +275,45 @@ function testValidator(
       assertString: 'Oopsie: Unknown type:\n * Unknown type',
       validateString: 'Oopsie:\n * Unknown type',
     },
+    {
+      description: 'not selecting any union member, but having a unique key',
+      onlySpec: false,
+      schema: wellFormedUnion2,
+      value: { unique3: 'hello' },
+      overallMessage: 'Oopsie: {error}',
+      assertMessage: 'Oopsie: Unknown type',
+      errors: [{ path: '', message: 'Unknown type' }],
+      assertString: 'Oopsie: Unknown type:\n * Unknown type',
+      validateString: 'Oopsie:\n * Unknown type',
+    },
   ]);
 
-  if ([MethodKind.All, MethodKind.Other].includes(onlyRunMethod)) {
-    const errorMessage = 'Heterogeneous union has members lacking unique keys';
-
+  if ([MethodKind.All, MethodKind.InvalidSchema].includes(onlyRunMethod)) {
     describe('errors on invalid union schemas', () => {
-      it("union whose members aren't all unique, valid value", () => {
-        const validator = createValidator(illFormedUnion);
-        const validObject = { s: 'hello', str1: 'hello' };
-
-        expect(() => validator.test(validObject)).toThrow(errorMessage);
-        expect(() => validator.assert(validObject)).toThrow(errorMessage);
-        expect(() => validator.assertAndClean(validObject)).toThrow(
-          errorMessage
-        );
-        expect(() => validator.assertAndCleanCopy(validObject)).toThrow(
-          errorMessage
-        );
-        expect(() => validator.validate(validObject)).toThrow(errorMessage);
-        expect(() => validator.validateAndClean(validObject)).toThrow(
-          errorMessage
-        );
-        expect(() => validator.validateAndCleanCopy(validObject)).toThrow(
-          errorMessage
-        );
-        expect(() => validator.errors(validObject)).toThrow(errorMessage);
+      it('union with members missing keys', () => {
+        const validator = createValidator(unionMissingTypeKeys);
+        expect(() => validator.test({})).toThrow(MESSAGE_MEMBERS_MISSING_KEY);
       });
 
-      it("union whose members aren't all unique, invalid value", () => {
-        const validator = createValidator(illFormedUnion);
-        const invalidObject = { s: 'hello', str1: 32 };
+      it('union with multiple members having same key', () => {
+        const validator = createValidator(unionDupTypeKeysMultipleMembers);
+        expect(() => validator.assert({})).toThrow(
+          MESSAGE_MULTIPLE_MEMBERS_WITH_SAME_KEY
+        );
+      });
 
-        expect(() => validator.test(invalidObject)).toThrow(errorMessage);
-        expect(() => validator.assert(invalidObject)).toThrow(errorMessage);
-        expect(() => validator.assertAndClean(invalidObject)).toThrow(
-          errorMessage
+      it('union with single member having multiple keys', () => {
+        const validator = createValidator(unionDupTypeKeysSingleMembers);
+        expect(() => validator.validate({})).toThrow(
+          MESSAGE_MEMBER_WITH_MULTIPLE_KEYS
         );
-        expect(() => validator.assertAndCleanCopy(invalidObject)).toThrow(
-          errorMessage
+      });
+
+      it('union with optional type identifying key', () => {
+        const validator = createValidator(unionOptionalTypeKey);
+        expect(() => validator.errors({})).toThrow(
+          MESSAGE_OPTIONAL_TYPE_ID_KEY
         );
-        expect(() => validator.validate(invalidObject)).toThrow(errorMessage);
-        expect(() => validator.validateAndClean(invalidObject)).toThrow(
-          errorMessage
-        );
-        expect(() => validator.validateAndCleanCopy(invalidObject)).toThrow(
-          errorMessage
-        );
-        expect(() => validator.errors(invalidObject)).toThrow(errorMessage);
       });
     });
   }

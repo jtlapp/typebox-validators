@@ -221,7 +221,7 @@ function testValidator(
     },
   ]);
 
-  if ([MethodKind.All, MethodKind.Other].includes(onlyRunMethod)) {
+  if ([MethodKind.All, MethodKind.InvalidSchema].includes(onlyRunMethod)) {
     const errorMessage = `Discriminant key 't' not present in all members of discriminated union`;
 
     describe('errors on invalid union schemas', () => {

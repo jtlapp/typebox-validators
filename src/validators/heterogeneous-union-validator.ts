@@ -9,7 +9,7 @@ import {
   throwInvalidAssert,
   throwInvalidValidate,
 } from '../lib/error-utils';
-import { UniqueKeyIndex } from '../lib/unique-key-index';
+import { TypeIdentifyingKeyIndex } from '../lib/type-identifying-key-index';
 
 /**
  * Non-compiling validator for heterogeneous unions of objects. To improve
@@ -19,12 +19,12 @@ import { UniqueKeyIndex } from '../lib/unique-key-index';
 export class HeterogeneousUnionValidator<
   S extends TUnion<TObject[]>
 > extends AbstractTypedUnionValidator<S> {
-  #uniqueKeyIndex: UniqueKeyIndex;
+  #typeIdentifyingKeyIndex: TypeIdentifyingKeyIndex;
 
   /** @inheritdoc */
   constructor(schema: S) {
     super(schema);
-    this.#uniqueKeyIndex = new UniqueKeyIndex(schema);
+    this.#typeIdentifyingKeyIndex = new TypeIdentifyingKeyIndex(schema);
   }
 
   /** @inheritdoc */
@@ -73,14 +73,14 @@ export class HeterogeneousUnionValidator<
   }
 
   private findSchemaMemberIndex(value: Readonly<any>): number | ValueError {
-    if (this.#uniqueKeyIndex.keyByMemberIndex === undefined) {
+    if (this.#typeIdentifyingKeyIndex.keyByMemberIndex === undefined) {
       // only incur cost if validator is actually used
-      this.#uniqueKeyIndex.cacheUniqueKeys();
+      this.#typeIdentifyingKeyIndex.cacheKeys();
     }
 
     if (typeof value === 'object' && value !== null) {
       for (let i = 0; i < this.schema.anyOf.length; ++i) {
-        const uniqueKey = this.#uniqueKeyIndex.keyByMemberIndex![i];
+        const uniqueKey = this.#typeIdentifyingKeyIndex.keyByMemberIndex![i];
         if (value[uniqueKey] !== undefined) {
           return i;
         }
