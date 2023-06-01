@@ -9,6 +9,11 @@ export const MESSAGE_MULTIPLE_MEMBERS_WITH_SAME_KEY =
 export const MESSAGE_MEMBERS_MISSING_KEY =
   'Union has members missing identifying keys';
 
+// Note: The type identifying keys of heterogeneous unions are assigned via
+// the typeIdentifyingKey schema option instead of being inferred, because
+// inferrence requires a lot of computation, especially because multiple
+// keys might be unique within a given member schema.
+
 export class TypeIdentifyingKeyIndex {
   keyByMemberIndex?: string[];
 
