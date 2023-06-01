@@ -2,6 +2,8 @@
 
 TypeBox validators with custom errors, safe error handling, discriminated unions
 
+[API Reference](https://jtlapp.github.io/typebox-validators/)
+
 ## Overview
 
 The [TypeBox](https://github.com/sinclairzx81/typebox) JSON Schema validator may be the [fastest JSON validator](https://moltar.github.io/typescript-runtime-type-benchmarks/) for JavaScript/TypeScript not requiring a development-time precompilation step. TypeBox provides the ability to both construct and validate JSON, but it is strictly standards compliant and does not offer commonly needed additional functionality.
