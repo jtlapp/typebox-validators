@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "author": "Joseph T. Lapp <arachnojoe@gmail.com>",
   "license": "MIT",
-  "description": "TypeBox validators with custom errors, safe multi-tier error handling, discriminated unions",
+  "description": "TypeBox validators with custom errors, safe error handling, discriminated unions",
   "repository": {
     "type": "git",
     "url": "https://github.com/jtlapp/typebox-validators"
@@ -13,9 +13,7 @@
     "validation",
     "errors",
     "error handling",
-    "client",
-    "server",
-    "security",
+    "safe",
     "secure",
     "discriminated unions",
     "branded types"

@@ -1,6 +1,6 @@
 # typebox-errors
 
-TypeBox validators with custom errors, safe multi-tier error handling, discriminated unions
+TypeBox validators with custom errors, safe error handling, discriminated unions
 
 ## Overview
 
@@ -18,6 +18,8 @@ The library provides the following abilities, each of which is optional:
 6. Validate heterogeneous unions of objects that need not have any properties in common, yielding only errors for the matching member schema. Useful for branded types.
 7. Compile a TypeBox schema on its first use, subsequently using the cached compilation (lazy compilation).
 8. Report all validation errors within a single string, such as for debugging purposes.
+
+_Note: This library has only been tested on Node, not yet in browsers._
 
 ## Installation
 
