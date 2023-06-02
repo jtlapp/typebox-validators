@@ -108,6 +108,47 @@ If you want validation to fail when an object has properties not given by the sc
 
 The `details` property of a [`ValidationException`](https://github.com/jtlapp/typebox-validators/blob/main/src/lib/validation-exception.ts) contains an array of [`ValueError`](https://github.com/sinclairzx81/typebox/blob/master/src/errors/errors.ts#L99) instances, one for each detected error. Call `toString()` on the exception to get a single string that describes all of the errors found in `details`.
 
+## ValidationException
+
+When an `assert` or `validate` method fails validation, it throws a [`ValidationException`](https://github.com/jtlapp/typebox-validators/blob/main/src/lib/validation-exception.ts). The inputs to the constructor are a mandatory error message and an optional array of [`ValueError`](https://github.com/sinclairzx81/typebox/blob/master/src/errors/errors.ts#L99)s. These are available via the `message` and `details` properties.
+
+```ts
+constructor(readonly message: string, readonly details: ValueError[] = [])
+```
+
+Call the `toString()` method to get a string represenation that includes the error message and a bulleted list of all the detailed errors. Each bullet provides the object path to the erroring field and the error message for the field.
+
+`ValidationException` does not subclass JavaScript's `Error` class. This prevents a stack trace from being generated for each exception, improving performance and saving memory. However, this means that if you validate for purposes of verifying program correctness, you'll need the error message to include enough information to identify the particular code that errored.
+
+Also, not subclassing `Error` has implications for testing in Jest and Chai. Asynchronous exceptions require special treatment, as `toThrow()` (Jest) and `rejectedWith()` (Chai + [chai-as-promised](https://www.chaijs.com/plugins/chai-as-promised/)) will not detect the exception. Test for asynchronous validation exceptions as follows instead:
+
+```ts
+const wait = () =>
+  new Promise((_resolve, reject) =>
+    setTimeout(() => reject(new ValidationException('Invalid')), 100)
+  );
+
+// Jest
+await expect(wait()).rejects.toBeInstanceOf(ValidationException);
+// Chai
+await chai
+  .expect(wait())
+  .to.eventually.be.rejected.and.be.an.instanceOf(ValidationException);
+```
+
+Synchronous exceptions can be detected normally, as with the following code:
+
+```ts
+const fail = () => {
+  throw new ValidationException('Invalid');
+};
+
+// Jest
+expect(fail).toThrow(ValidationException);
+// Chai
+chai.expect(fail).to.throw().and.be.an.instanceOf(ValidationException);
+```
+
 ## Discriminated Union Examples
 
 ```ts
