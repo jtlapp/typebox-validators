@@ -1,4 +1,4 @@
-# typebox-errors
+# typebox-validators
 
 TypeBox validators with custom errors, safe error handling, discriminated unions
 

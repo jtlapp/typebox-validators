@@ -1,6 +1,6 @@
 {
   "name": "typebox-validators",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "author": "Joseph T. Lapp <arachnojoe@gmail.com>",
   "license": "MIT",
   "description": "TypeBox validators with custom errors, safe error handling, discriminated unions",
