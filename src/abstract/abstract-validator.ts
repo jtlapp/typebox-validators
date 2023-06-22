@@ -63,10 +63,7 @@ export abstract class AbstractValidator<S extends TSchema> {
    *  property" errors.
    */
   testReturningErrors(value: Readonly<unknown>): Iterable<ValueError> | null {
-    if (this.test(value)) {
-      return null;
-    }
-    return this.errors(value);
+    return this.test(value) ? null : this.errors(value);
   }
 
   /**
@@ -81,9 +78,12 @@ export abstract class AbstractValidator<S extends TSchema> {
    *  otherwise `null`.
    */
   testReturningFirstError(value: Readonly<unknown>): ValueError | null {
-    const iterator = this.testReturningErrors(value)?.[Symbol.iterator]();
-    const result = iterator?.next();
-    return result?.done ? null : result?.value ?? null;
+    const iterable = this.testReturningErrors(value);
+    if (iterable === null) {
+      return null;
+    }
+    const result = iterable[Symbol.iterator]().next();
+    return result.done ? null : result.value;
   }
 
   /**
