@@ -1,6 +1,6 @@
 {
   "name": "typebox-validators",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "author": "Joseph T. Lapp <arachnojoe@gmail.com>",
   "license": "MIT",
   "description": "TypeBox validators with custom errors, safe error handling, discriminated unions",
@@ -22,24 +22,34 @@
   "files": [
     "dist/**"
   ],
+  "paths": {
+    "typebox-validators": [
+      "dist/index.d.ts"
+    ],
+    "typebox-validators/standard": [
+      "dist/validators/standard/index.d.ts"
+    ],
+    "typebox-validators/discriminated": [
+      "dist/validators/discriminated/index.d.ts"
+    ],
+    "typebox-validators/heterogeneous": [
+      "dist/validators/heterogeneous/index.d.ts"
+    ]
+  },
   "exports": {
     ".": {
-      "types": "./dist/index.d.ts",
       "import": "./dist/index.js",
       "default": "./dist/cjs/index.js"
     },
     "./standard": {
-      "types": "./dist/validators/standard/index.d.ts",
       "import": "./dist/validators/standard/index.js",
       "default": "./dist/cjs/validators/standard/index.js"
     },
     "./discriminated": {
-      "types": "./dist/validators/discriminated/index.d.ts",
       "import": "./dist/validators/discriminated/index.js",
       "default": "./dist/cjs/validators/discriminated/index.js"
     },
     "./heterogeneous": {
-      "types": "./dist/validators/heterogeneous/index.d.ts",
       "import": "./dist/validators/heterogeneous/index.js",
       "default": "./dist/cjs/validators/heterogeneous/index.js"
     }
