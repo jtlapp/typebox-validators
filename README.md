@@ -86,10 +86,10 @@ const value = { handle: '1234', count: -1 };
 // returns false indicating an error:
 validator.test(value);
 
-// returns an iterable providing the two errors:
+// after calling `test`, returns an iterable providing the two errors:
 validator.testReturningErrors();
 
-// returns the first error:
+// after calling `test`, returns the first error:
 validator.testReturningFirstError();
 
 // throws with error 'must be a string of 5 to 10 letters':
@@ -99,10 +99,10 @@ validator.assert(value);
 //  default error message for an integer being less than the minimum:
 validator.validate(value);
 
-// returning an iterable providing the two errors:
+// returns an iterable providing the two errors:
 validator.errors(value);
 
-// returning the first error:
+// returns the first error:
 validator.firstError(value);
 ```
 
