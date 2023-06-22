@@ -21,7 +21,7 @@ The library provides the following abilities, each of which is optional:
 7. Compile a TypeBox schema on its first use, subsequently using the cached compilation (lazy compilation).
 8. Report all validation errors within a single string, such as for debugging purposes.
 
-_Note: This library has only been tested on Node, not yet in browsers._
+Tested for Node.js and Chrome.
 
 ## Installation
 
