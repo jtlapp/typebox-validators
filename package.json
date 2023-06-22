@@ -1,6 +1,6 @@
 {
   "name": "typebox-validators",
-  "version": "0.2.5",
+  "version": "0.2.8",
   "author": "Joseph T. Lapp <arachnojoe@gmail.com>",
   "license": "MIT",
   "description": "TypeBox validators with custom errors, safe error handling, discriminated unions",
@@ -18,35 +18,14 @@
     "discriminated unions",
     "branded types"
   ],
-  "source": "/index.ts",
-  "files": [
-    "dist/**"
-  ],
-  "exports": {
-    ".": {
-      "import": "./dist/index.js",
-      "default": "./dist/cjs/index.js"
-    },
-    "./standard": {
-      "import": "./dist/validators/standard/index.js",
-      "default": "./dist/cjs/validators/standard/index.js"
-    },
-    "./discriminated": {
-      "import": "./dist/validators/discriminated/index.js",
-      "default": "./dist/cjs/validators/discriminated/index.js"
-    },
-    "./heterogeneous": {
-      "import": "./dist/validators/heterogeneous/index.js",
-      "default": "./dist/cjs/validators/heterogeneous/index.js"
-    }
-  },
   "scripts": {
     "clean": "rm -rf node_modules && rm -rf dist",
-    "build": "rm -rdf dist && tsc && tsc -p tsconfig.cjs.json",
+    "build": "rm -rdf dist && tsc && cp package.json dist && cp README.md dist && cp LICENSE dist",
     "build-docs": "typedoc --options ./typedoc.js ./src/index.ts",
     "build-all": "pnpm build && pnpm build-docs",
     "test": "jest",
-    "test-perf": "ts-node src/test/key-iteration-performance.ts"
+    "test-perf": "ts-node src/test/key-iteration-performance.ts",
+    "publish": "pnpm build && (cd dist && npm publish)"
   },
   "devDependencies": {
     "@types/jest": "^29.4.0",

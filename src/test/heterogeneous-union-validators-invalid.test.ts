@@ -1,9 +1,9 @@
 import { TSchema, TObject, Type, TUnion } from '@sinclair/typebox';
 
-import { AbstractTypedUnionValidator } from '../validators/abstract/abstract-typed-union-validator';
-import { HeterogeneousUnionValidator } from '../validators/heterogeneous/heterogeneous-union-validator';
-import { CompilingHeterogeneousUnionValidator } from '../validators/heterogeneous/compiling-heterogeneous-union-validator';
-import { TypeIdentifyingKey } from '../validators/heterogeneous//type-identifying-key';
+import { AbstractTypedUnionValidator } from '../abstract/abstract-typed-union-validator';
+import { HeterogeneousUnionValidator } from '../heterogeneous/heterogeneous-union-validator';
+import { CompilingHeterogeneousUnionValidator } from '../heterogeneous/compiling-heterogeneous-union-validator';
+import { TypeIdentifyingKey } from '../heterogeneous//type-identifying-key';
 import {
   DEFAULT_OVERALL_MESSAGE,
   DEFAULT_UNKNOWN_TYPE_MESSAGE,
@@ -15,7 +15,7 @@ import {
   MESSAGE_MULTIPLE_MEMBERS_WITH_SAME_KEY,
   MESSAGE_MEMBER_WITH_MULTIPLE_KEYS,
   MESSAGE_OPTIONAL_TYPE_ID_KEY,
-} from '../validators/heterogeneous/type-identifying-key-index';
+} from '../heterogeneous/type-identifying-key-index';
 
 const onlyRunValidator = ValidatorKind.NonCompiling;
 const onlyRunMethod = MethodKind.InvalidSchema;

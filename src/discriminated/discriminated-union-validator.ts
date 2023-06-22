@@ -11,7 +11,7 @@ import {
   createUnionTypeErrorIterable,
   throwInvalidAssert,
   throwInvalidValidate,
-} from '../../lib/error-utils';
+} from '../lib/error-utils';
 
 /**
  * Non-compiling validator for discriminated unions. To improve performance,

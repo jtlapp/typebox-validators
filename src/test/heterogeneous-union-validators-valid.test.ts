@@ -1,10 +1,10 @@
 import { TObject, TSchema, TUnion, Type } from '@sinclair/typebox';
 
-import { AbstractValidator } from '../validators/abstract/abstract-validator';
-import { AbstractTypedUnionValidator } from '../validators/abstract/abstract-typed-union-validator';
-import { HeterogeneousUnionValidator } from '../validators/heterogeneous/heterogeneous-union-validator';
-import { CompilingHeterogeneousUnionValidator } from '../validators/heterogeneous/compiling-heterogeneous-union-validator';
-import { TypeIdentifyingKey } from '../validators/heterogeneous/type-identifying-key';
+import { AbstractValidator } from '../abstract/abstract-validator';
+import { AbstractTypedUnionValidator } from '../abstract/abstract-typed-union-validator';
+import { HeterogeneousUnionValidator } from '../heterogeneous/heterogeneous-union-validator';
+import { CompilingHeterogeneousUnionValidator } from '../heterogeneous/compiling-heterogeneous-union-validator';
+import { TypeIdentifyingKey } from '../heterogeneous/type-identifying-key';
 import {
   ValidUnionTestSpec,
   ValidatorKind,

@@ -1,8 +1,8 @@
 import { TSchema, TObject, Type, TUnion } from '@sinclair/typebox';
 
-import { AbstractTypedUnionValidator } from '../validators/abstract/abstract-typed-union-validator';
-import { DiscriminatedUnionValidator } from '../validators/discriminated/discriminated-union-validator';
-import { CompilingDiscriminatedUnionValidator } from '../validators/discriminated/compiling-discriminated-union-validator';
+import { AbstractTypedUnionValidator } from '../abstract/abstract-typed-union-validator';
+import { DiscriminatedUnionValidator } from '../discriminated/discriminated-union-validator';
+import { CompilingDiscriminatedUnionValidator } from '../discriminated/compiling-discriminated-union-validator';
 import {
   DEFAULT_OVERALL_MESSAGE,
   DEFAULT_UNKNOWN_TYPE_MESSAGE,

@@ -2,6 +2,7 @@
   "$schema": "https://json.schemastore.org/tsconfig",
   "compilerOptions": {
     "target": "ES6",
+    "module": "CommonJS",
     "sourceMap": true,
     "composite": false,
     "declaration": true,
@@ -20,18 +21,7 @@
     "noFallthroughCasesInSwitch": true,
     "noImplicitOverride": true,
     "outDir": "./dist",
-    "rootDir": "./src",
-    "baseUrl": ".",
-    "paths": {
-      "typebox-validators": ["dist/index.d.ts"],
-      "typebox-validators/standard": ["dist/validators/standard/index.d.ts"],
-      "typebox-validators/discriminated": [
-        "dist/validators/discriminated/index.d.ts"
-      ],
-      "typebox-validators/heterogeneous": [
-        "dist/validators/heterogeneous/index.d.ts"
-      ]
-    }
+    "rootDir": "./src"
   },
   "include": ["*.d.ts", "**/*.ts", "**/*.tsx"],
   "exclude": ["src/test", "dist", "build", "node_modules", "comparison"]

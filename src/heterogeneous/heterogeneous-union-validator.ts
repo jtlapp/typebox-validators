@@ -8,7 +8,7 @@ import {
   createUnionTypeErrorIterable,
   throwInvalidAssert,
   throwInvalidValidate,
-} from '../../lib/error-utils';
+} from '../lib/error-utils';
 import { TypeIdentifyingKeyIndex } from './type-identifying-key-index';
 
 /**

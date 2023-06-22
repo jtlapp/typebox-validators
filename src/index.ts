@@ -1,7 +1,7 @@
-export * from './validators/abstract/abstract-validator';
-export * from './validators/standard/index';
-export * from './validators/heterogeneous/index';
-export * from './validators/discriminated/index';
+export * from './abstract/abstract-validator';
+export * from './standard/index';
+export * from './heterogeneous/index';
+export * from './discriminated/index';
 export * from './lib/validation-exception';
 
 export { ValueError } from '@sinclair/typebox/value';

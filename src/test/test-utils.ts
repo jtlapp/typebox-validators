@@ -1,5 +1,5 @@
 import { TObject, TSchema, TUnion } from '@sinclair/typebox';
-import { AbstractValidator } from '../validators/abstract/abstract-validator';
+import { AbstractValidator } from '../abstract/abstract-validator';
 
 export enum ValidatorKind {
   All,

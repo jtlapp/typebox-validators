@@ -1,10 +1,7 @@
 import type { TSchema, Static } from '@sinclair/typebox';
 import { Value, ValueError } from '@sinclair/typebox/value';
 
-import {
-  throwInvalidAssert,
-  throwInvalidValidate,
-} from '../../lib/error-utils';
+import { throwInvalidAssert, throwInvalidValidate } from '../lib/error-utils';
 
 /**
  * Abstract base class for validators, providing validation services for a

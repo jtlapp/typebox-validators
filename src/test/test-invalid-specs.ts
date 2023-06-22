@@ -1,6 +1,6 @@
 import { TSchema } from '@sinclair/typebox';
 
-import { AbstractValidator } from '../validators/abstract/abstract-validator';
+import { AbstractValidator } from '../abstract/abstract-validator';
 import {
   InvalidTestSpec,
   MethodKind,
