@@ -9,14 +9,14 @@ export function testValidSpecs<S extends ValidTestSpec<TSchema>>(
   validSpecs: S[]
 ) {
   specsToRun(validSpecs).forEach((spec) => {
-    describe('test()', () => {
-      if (runThisTest(MethodKind.Test)) {
+    if (runThisTest(MethodKind.Test)) {
+      describe('test()', () => {
         it(`test() should accept ${spec.description}`, () => {
           const validator = createValidator(spec.schema);
           expect(validator.test(spec.value)).toBe(true);
         });
-      }
-    });
+      });
+    }
     if (runThisTest(MethodKind.TestReturningErrors)) {
       describe('testReturningErrors()', () => {
         specsToRun(validSpecs).forEach((spec) => {
