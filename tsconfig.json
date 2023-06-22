@@ -21,7 +21,17 @@
     "noImplicitOverride": true,
     "outDir": "./dist",
     "rootDir": "./src",
-    "baseUrl": "."
+    "baseUrl": ".",
+    "paths": {
+      "typebox-validators": ["dist/index.d.ts"],
+      "typebox-validators/standard": ["dist/validators/standard/index.d.ts"],
+      "typebox-validators/discriminated": [
+        "dist/validators/discriminated/index.d.ts"
+      ],
+      "typebox-validators/heterogeneous": [
+        "dist/validators/heterogeneous/index.d.ts"
+      ]
+    }
   },
   "include": ["*.d.ts", "**/*.ts", "**/*.tsx"],
   "exclude": ["src/test", "dist", "build", "node_modules", "comparison"]
