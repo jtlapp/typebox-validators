@@ -17,6 +17,28 @@ export function testValidSpecs<S extends ValidTestSpec<TSchema>>(
         });
       }
     });
+    if (runThisTest(MethodKind.TestReturningErrors)) {
+      describe('testReturningErrors()', () => {
+        specsToRun(validSpecs).forEach((spec) => {
+          it('testReturningErrors() for ' + spec.description, () => {
+            const validator = createValidator(spec.schema);
+            const errors = validator.testReturningErrors(spec.value);
+            expect(errors).toBeNull();
+          });
+        });
+      });
+    }
+    if (runThisTest(MethodKind.TestReturningFirstError)) {
+      describe('testReturningFirstError()', () => {
+        specsToRun(validSpecs).forEach((spec) => {
+          it('testReturningFirstError() for ' + spec.description, () => {
+            const validator = createValidator(spec.schema);
+            const firstError = validator.testReturningFirstError(spec.value);
+            expect(firstError).toBeNull();
+          });
+        });
+      });
+    }
 
     describe('no cleaning', () => {
       if (runThisTest(MethodKind.Assert)) {
@@ -73,5 +95,28 @@ export function testValidSpecs<S extends ValidTestSpec<TSchema>>(
         });
       }
     });
+
+    if (runThisTest(MethodKind.Errors)) {
+      describe('errors()', () => {
+        specsToRun(validSpecs).forEach((spec) => {
+          it('errors() for ' + spec.description, () => {
+            const validator = createValidator(spec.schema);
+            const errors = [...validator.errors(spec.value)];
+            expect(errors.length).toEqual(0);
+          });
+        });
+      });
+    }
+    if (runThisTest(MethodKind.FirstError)) {
+      describe('firstError()', () => {
+        specsToRun(validSpecs).forEach((spec) => {
+          it('firstError() for ' + spec.description, () => {
+            const validator = createValidator(spec.schema);
+            const firstError = validator.firstError(spec.value);
+            expect(firstError).toBeNull();
+          });
+        });
+      });
+    }
   });
 }

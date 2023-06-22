@@ -25,6 +25,36 @@ export function testInvalidSpecs<S extends InvalidTestSpec<TSchema>>(
       });
     });
   }
+  if (runThisTest(MethodKind.TestReturningErrors)) {
+    describe('testReturningErrors()', () => {
+      specsToRun(invalidSpecs).forEach((spec) => {
+        it('testReturningErrors() for ' + spec.description, () => {
+          const validator = createValidator(spec.schema);
+          const result = validator.testReturningErrors(spec.value);
+          expect(result).not.toBeNull();
+          const errors = [...result!];
+          expect(errors.length).toEqual(spec.errors.length);
+          errors.forEach((error, i) => {
+            expect(error.path).toEqual(spec.errors[i].path);
+            expect(error.message).toContain(spec.errors[i].message);
+          });
+        });
+      });
+    });
+  }
+  if (runThisTest(MethodKind.TestReturningFirstError)) {
+    describe('testReturningFirstError()', () => {
+      specsToRun(invalidSpecs).forEach((spec) => {
+        it('testReturningFirstError() for ' + spec.description, () => {
+          const validator = createValidator(spec.schema);
+          const firstError = validator.firstError(spec.value);
+          expect(firstError).not.toBeNull();
+          expect(firstError?.path).toEqual(spec.errors[0].path);
+          expect(firstError?.message).toContain(spec.errors[0].message);
+        });
+      });
+    });
+  }
 
   if (runThisTest(MethodKind.Assert)) {
     testAssertMethodRejection('assert', invalidSpecs);
@@ -56,6 +86,18 @@ export function testInvalidSpecs<S extends InvalidTestSpec<TSchema>>(
             expect(error.path).toEqual(spec.errors[i].path);
             expect(error.message).toContain(spec.errors[i].message);
           });
+        });
+      });
+    });
+  }
+  if (runThisTest(MethodKind.FirstError)) {
+    describe('firstError()', () => {
+      specsToRun(invalidSpecs).forEach((spec) => {
+        it('firstError() for ' + spec.description, () => {
+          const validator = createValidator(spec.schema);
+          const firstError = validator.firstError(spec.value);
+          expect(firstError?.path).toEqual(spec.errors[0].path);
+          expect(firstError?.message).toContain(spec.errors[0].message);
         });
       });
     });

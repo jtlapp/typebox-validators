@@ -33,13 +33,58 @@ export abstract class AbstractValidator<S extends TSchema> {
   constructor(readonly schema: Readonly<S>) {}
 
   /**
-   * Tests whether a value conforms to the schema. This method does not throw
-   * `ValidationException` and does not clean values of unrecognized properties.
+   * Tests whether a value conforms to the schema. For performance reasons, it
+   * is best to call this method before calling `errors()` or `firstError()`,
+   * should you also need to information about the errors. This method does not
+   * throw `ValidationException` and does not clean values of unrecognized
+   * properties.
    *
    * @param value Value to validate against the schema.
    * @returns `true` when the value conforms to the schema, `false` otherwise.
    */
   abstract test(value: Readonly<unknown>): boolean;
+
+  /**
+   * Tests whether a value conforms to the schema, returning an iterable whose
+   * iterator yields the validation errors, or returning `null` if there are no
+   * validation errors. This method is equivalent to calling `test()` and then
+   * `errors()` and exists only for convenience. The method does not throw
+   * `ValidationException` and does not clean values of unrecognized properties.
+   *
+   * @param value Value to validate against the schema.
+   * @returns An iteratable yielding all validation errors, if any, otherwise
+   *  `null`. Upon detecting one or more errors for a particular schema
+   *  (possibly a nested schema), if the schema provides an `errorMessage`
+   *  property, only a single error is reported for the schema, and the
+   *  `message` property of this error is set to `errorMessage`'s value. Also,
+   *  the TypeBox error "Expected required property" is dropped when at least
+   *  one other error is reported for the property. Consequently, only the
+   *  `Type.Any` and `Type.Unknown` schemas can yield "Expected required
+   *  property" errors.
+   */
+  testReturningErrors(value: Readonly<unknown>): Iterable<ValueError> | null {
+    if (this.test(value)) {
+      return null;
+    }
+    return this.errors(value);
+  }
+
+  /**
+   * Tests whether a value conforms to the schema, returning the first error,
+   * or returning `null` if there is no error. This method is equivalent to
+   * calling `test()` and then `firstError()` and exists only for convenience.
+   * The method does not throw `ValidationException` and does not clean values
+   * of unrecognized properties.
+   *
+   * @param value Value to validate against the schema.
+   * @returns The first validation error, if there is a validation error,
+   *  otherwise `null`.
+   */
+  testReturningFirstError(value: Readonly<unknown>): ValueError | null {
+    const iterator = this.testReturningErrors(value)?.[Symbol.iterator]();
+    const result = iterator?.next();
+    return result?.done ? null : result?.value ?? null;
+  }
 
   /**
    * Validates a value against the schema, halting validation at the first
@@ -143,24 +188,45 @@ export abstract class AbstractValidator<S extends TSchema> {
 
   /**
    * Validates a value against the schema and returns an iteratable whose
-   * iterator yields the validation errors. The iterator tests the value for
-   * the next error on each call to `next()`, returning a `ValueError` for the
-   * error until done. It does not evaluate errors in advance of their being
+   * iterator yields the validation errors. The iterator tests the value for the
+   * next error on each call to `next()`, returning a `ValueError` for the error
+   * until done. It does not evaluate errors in advance of their being
    * requested, allowing you to short-circuit validation by stopping iteration
-   * early. This method does not throw `ValidationException` and does not
+   * early. For performance reasons, it is best to call `test()` before calling
+   * this method. This method does not throw `ValidationException` and does not
    * clean values of unrecognized properties.
    *
    * @param value Value to validate against the schema.
-   * @returns An iteratable yielding all validation errors. However, upon
-   *  detecting one or more errors for a particular schema (possibly a nested
-   *  schema), if the schema provides an `errorMessage` property, only a
-   *  single error is reported for the schema, and the `message` property of
-   *  this error is set to `errorMessage`'s value. Also, the TypeBox error
-   *  "Expected required property" is dropped when at least one other error
-   *  is reported for the property. Consequently, only the `Type.Any` and
-   *  `Type.Unknown` schemas can yield "Expected required property" errors.
+   * @returns An iteratable yielding all validation errors. Upon detecting one
+   *  or more errors for a particular schema (possibly a nested schema), if the
+   *  schema provides an `errorMessage` property, only a single error is
+   *  reported for the schema, and the `message` property of this error is set
+   *  to `errorMessage`'s value. Also, the TypeBox error "Expected required
+   *  property" is dropped when at least one other error is reported for the
+   *  property. Consequently, only the `Type.Any` and `Type.Unknown` schemas can
+   *  yield "Expected required property" errors.
    */
   abstract errors(value: Readonly<unknown>): Iterable<ValueError>;
+
+  /**
+   * Validates a value against the schema and returns the first error,
+   * returning `null` if there is no error. No validation is performed beyond
+   * the first error, allowing you to protect the server from wasting time and
+   * memory validating excessively long strings. It is equivalent to calling
+   * `next()` exactly once on the iterator returned by `errors()`, serving
+   * only as a convenience method. For performance reasons, it is best to call
+   * `test()` before calling this method. This method does not throw
+   * `ValidationException` and does not clean values of unrecognized properties.
+   *
+   * @param value Value to validate against the schema.
+   * @returns The first validation error, if there is a validation error,
+   *  otherwise `null`.
+   */
+  firstError(value: Readonly<unknown>): ValueError | null {
+    const iterator = this.errors(value)[Symbol.iterator]();
+    const result = iterator.next();
+    return result.done ? null : result.value;
+  }
 
   protected cleanCopyOfValue<VS extends TSchema>(
     schema: Readonly<VS>,

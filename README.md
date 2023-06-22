@@ -6,7 +6,7 @@ TypeBox validators with custom errors, safe error handling, discriminated unions
 
 ## Overview
 
-The [TypeBox](https://github.com/sinclairzx81/typebox) JSON Schema validator may be the [fastest JSON validator](https://moltar.github.io/typescript-runtime-type-benchmarks/) for JavaScript/TypeScript not requiring a development-time precompilation step. TypeBox provides the ability to both construct and validate JSON, but it is strictly standards compliant and does not offer commonly needed additional functionality.
+The [TypeBox](https://github.com/sinclairzx81/typebox) JSON Schema validator may be the [fastest JSON validator](https://moltar.github.io/typescript-runtime-type-benchmarks/) for JavaScript/TypeScript not requiring a development-time code generation step. TypeBox provides the ability to both construct and validate JSON, but it is strictly standards compliant and does not offer commonly needed additional functionality.
 
 This library provides JSON Schema validators having this additional functionality. It wraps TypeBox so you can get TypeBox validation performance and limit your use of TypeBox to just JSON Schema specification.
 
@@ -83,18 +83,27 @@ const schema = Type.Object({
 const validator = new StandardValidator(schema);
 const value = { handle: '1234', count: -1 };
 
-// returns false:
+// returns false indicating an error:
 validator.test(value);
 
-// throws with only error 'must be a string of 5 to 10 letters':
+// returns an iterable providing the two errors:
+validator.testReturningErrors();
+
+// returns the first error:
+validator.testReturningFirstError();
+
+// throws with error 'must be a string of 5 to 10 letters':
 validator.assert(value);
 
 // throws with error 'must be a string of 5 to 10 letters' and TypeBox's
 //  default error message for an integer being less than the minimum:
 validator.validate(value);
 
-// returns an iterable providing the two errors:
+// returning an iterable providing the two errors:
 validator.errors(value);
+
+// returning the first error:
+validator.firstError(value);
 ```
 
 `assert` and `validate` methods throw a [`ValidationException`](https://github.com/jtlapp/typebox-validators/blob/main/src/lib/validation-exception.ts) error when validation fails, reporting only the first error for `assert` methods and reporting all errors for `validate` methods. `assert` methods are safer to use on the server because TypeBox ensures that the `maxLength` and `maxItems` contraints are tested before testing regular expressions. `test` is faster than `assert`, which is faster than `validate` when a least one error occurs.
@@ -109,13 +118,16 @@ The validators all offer the same methods:
 | Method | Description |
 | --- | --- |
 | `test`(value) | Fast test of whether the value satisfies the schema. Returns a boolean, with `true` meaning valid. |
+| `testReturningErrors`(value) | Fast test of whether the value satisfies the schema, returning `null` if there are no errors, otherwise returning an iterable that yields all validation errors as instances of [`ValueError`](https://github.com/sinclairzx81/typebox/blob/master/src/errors/errors.ts#L99). |
+| `testReturningFirstError`(value) | Fast test of whether the value satisfies the schema, returning `null` if there are no errors, otherwise returning the first [`ValueError`](https://github.com/sinclairzx81/typebox/blob/master/src/errors/errors.ts#L99). |
 | `assert`(value, msg?) | Checks for at most one error and throws [`ValidationException`](https://github.com/jtlapp/typebox-validators/blob/main/src/lib/validation-exception.ts) to report the error. If `msg` is provided, this becomes the `message` of the exception, except that the substring `{error}` (if present) is replaced with the specific error message. The exception's `details` property provides the details of the error. |
 | `assertAndClean`(value, msg?) | Same as `assert`, except that when valid, the method also removes unrecognized properties from the value, if the value is an object. |
 | `assertAndCleanCopy`(value, msg?) | Same as `assert`, except that when valid, the method returns a copy of the value with unrecognized properties removed. |
 | `validate`(value, msg?) | Checks for all errors and throws [`ValidationException`](https://github.com/jtlapp/typebox-validators/blob/main/src/lib/validation-exception.ts) to report them. If `msg` is provided, this becomes the `message` of the exception. The exception's `details` property provides the details of the errors. |
 | `validateAndClean`(value, msg?) | Same as `validate`, except that when valid, the method also removes unrecognized properties from the value, if the value is an object. |
 | `validateAndCleanCopy`(value, msg?) | Same as `validate`, except that when valid, the method returns a copy of the value with unrecognized properties removed. |
-| `errors`(value) | Returns an iterable that yields all validation errors as instances of [`ValueError`](https://github.com/sinclairzx81/typebox/blob/master/src/errors/errors.ts#L99). When there are no errors, the iterable yields no values. |
+| `errors`(value) | Returns an iterable that yields all validation errors as instances of [`ValueError`](https://github.com/sinclairzx81/typebox/blob/master/src/errors/errors.ts#L99). When there are no errors, the iterable yields no values. Call `test` first for better performance. |
+| `firstError`(value) | Returns the first [`ValueError`](https://github.com/sinclairzx81/typebox/blob/master/src/errors/errors.ts#L99), if there is a validation error, and `null` otherwise. Call `test` first for better performance. |
 
 If you want validation to fail when an object has properties not given by the schema, use the [`additionalProperties`](https://json-schema.org/understanding-json-schema/reference/object.html#additional-properties) option in the object's schema. In this case, there would be no need to use the various "clean" methods.
 

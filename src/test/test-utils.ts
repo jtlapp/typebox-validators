@@ -10,6 +10,8 @@ export enum ValidatorKind {
 export enum MethodKind {
   All,
   Test,
+  TestReturningErrors,
+  TestReturningFirstError,
   Assert,
   AssertAndClean,
   AssertAndCleanCopy,
@@ -17,6 +19,7 @@ export enum MethodKind {
   ValidateAndClean,
   ValidateAndCleanCopy,
   Errors,
+  FirstError,
   InvalidSchema,
 }
 
