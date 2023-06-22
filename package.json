@@ -1,9 +1,9 @@
 {
   "name": "typebox-validators",
-  "version": "0.2.19",
+  "version": "0.2.20",
   "author": "Joseph T. Lapp <arachnojoe@gmail.com>",
   "license": "MIT",
-  "description": "TypeBox validators with lazy compilation, custom errors, safe error handling, discriminated and heterogeneous unions",
+  "description": "TypeBox validators with lazy compilation, custom error messages, safe error handling, discriminated and heterogeneous unions",
   "repository": {
     "type": "git",
     "url": "https://github.com/jtlapp/typebox-validators"
