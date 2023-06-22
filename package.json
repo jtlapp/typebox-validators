@@ -1,6 +1,6 @@
 {
   "name": "typebox-validators",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "author": "Joseph T. Lapp <arachnojoe@gmail.com>",
   "license": "MIT",
   "description": "TypeBox validators with custom errors, safe error handling, discriminated unions",
@@ -18,8 +18,6 @@
     "discriminated unions",
     "branded types"
   ],
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
   "source": "/index.ts",
   "files": [
     "dist/**"
