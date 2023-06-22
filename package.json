@@ -1,9 +1,9 @@
 {
   "name": "typebox-validators",
-  "version": "0.2.10",
+  "version": "0.2.17",
   "author": "Joseph T. Lapp <arachnojoe@gmail.com>",
   "license": "MIT",
-  "description": "TypeBox validators with custom errors, safe error handling, discriminated unions",
+  "description": "TypeBox validators with lazy compilation, custom errors, safe error handling, discriminated and heterogeneous unions",
   "repository": {
     "type": "git",
     "url": "https://github.com/jtlapp/typebox-validators"
@@ -13,6 +13,7 @@
     "validation",
     "errors",
     "error handling",
+    "lazy compilation",
     "safe",
     "secure",
     "discriminated unions",
@@ -22,12 +23,12 @@
     "clean": "rm -rf node_modules && rm -rf dist",
     "build": "rm -rdf dist && tsc && cp package.json dist && cp README.md dist && cp LICENSE dist",
     "build-docs": "typedoc --options ./typedoc.js ./src/index.ts",
-    "build-all": "pnpm build && pnpm build-docs",
-    "test": "pnpm test-node && pnpm test-chrome",
+    "build-all": "npm run build && npm run build-docs",
+    "test": "npm run test-node && npm run test-chrome",
     "test-node": "jest",
     "test-chrome": "cross-env PUPPETEER_DISABLE_HEADLESS_WARNING=true jest --config jest.config.chrome.js",
     "test-perf": "ts-node src/test/key-iteration-performance.ts",
-    "publish": "pnpm build && (cd dist && npm publish)"
+    "build-and-publish": "npm run build && (cd dist && npm publish)"
   },
   "devDependencies": {
     "@types/jest": "^29.4.0",

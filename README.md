@@ -1,6 +1,6 @@
 # typebox-validators
 
-TypeBox validators with custom errors, safe error handling, discriminated unions
+TypeBox validators with lazy compilation, custom errors, safe error handling, discriminated and heterogeneous unions
 
 [API Reference](https://jtlapp.github.io/typebox-validators/)
 
