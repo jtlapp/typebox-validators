@@ -9,7 +9,7 @@ import {
   createUnionTypeErrorIterable,
   throwInvalidAssert,
   throwInvalidValidate,
-} from '../lib/error-utils';
+} from '../../lib/error-utils';
 
 export type FindSchemaMemberIndex = (value: unknown) => number | null;
 export type SchemaMemberTest = (value: object) => boolean;

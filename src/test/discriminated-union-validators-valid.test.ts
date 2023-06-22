@@ -1,8 +1,8 @@
 import { TObject, TSchema, TUnion, Type } from '@sinclair/typebox';
 
-import { AbstractTypedUnionValidator } from '../validators/abstract-typed-union-validator';
-import { DiscriminatedUnionValidator } from '../validators/discriminated-union-validator';
-import { CompilingDiscriminatedUnionValidator } from '../validators/compiling-discriminated-union-validator';
+import { AbstractTypedUnionValidator } from '../validators/abstract/abstract-typed-union-validator';
+import { DiscriminatedUnionValidator } from '../validators/discriminated/discriminated-union-validator';
+import { CompilingDiscriminatedUnionValidator } from '../validators/discriminated/compiling-discriminated-union-validator';
 import {
   ValidUnionTestSpec,
   ValidatorKind,
@@ -11,7 +11,7 @@ import {
   ValidTestSpec,
 } from './test-utils';
 import { testValidSpecs } from './test-valid-specs';
-import { AbstractValidator } from '../validators/abstract-validator';
+import { AbstractValidator } from '../validators/abstract/abstract-validator';
 
 const onlyRunValidator = ValidatorKind.All;
 const onlyRunMethod = MethodKind.All;

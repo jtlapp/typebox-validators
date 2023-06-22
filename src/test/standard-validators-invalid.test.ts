@@ -1,8 +1,8 @@
 import { TSchema, Type } from '@sinclair/typebox';
 
-import { AbstractStandardValidator } from '../validators/abstract-standard-validator';
-import { StandardValidator } from '../validators/standard-validator';
-import { CompilingStandardValidator } from '../validators/compiling-standard-validator';
+import { AbstractStandardValidator } from '../validators/abstract/abstract-standard-validator';
+import { StandardValidator } from '../validators/standard/standard-validator';
+import { CompilingStandardValidator } from '../validators/standard/compiling-standard-validator';
 import { DEFAULT_OVERALL_MESSAGE } from '../lib/error-utils';
 import { ValidatorKind, MethodKind, ValidatorCache } from './test-utils';
 import { testInvalidSpecs } from './test-invalid-specs';

@@ -1,7 +1,6 @@
 import { Static, TObject, TUnion } from '@sinclair/typebox';
 
 import { AbstractValidator } from './abstract-validator';
-import { CompilingStandardValidator } from './compiling-standard-validator';
 
 export const DEFAULT_DISCRIMINANT_KEY = 'kind';
 
@@ -64,12 +63,6 @@ export abstract class AbstractTypedUnionValidator<
     value: Readonly<unknown>,
     overallError?: string
   ): TObject;
-
-  protected createMemberValidators(): CompilingStandardValidator<TObject>[] {
-    return this.schema.anyOf.map(
-      (memberSchema) => new CompilingStandardValidator(memberSchema)
-    );
-  }
 
   protected toValueKeyDereference(key: string): string {
     return /^[a-zA-Z_$][a-zA-Z_$0-9]*$/.test(key)

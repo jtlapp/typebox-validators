@@ -5,12 +5,12 @@ import {
   ValueError,
 } from '@sinclair/typebox/compiler';
 
-import { AbstractStandardValidator } from './abstract-standard-validator';
+import { AbstractStandardValidator } from '../abstract/abstract-standard-validator';
 import {
   createErrorsIterable,
   throwInvalidAssert,
   throwInvalidValidate,
-} from '../lib/error-utils';
+} from '../../lib/error-utils';
 
 /**
  * Lazily compiled validator for standard TypeBox values.

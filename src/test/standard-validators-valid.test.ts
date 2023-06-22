@@ -1,8 +1,8 @@
 import { TSchema, Type } from '@sinclair/typebox';
 
-import { AbstractStandardValidator } from '../validators/abstract-standard-validator';
-import { StandardValidator } from '../validators/standard-validator';
-import { CompilingStandardValidator } from '../validators/compiling-standard-validator';
+import { AbstractStandardValidator } from '../validators/abstract/abstract-standard-validator';
+import { StandardValidator } from '../validators/standard/standard-validator';
+import { CompilingStandardValidator } from '../validators/standard/compiling-standard-validator';
 import {
   ValidTestSpec,
   ValidatorKind,

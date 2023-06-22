@@ -3,8 +3,8 @@ import { TObject, TUnion } from '@sinclair/typebox';
 import {
   AbstractCompilingTypedUnionValidator,
   FindSchemaMemberIndex,
-} from './abstract-compiling-typed-union-validator';
-import { TypeIdentifyingKeyIndex } from '../lib/type-identifying-key-index';
+} from '../abstract/abstract-compiling-typed-union-validator';
+import { TypeIdentifyingKeyIndex } from './type-identifying-key-index';
 
 /**
  * Lazily compiled validator for heterogeneous unions of objects. To improve

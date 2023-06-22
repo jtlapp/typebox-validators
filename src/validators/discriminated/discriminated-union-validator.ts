@@ -4,14 +4,14 @@ import { Value, ValueError } from '@sinclair/typebox/value';
 import {
   AbstractTypedUnionValidator,
   DEFAULT_DISCRIMINANT_KEY,
-} from './abstract-typed-union-validator';
+} from '../abstract/abstract-typed-union-validator';
 import {
   createErrorsIterable,
   createUnionTypeError,
   createUnionTypeErrorIterable,
   throwInvalidAssert,
   throwInvalidValidate,
-} from '../lib/error-utils';
+} from '../../lib/error-utils';
 
 /**
  * Non-compiling validator for discriminated unions. To improve performance,

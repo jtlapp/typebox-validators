@@ -37,21 +37,34 @@ pnpm add typebox-validators
 
 ## Usage
 
-Select the validator or validators you want to use. The following classes are available:
+Select the validator or validators you want to use. The validators are split into different import files to prevent applications from including classes they don't need.
 
-- `AbstractValidator` &mdash; Abstract base class of all validators.
+Imported from `typebox-validators`:
+
+- `AbstractValidator` &mdash; Abstract base class of all validators, should you need to abstractly represent a validator.
+- `ValidationException` &mdash; Exception reporting validation failure, for methods that throw an exception on failure. Does not includes a stack trace.
+
+Imported from `typebox-validators/standard`:
+
 - `StandardValidator` &mdash; Non-compiling validator that validates TypeBox schemas using TypeBox validation behavior.
 - `CompilingStandardValiator` &mdash; Compiling validator that validates TypeBox schemas using TypeBox validation behavior. This validator compiles the schema on the first validation, caches the compilation, and thereafter uses the cached compilation.
+
+Imported from `typebox-validators/discriminated`:
+
 - `DiscriminatedUnionValidator` &mdash; Non-compiling validator that validates a union of object types, each of which has a discriminant key whose value identifies the object type. This validator validates objects against the schema for the object's type, yielding only errors relevant to that type.
 - `CompilingDiscriminatedUnionValidator` &mdash; Compiling validator that validates a union of object types, each of which has a discriminant key whose value identifies the object type. This validator validates objects against the schema for the object's type, yielding only errors relevant to that type. It compiles the schema for an object type on the first validaton of that type, caches the compilation, and thereafter uses the cached compilation for objects of that type.
+
+Imported from `typebox-validators/heterogeneous`:
+
 - `HeterogeneousUnionValidator` &mdash; Non-compiling validator that validates a union of object types, each of which has at least one type identifying key. This key is the name of a required property that is unique among all object types of the union, whose schema includes `typeIdentifyingKey: true`. This validator validates objects against the schema for the object's type, yielding only errors relevant to that type.
 - `CompilingHeterogeneousUnionValidator` &mdash; Compiling validator that validates a union of object types, each of which has at least one type identifying key. This key is the name of a required property that is unique among all object types of the union, whose schema includes `typeIdentifyingKey: true`. This validator validates objects against the schema for the object's type, yielding only errors relevant to that type. It compiles the schema for an object type on the first validaton of that type, caches the compilation, and thereafter uses the cached compilation for objects of that type.
+- `TypeIdentifyingKey` &mdash; Convenience class that wraps a property's schema to set `typeIdentifyingKey` to `true` for the schema.
 
 Create a validator for a particular schema and use that validator to validate a value against its schema:
 
 ```ts
 import { Type } from '@sinclaim/typebox';
-import { StandardValidator } from 'typebox-validators';
+import { StandardValidator } from 'typebox-validators/standard';
 
 const schema = Type.Object({
   handle: Type.String(
@@ -123,6 +136,8 @@ Call the `toString()` method to get a string represenation that includes the err
 Also, not subclassing `Error` has implications for testing in Jest and Chai. Asynchronous exceptions require special treatment, as `toThrow()` (Jest) and `rejectedWith()` (Chai + [chai-as-promised](https://www.chaijs.com/plugins/chai-as-promised/)) will not detect the exception. Test for asynchronous validation exceptions as follows instead:
 
 ```ts
+import { ValidationException } from 'typebox-validators';
+
 const wait = () =>
   new Promise((_resolve, reject) =>
     setTimeout(() => reject(new ValidationException('Invalid')), 100)
@@ -153,7 +168,7 @@ chai.expect(fail).to.throw().and.be.an.instanceOf(ValidationException);
 
 ```ts
 import { Type } from '@sinclaim/typebox';
-import { DiscriminatedUnionValidator } from 'typebox-validators';
+import { DiscriminatedUnionValidator } from 'typebox-validators/discriminated';
 
 const schema1 = Type.Union([
   Type.Object({
@@ -212,7 +227,7 @@ import { Type } from '@sinclaim/typebox';
 import {
   TypeIdentifyingKey,
   HeterogeneousUnionValidator
-} from 'typebox-validators';
+} from 'typebox-validators/heterogeneous';
 
 const schema3 = Type.Union([
   Type.Object({

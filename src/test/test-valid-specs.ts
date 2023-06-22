@@ -1,6 +1,6 @@
 import { TSchema } from '@sinclair/typebox';
 import { MethodKind, ValidTestSpec, specsToRun } from './test-utils';
-import { AbstractValidator } from '../validators/abstract-validator';
+import { AbstractValidator } from '../validators/abstract/abstract-validator';
 
 export function testValidSpecs<S extends ValidTestSpec<TSchema>>(
   runThisTest: (method: MethodKind) => boolean,

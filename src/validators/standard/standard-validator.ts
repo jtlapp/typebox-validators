@@ -1,9 +1,9 @@
 import type { TSchema } from '@sinclair/typebox';
 
-import { AbstractStandardValidator } from './abstract-standard-validator';
+import { AbstractStandardValidator } from '../abstract/abstract-standard-validator';
 import { ValueError } from '@sinclair/typebox/errors';
 import { Value } from '@sinclair/typebox/value';
-import { createErrorsIterable } from '../lib/error-utils';
+import { createErrorsIterable } from '../../lib/error-utils';
 
 /**
  * Non-compiling validator for standard TypeBox values.

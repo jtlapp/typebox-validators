@@ -1,15 +1,15 @@
 import { TObject, TUnion } from '@sinclair/typebox';
 import { Value, ValueError } from '@sinclair/typebox/value';
 
-import { AbstractTypedUnionValidator } from './abstract-typed-union-validator';
+import { AbstractTypedUnionValidator } from '../abstract/abstract-typed-union-validator';
 import {
   createErrorsIterable,
   createUnionTypeError,
   createUnionTypeErrorIterable,
   throwInvalidAssert,
   throwInvalidValidate,
-} from '../lib/error-utils';
-import { TypeIdentifyingKeyIndex } from '../lib/type-identifying-key-index';
+} from '../../lib/error-utils';
+import { TypeIdentifyingKeyIndex } from './type-identifying-key-index';
 
 /**
  * Non-compiling validator for heterogeneous unions of objects. To improve
