@@ -67,16 +67,12 @@ import { Type } from '@sinclaim/typebox';
 import { StandardValidator } from 'typebox-validators/standard';
 
 const schema = Type.Object({
-  handle: Type.String(
-    {
-      minLength: 5,
-      maxLength: 10,
-      pattern: '^[a-zA-Z]+$',
-    },
-    {
-      errorMessage: 'must be a string of 5 to 10 letters',
-    }
-  ),
+  handle: Type.String({
+    minLength: 5,
+    maxLength: 10,
+    pattern: '^[a-zA-Z]+$',
+    errorMessage: 'must be a string of 5 to 10 letters',
+  }),
   count: Type.Integer({ minimum: 0 }),
 });
 
