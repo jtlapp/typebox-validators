@@ -1,6 +1,6 @@
 {
   "name": "typebox-validators",
-  "version": "0.2.24",
+  "version": "0.2.25",
   "author": "Joseph T. Lapp <arachnojoe@gmail.com>",
   "license": "MIT",
   "description": "TypeBox validators with lazy compilation, custom error messages, safe error handling, discriminated and heterogeneous unions",
@@ -19,29 +19,28 @@
     "discriminated unions",
     "branded types"
   ],
-  "type": "module",
-  "source": "src/index.ts",
   "main": "dist/cjs/index.js",
-  "types": "dist/cjs/index.d.ts",
-  "files": [
-    "dist/**"
-  ],
+  "module": "dist/esm/index.js",
   "exports": {
     ".": {
       "import": "./dist/esm/index.js",
-      "require": "./dist/cjs/index.js"
+      "require": "./dist/cjs/index.js",
+      "default": "./dist/cjs/index.js"
     },
     "./standard": {
       "import": "./dist/esm/standard/index.js",
-      "require": "./dist/cjs/standard/index.js"
+      "require": "./dist/cjs/standard/index.js",
+      "default": "./dist/cjs/standard/index.js"
     },
     "./discriminated": {
       "import": "./dist/esm/discriminated/index.js",
-      "require": "./dist/cjs/discriminated/index.js"
+      "require": "./dist/cjs/discriminated/index.js",
+      "default": "./dist/cjs/discriminated/index.js"
     },
     "./heterogeneous": {
       "import": "./dist/esm/heterogeneous/index.js",
-      "require": "./dist/cjs/heterogeneous/index.js"
+      "require": "./dist/cjs/heterogeneous/index.js",
+      "default": "./dist/cjs/heterogeneous/index.js"
     }
   },
   "scripts": {
