@@ -1,6 +1,6 @@
 {
   "name": "typebox-validators",
-  "version": "0.2.22",
+  "version": "0.2.23",
   "author": "Joseph T. Lapp <arachnojoe@gmail.com>",
   "license": "MIT",
   "description": "TypeBox validators with lazy compilation, custom error messages, safe error handling, discriminated and heterogeneous unions",
@@ -19,27 +19,34 @@
     "discriminated unions",
     "branded types"
   ],
+  "type": "module",
+  "source": "src/index.ts",
+  "main": "dist/cjs/index.js",
+  "types": "dist/cjs/index.d.ts",
+  "files": [
+    "dist/**"
+  ],
+  "exports": {
+    ".": {
+      "import": "./dist/esm/index.js",
+      "require": "./dist/cjs/index.js"
+    }
+  },
   "scripts": {
     "clean": "rm -rf node_modules && rm -rf dist",
-    "build": "rm -rdf dist && tsc && cp package.json dist && cp README.md dist && cp LICENSE dist",
+    "build": "rm -rdf dist && tsc && tsc -p tsconfig.cjs.json && pnpm write-packages",
+    "write-packages": "echo '{\"type\":\"module\"}' > dist/esm/package.json && echo '{\"type\":\"commonjs\"}' > dist/cjs/package.json",
     "build-docs": "typedoc --options ./typedoc.js ./src/index.ts",
     "build-all": "npm run build && npm run build-docs",
-    "test": "npm run test-node && npm run test-chrome",
-    "test-node": "jest",
-    "test-chrome": "cross-env PUPPETEER_DISABLE_HEADLESS_WARNING=true jest --config jest.config.chrome.js",
-    "test-perf": "ts-node src/test/key-iteration-performance.ts",
-    "build-and-publish": "npm run build && (cd dist && npm publish)"
+    "test": "vitest --run",
+    "test-perf": "ts-node src/test/key-iteration-performance.ts"
   },
   "devDependencies": {
-    "@types/jest": "^29.4.0",
-    "cross-env": "^7.0.3",
-    "jest": "^29.4.3",
-    "jest-puppeteer": "^9.0.0",
-    "puppeteer": "^20.7.3",
-    "ts-jest": "^29.0.5",
+    "@types/node": "^20.4.6",
     "ts-node": "^10.9.1",
     "typedoc": "^0.24.5",
-    "typescript": "^4.9.5"
+    "typescript": "^4.9.5",
+    "vitest": "^0.34.1"
   },
   "dependencies": {
     "@sinclair/typebox": "^0.28.14"
