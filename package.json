@@ -1,6 +1,6 @@
 {
   "name": "typebox-validators",
-  "version": "0.2.23",
+  "version": "0.2.24",
   "author": "Joseph T. Lapp <arachnojoe@gmail.com>",
   "license": "MIT",
   "description": "TypeBox validators with lazy compilation, custom error messages, safe error handling, discriminated and heterogeneous unions",
@@ -30,6 +30,18 @@
     ".": {
       "import": "./dist/esm/index.js",
       "require": "./dist/cjs/index.js"
+    },
+    "./standard": {
+      "import": "./dist/esm/standard/index.js",
+      "require": "./dist/cjs/standard/index.js"
+    },
+    "./discriminated": {
+      "import": "./dist/esm/discriminated/index.js",
+      "require": "./dist/cjs/discriminated/index.js"
+    },
+    "./heterogeneous": {
+      "import": "./dist/esm/heterogeneous/index.js",
+      "require": "./dist/cjs/heterogeneous/index.js"
     }
   },
   "scripts": {
