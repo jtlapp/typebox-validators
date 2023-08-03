@@ -21,6 +21,8 @@ The library provides the following abilities, each of which is optional:
 7. Compile a TypeBox schema on its first use, subsequently using the cached compilation (lazy compilation).
 8. Report all validation errors within a single string, such as for debugging purposes.
 
+Tested for Node.js and Chrome.
+
 ## Installation
 
 Install with your preferred dependency manager:
@@ -61,21 +63,21 @@ Imported from `typebox-validators/heterogeneous`:
 Create a validator for a particular schema and use that validator to validate a value against its schema:
 
 ```ts
-import { Type } from "@sinclaim/typebox";
-import { StandardValidator } from "typebox-validators/standard";
+import { Type } from '@sinclaim/typebox';
+import { StandardValidator } from 'typebox-validators/standard';
 
 const schema = Type.Object({
   handle: Type.String({
     minLength: 5,
     maxLength: 10,
-    pattern: "^[a-zA-Z]+$",
-    errorMessage: "must be a string of 5 to 10 letters",
+    pattern: '^[a-zA-Z]+$',
+    errorMessage: 'must be a string of 5 to 10 letters',
   }),
   count: Type.Integer({ minimum: 0 }),
 });
 
 const validator = new StandardValidator(schema);
-const value = { handle: "1234", count: -1 };
+const value = { handle: '1234', count: -1 };
 
 // returns false indicating an error:
 validator.test(value);
@@ -142,11 +144,11 @@ Call the `toString()` method to get a string represenation that includes the err
 Also, not subclassing `Error` has implications for testing in Jest and Chai. Asynchronous exceptions require special treatment, as `toThrow()` (Jest) and `rejectedWith()` (Chai + [chai-as-promised](https://www.chaijs.com/plugins/chai-as-promised/)) will not detect the exception. Test for asynchronous validation exceptions as follows instead:
 
 ```ts
-import { ValidationException } from "typebox-validators";
+import { ValidationException } from 'typebox-validators';
 
 const wait = () =>
   new Promise((_resolve, reject) =>
-    setTimeout(() => reject(new ValidationException("Invalid")), 100)
+    setTimeout(() => reject(new ValidationException('Invalid')), 100)
   );
 
 // Jest
@@ -161,7 +163,7 @@ Synchronous exceptions can be detected normally, as with the following code:
 
 ```ts
 const fail = () => {
-  throw new ValidationException("Invalid");
+  throw new ValidationException('Invalid');
 };
 
 // Jest
@@ -173,16 +175,16 @@ chai.expect(fail).to.throw().and.be.an.instanceOf(ValidationException);
 ## Discriminated Union Examples
 
 ```ts
-import { Type } from "@sinclaim/typebox";
-import { DiscriminatedUnionValidator } from "typebox-validators/discriminated";
+import { Type } from '@sinclaim/typebox';
+import { DiscriminatedUnionValidator } from 'typebox-validators/discriminated';
 
 const schema1 = Type.Union([
   Type.Object({
-    kind: Type.Literal("string"),
+    kind: Type.Literal('string'),
     val: Type.String(),
   }),
   Type.Object({
-    kind: Type.Literal("integer"),
+    kind: Type.Literal('integer'),
     val: Type.Integer(),
     units: Type.Optional(Type.String()),
   }),
@@ -192,38 +194,38 @@ const validator1 = new DiscriminatedUnionValidator(schema1);
 
 // throws exception with message "Invalid value" and the single error
 //  "Object type not recognized" for path "":
-validator1.assert({ kind: "float", val: 1.5 });
+validator1.assert({ kind: 'float', val: 1.5 });
 
 // throws exception with message "Oopsie! val - Expected integer"
 //  and the single error "Expected integer" for path "/val":
-validator1.assert({ kind: "integer", val: 1.5 }, "Oopsie! {error}");
+validator1.assert({ kind: 'integer', val: 1.5 }, 'Oopsie! {error}');
 ```
 
 ```ts
 const schema2 = Type.Union(
   [
     Type.Object({
-      __type: Type.Literal("string"),
-      val: Type.String({ errorMessage: "Must be a string" }),
+      __type: Type.Literal('string'),
+      val: Type.String({ errorMessage: 'Must be a string' }),
     }),
     Type.Object({
-      __type: Type.Literal("integer"),
-      val: Type.Integer({ errorMessage: "Must be an integer" }),
+      __type: Type.Literal('integer'),
+      val: Type.Integer({ errorMessage: 'Must be an integer' }),
       units: Type.Optional(Type.String()),
     }),
   ],
-  { discriminantKey: "__type", errorMessage: "Unknown type" }
+  { discriminantKey: '__type', errorMessage: 'Unknown type' }
 );
 
 const validator2 = new DiscriminatedUnionValidator(schema2);
 
 // throws exception with message "Invalid value" and the single error
 //  "Unknown type" for path "":
-validator2.assert({ __type: "float", val: 1.5 });
+validator2.assert({ __type: 'float', val: 1.5 });
 
 // throws exception with message "Oopsie! val - Must be an integer"
 //  and the single error "Must be an integer" for path "/val":
-validator2.assert({ __type: "integer", val: 1.5 }, "Oopsie! {error}");
+validator2.assert({ __type: 'integer', val: 1.5 }, 'Oopsie! {error}');
 ```
 
 ## Heterogeneous Union Examples

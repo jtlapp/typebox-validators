@@ -2,7 +2,7 @@
   "$schema": "https://json.schemastore.org/tsconfig",
   "compilerOptions": {
     "target": "ES6",
-    "module": "ESNext",
+    "module": "CommonJS",
     "sourceMap": true,
     "composite": false,
     "declaration": true,
@@ -20,7 +20,7 @@
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
     "noImplicitOverride": true,
-    "outDir": "./dist/esm",
+    "outDir": "./dist",
     "rootDir": "./src"
   },
   "include": ["*.d.ts", "**/*.ts", "**/*.tsx"],
