@@ -1,6 +1,6 @@
 {
   "name": "typebox-validators",
-  "version": "0.2.28",
+  "version": "0.3.0",
   "author": "Joseph T. Lapp <arachnojoe@gmail.com>",
   "license": "MIT",
   "description": "TypeBox validators with lazy compilation, custom error messages, safe error handling, discriminated and heterogeneous unions",
@@ -42,6 +42,6 @@
     "typescript": "^4.9.5"
   },
   "dependencies": {
-    "@sinclair/typebox": "^0.28.14"
+    "@sinclair/typebox": "^0.30.2"
   }
 }

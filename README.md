@@ -23,6 +23,10 @@ The library provides the following abilities, each of which is optional:
 
 Tested for Node.js and Chrome.
 
+## Updates
+
+- **v0.3.0** - Upgraded to latest version of TypeBox, requiring TypeBox >= 0.30.0.
+
 ## Installation
 
 Install with your preferred dependency manager:

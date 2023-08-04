@@ -1,4 +1,4 @@
-import { Modifier, TObject, TUnion } from '@sinclair/typebox';
+import { Optional, TObject, TUnion } from '@sinclair/typebox';
 
 export const MESSAGE_OPTIONAL_TYPE_ID_KEY =
   'Type identifying key cannot be optional';
@@ -28,7 +28,7 @@ export class TypeIdentifyingKeyIndex {
       const memberSchema = this.schema.anyOf[i];
       for (const [key, schema] of Object.entries(memberSchema.properties)) {
         if (schema.typeIdentifyingKey) {
-          if (schema[Modifier] == 'Optional') {
+          if (schema[Optional] == 'Optional') {
             throw Error(MESSAGE_OPTIONAL_TYPE_ID_KEY);
           }
           if (this.keyByMemberIndex[i] !== undefined) {
