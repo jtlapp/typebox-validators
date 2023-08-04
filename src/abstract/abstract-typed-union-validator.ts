@@ -2,6 +2,10 @@ import { Static, TObject, TUnion } from '@sinclair/typebox';
 
 import { AbstractValidator } from './abstract-validator';
 
+/**
+ * The key providing the object type in discriminated unions, if not
+ * specified in the schema's `discriminantKey` option.
+ */
 export const DEFAULT_DISCRIMINANT_KEY = 'kind';
 
 /**

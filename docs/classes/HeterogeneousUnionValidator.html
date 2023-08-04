@@ -28,11 +28,11 @@ list each object&#39;s unique key first in its properties.</p>
 <section class="tsd-panel tsd-hierarchy">
 <h4>Hierarchy</h4>
 <ul class="tsd-hierarchy">
-<li><span class="tsd-signature-type ">AbstractTypedUnionValidator</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type tsd-kind-type-parameter">S</span><span class="tsd-signature-symbol">&gt;</span>
+<li><a href="AbstractTypedUnionValidator.html" class="tsd-signature-type tsd-kind-class">AbstractTypedUnionValidator</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type tsd-kind-type-parameter">S</span><span class="tsd-signature-symbol">&gt;</span>
 <ul class="tsd-hierarchy">
 <li><span class="target">HeterogeneousUnionValidator</span></li></ul></li></ul></section><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/jtlapp/typebox-validators/blob/4f58afe/src/heterogeneous/heterogeneous-union-validator.ts#L19">heterogeneous/heterogeneous-union-validator.ts:19</a></li></ul></aside>
+<li>Defined in <a href="https://github.com/jtlapp/typebox-validators/blob/ff7f5cc/src/heterogeneous/heterogeneous-union-validator.ts#L19">heterogeneous/heterogeneous-union-validator.ts:19</a></li></ul></aside>
 <section class="tsd-panel-group tsd-index-group">
 <section class="tsd-panel tsd-index-panel">
 <details class="tsd-index-content tsd-index-accordion" open><summary class="tsd-accordion-summary tsd-index-summary">
@@ -87,9 +87,9 @@ list each object&#39;s unique key first in its properties.</p>
 <li>
 <h5><span class="tsd-kind-parameter">schema</span>: <span class="tsd-signature-type tsd-kind-type-parameter">S</span></h5></li></ul></div>
 <h4 class="tsd-returns-title">Returns <a href="HeterogeneousUnionValidator.html" class="tsd-signature-type tsd-kind-class">HeterogeneousUnionValidator</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type tsd-kind-type-parameter">S</span><span class="tsd-signature-symbol">&gt;</span></h4><aside class="tsd-sources">
-<p>Overrides AbstractTypedUnionValidator&lt;S&gt;.constructor</p>
+<p>Overrides <a href="AbstractTypedUnionValidator.html">AbstractTypedUnionValidator</a>.<a href="AbstractTypedUnionValidator.html#constructor">constructor</a></p>
 <ul>
-<li>Defined in <a href="https://github.com/jtlapp/typebox-validators/blob/4f58afe/src/heterogeneous/heterogeneous-union-validator.ts#L25">heterogeneous/heterogeneous-union-validator.ts:25</a></li></ul></aside></li></ul></section></section>
+<li>Defined in <a href="https://github.com/jtlapp/typebox-validators/blob/ff7f5cc/src/heterogeneous/heterogeneous-union-validator.ts#L25">heterogeneous/heterogeneous-union-validator.ts:25</a></li></ul></aside></li></ul></section></section>
 <section class="tsd-panel-group tsd-member-group">
 <h2>Properties</h2>
 <section class="tsd-panel tsd-member tsd-is-inherited"><a id="schema" class="tsd-anchor"></a>
@@ -103,9 +103,9 @@ list each object&#39;s unique key first in its properties.</p>
  for a property of an object replaces TypeBox&#39;s built-in error messages
  for errors that occur on that property.</p>
 </div><aside class="tsd-sources">
-<p>Inherited from AbstractTypedUnionValidator.schema</p>
+<p>Inherited from <a href="AbstractTypedUnionValidator.html">AbstractTypedUnionValidator</a>.<a href="AbstractTypedUnionValidator.html#schema">schema</a></p>
 <ul>
-<li>Defined in <a href="https://github.com/jtlapp/typebox-validators/blob/4f58afe/src/abstract/abstract-validator.ts#L33">abstract/abstract-validator.ts:33</a></li></ul></aside></section></section>
+<li>Defined in <a href="https://github.com/jtlapp/typebox-validators/blob/ff7f5cc/src/abstract/abstract-validator.ts#L33">abstract/abstract-validator.ts:33</a></li></ul></aside></section></section>
 <section class="tsd-panel-group tsd-member-group">
 <h2>Methods</h2>
 <section class="tsd-panel tsd-member tsd-is-inherited"><a id="assert" class="tsd-anchor"></a>
@@ -113,55 +113,96 @@ list each object&#39;s unique key first in its properties.</p>
 <ul class="tsd-signatures tsd-is-inherited">
 <li class="tsd-signature tsd-anchor-link" id="assert.assert-1"><span class="tsd-kind-call-signature">assert</span><span class="tsd-signature-symbol">(</span><span class="tsd-kind-parameter">value</span>, <span class="tsd-kind-parameter">overallError</span><span class="tsd-signature-symbol">?</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span><a href="#assert.assert-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
 <li class="tsd-description">
-<div class="tsd-comment tsd-typography">
-<h3>Inherit Doc</h3></div>
+<div class="tsd-comment tsd-typography"><p>Validates a value against the schema, halting validation at the first
+validation error with a <code>ValidationException</code>. Does not clean values of
+unrecognized properties.</p>
+
+<h3>Throws</h3><p>ValidationException when the value is invalid, reporting only
+ the first validation error in the <code>details</code> property. The <code>errorMessage</code>
+ parameter provides the exception&#39;s overall error message.</p>
+</div>
 <div class="tsd-parameters">
 <h4 class="tsd-parameters-title">Parameters</h4>
 <ul class="tsd-parameter-list">
 <li>
-<h5><span class="tsd-kind-parameter">value</span>: <span class="tsd-signature-type ">Readonly</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">unknown</span><span class="tsd-signature-symbol">&gt;</span></h5></li>
+<h5><span class="tsd-kind-parameter">value</span>: <span class="tsd-signature-type ">Readonly</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">unknown</span><span class="tsd-signature-symbol">&gt;</span></h5>
+<div class="tsd-comment tsd-typography"><p>Value to validate against the schema.</p>
+</div></li>
 <li>
-<h5><code class="tsd-tag ts-flagOptional">Optional</code> <span class="tsd-kind-parameter">overallError</span>: <span class="tsd-signature-type">string</span></h5></li></ul></div>
+<h5><code class="tsd-tag ts-flagOptional">Optional</code> <span class="tsd-kind-parameter">overallError</span>: <span class="tsd-signature-type">string</span></h5>
+<div class="tsd-comment tsd-typography"><p>Overall eror message to report in the exception.
+ The substring <code>{error}</code>, if present, will be replaced with a string
+ representation of the error. Defaults to &quot;Invalid value&quot;.</p>
+</div></li></ul></div>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4><aside class="tsd-sources">
-<p>Inherited from AbstractTypedUnionValidator.assert</p>
+<p>Inherited from <a href="AbstractTypedUnionValidator.html">AbstractTypedUnionValidator</a>.<a href="AbstractTypedUnionValidator.html#assert">assert</a></p>
 <ul>
-<li>Defined in <a href="https://github.com/jtlapp/typebox-validators/blob/4f58afe/src/abstract/abstract-typed-union-validator.ts#L18">abstract/abstract-typed-union-validator.ts:18</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/jtlapp/typebox-validators/blob/ff7f5cc/src/abstract/abstract-typed-union-validator.ts#L22">abstract/abstract-typed-union-validator.ts:22</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-is-inherited"><a id="assertAndClean" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>assert<wbr/>And<wbr/>Clean</span><a href="#assertAndClean" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-is-inherited">
 <li class="tsd-signature tsd-anchor-link" id="assertAndClean.assertAndClean-1"><span class="tsd-kind-call-signature">assert<wbr/>And<wbr/>Clean</span><span class="tsd-signature-symbol">(</span><span class="tsd-kind-parameter">value</span>, <span class="tsd-kind-parameter">overallError</span><span class="tsd-signature-symbol">?</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span><a href="#assertAndClean.assertAndClean-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
 <li class="tsd-description">
-<div class="tsd-comment tsd-typography">
-<h3>Inherit Doc</h3></div>
+<div class="tsd-comment tsd-typography"><p>Validates a value against the schema, halting validation at the first
+validation error with a <code>ValidationException</code>. On successful validation,
+removes unrecognized properties from the provided value.</p>
+
+<h3>Throws</h3><p>ValidationException when the value is invalid, reporting only
+ the first validation error in the <code>details</code> property. The <code>errorMessage</code>
+ parameter provides the exception&#39;s overall error message.</p>
+</div>
 <div class="tsd-parameters">
 <h4 class="tsd-parameters-title">Parameters</h4>
 <ul class="tsd-parameter-list">
 <li>
-<h5><span class="tsd-kind-parameter">value</span>: <span class="tsd-signature-type">unknown</span></h5></li>
+<h5><span class="tsd-kind-parameter">value</span>: <span class="tsd-signature-type">unknown</span></h5>
+<div class="tsd-comment tsd-typography"><p>Value to validate against the schema.</p>
+</div></li>
 <li>
-<h5><code class="tsd-tag ts-flagOptional">Optional</code> <span class="tsd-kind-parameter">overallError</span>: <span class="tsd-signature-type">string</span></h5></li></ul></div>
+<h5><code class="tsd-tag ts-flagOptional">Optional</code> <span class="tsd-kind-parameter">overallError</span>: <span class="tsd-signature-type">string</span></h5>
+<div class="tsd-comment tsd-typography"><p>Overall eror message to report in the exception.
+ The substring <code>{error}</code>, if present, will be replaced with a string
+ representation of the error. Defaults to &quot;Invalid value&quot;.</p>
+</div></li></ul></div>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4><aside class="tsd-sources">
-<p>Inherited from AbstractTypedUnionValidator.assertAndClean</p>
+<p>Inherited from <a href="AbstractTypedUnionValidator.html">AbstractTypedUnionValidator</a>.<a href="AbstractTypedUnionValidator.html#assertAndClean">assertAndClean</a></p>
 <ul>
-<li>Defined in <a href="https://github.com/jtlapp/typebox-validators/blob/4f58afe/src/abstract/abstract-typed-union-validator.ts#L23">abstract/abstract-typed-union-validator.ts:23</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/jtlapp/typebox-validators/blob/ff7f5cc/src/abstract/abstract-typed-union-validator.ts#L27">abstract/abstract-typed-union-validator.ts:27</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-is-inherited"><a id="assertAndCleanCopy" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>assert<wbr/>And<wbr/>Clean<wbr/>Copy</span><a href="#assertAndCleanCopy" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-is-inherited">
 <li class="tsd-signature tsd-anchor-link" id="assertAndCleanCopy.assertAndCleanCopy-1"><span class="tsd-kind-call-signature">assert<wbr/>And<wbr/>Clean<wbr/>Copy</span><span class="tsd-signature-symbol">(</span><span class="tsd-kind-parameter">value</span>, <span class="tsd-kind-parameter">overallError</span><span class="tsd-signature-symbol">?</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type ">Static</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type tsd-kind-type-parameter">S</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-symbol">[</span><span class="tsd-signature-symbol">]</span><span class="tsd-signature-symbol">&gt;</span><a href="#assertAndCleanCopy.assertAndCleanCopy-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
 <li class="tsd-description">
-<div class="tsd-comment tsd-typography">
-<h3>Inherit Doc</h3></div>
+<div class="tsd-comment tsd-typography"><p>Validates a value against the schema, halting validation at the first
+validation error with a <code>ValidationException</code>. On successful validation,
+returns a copy of the value with unrecognized properties removed, but
+returns the original value if there are no unrecognized properties.</p>
+
+<h3>Throws</h3><p>ValidationException when the value is invalid, reporting only
+ the first validation error in the <code>details</code> property. The <code>errorMessage</code>
+ parameter provides the exception&#39;s overall error message.</p>
+</div>
 <div class="tsd-parameters">
 <h4 class="tsd-parameters-title">Parameters</h4>
 <ul class="tsd-parameter-list">
 <li>
-<h5><span class="tsd-kind-parameter">value</span>: <span class="tsd-signature-type ">Readonly</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">unknown</span><span class="tsd-signature-symbol">&gt;</span></h5></li>
+<h5><span class="tsd-kind-parameter">value</span>: <span class="tsd-signature-type ">Readonly</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">unknown</span><span class="tsd-signature-symbol">&gt;</span></h5>
+<div class="tsd-comment tsd-typography"><p>Value to validate against the schema.</p>
+</div></li>
 <li>
-<h5><code class="tsd-tag ts-flagOptional">Optional</code> <span class="tsd-kind-parameter">overallError</span>: <span class="tsd-signature-type">string</span></h5></li></ul></div>
-<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type ">Static</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type tsd-kind-type-parameter">S</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-symbol">[</span><span class="tsd-signature-symbol">]</span><span class="tsd-signature-symbol">&gt;</span></h4><aside class="tsd-sources">
-<p>Inherited from AbstractTypedUnionValidator.assertAndCleanCopy</p>
+<h5><code class="tsd-tag ts-flagOptional">Optional</code> <span class="tsd-kind-parameter">overallError</span>: <span class="tsd-signature-type">string</span></h5>
+<div class="tsd-comment tsd-typography"><p>Overall eror message to report in the exception.
+ The substring <code>{error}</code>, if present, will be replaced with a string
+ representation of the error. Defaults to &quot;Invalid value&quot;.</p>
+</div></li></ul></div>
+<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type ">Static</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type tsd-kind-type-parameter">S</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-symbol">[</span><span class="tsd-signature-symbol">]</span><span class="tsd-signature-symbol">&gt;</span></h4><p>The provided value itself if the value is not an object or if
+ the value is an object having no unrecognized properties. If the value
+ is an object having at least one unrecognized property, returns a copy
+ of the value with unrecognized properties removed.</p>
+<aside class="tsd-sources">
+<p>Inherited from <a href="AbstractTypedUnionValidator.html">AbstractTypedUnionValidator</a>.<a href="AbstractTypedUnionValidator.html#assertAndCleanCopy">assertAndCleanCopy</a></p>
 <ul>
-<li>Defined in <a href="https://github.com/jtlapp/typebox-validators/blob/4f58afe/src/abstract/abstract-typed-union-validator.ts#L29">abstract/abstract-typed-union-validator.ts:29</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/jtlapp/typebox-validators/blob/ff7f5cc/src/abstract/abstract-typed-union-validator.ts#L33">abstract/abstract-typed-union-validator.ts:33</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member"><a id="assertReturningSchema" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>assert<wbr/>Returning<wbr/>Schema</span><a href="#assertReturningSchema" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures">
@@ -175,9 +216,9 @@ list each object&#39;s unique key first in its properties.</p>
 <li>
 <h5><code class="tsd-tag ts-flagOptional">Optional</code> <span class="tsd-kind-parameter">overallError</span>: <span class="tsd-signature-type">string</span></h5></li></ul></div>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type ">TObject</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type ">TProperties</span><span class="tsd-signature-symbol">&gt;</span></h4><aside class="tsd-sources">
-<p>Overrides AbstractTypedUnionValidator.assertReturningSchema</p>
+<p>Overrides <a href="AbstractTypedUnionValidator.html">AbstractTypedUnionValidator</a>.<a href="AbstractTypedUnionValidator.html#assertReturningSchema">assertReturningSchema</a></p>
 <ul>
-<li>Defined in <a href="https://github.com/jtlapp/typebox-validators/blob/4f58afe/src/heterogeneous/heterogeneous-union-validator.ts#L49">heterogeneous/heterogeneous-union-validator.ts:49</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/jtlapp/typebox-validators/blob/ff7f5cc/src/heterogeneous/heterogeneous-union-validator.ts#L49">heterogeneous/heterogeneous-union-validator.ts:49</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-is-protected tsd-is-inherited"><a id="cleanCopyOfValue" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagProtected">Protected</code> <span>clean<wbr/>Copy<wbr/>Of<wbr/>Value</span><a href="#cleanCopyOfValue" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-is-protected tsd-is-inherited">
@@ -196,9 +237,9 @@ list each object&#39;s unique key first in its properties.</p>
 <li>
 <h5><span class="tsd-kind-parameter">value</span>: <span class="tsd-signature-type ">Readonly</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">unknown</span><span class="tsd-signature-symbol">&gt;</span></h5></li></ul></div>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type ">Static</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type tsd-kind-type-parameter">VS</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-symbol">[</span><span class="tsd-signature-symbol">]</span><span class="tsd-signature-symbol">&gt;</span></h4><aside class="tsd-sources">
-<p>Inherited from AbstractTypedUnionValidator.cleanCopyOfValue</p>
+<p>Inherited from <a href="AbstractTypedUnionValidator.html">AbstractTypedUnionValidator</a>.<a href="AbstractTypedUnionValidator.html#cleanCopyOfValue">cleanCopyOfValue</a></p>
 <ul>
-<li>Defined in <a href="https://github.com/jtlapp/typebox-validators/blob/4f58afe/src/abstract/abstract-validator.ts#L231">abstract/abstract-validator.ts:231</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/jtlapp/typebox-validators/blob/ff7f5cc/src/abstract/abstract-validator.ts#L231">abstract/abstract-validator.ts:231</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-is-protected tsd-is-inherited"><a id="cleanValue" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagProtected">Protected</code> <span>clean<wbr/>Value</span><a href="#cleanValue" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-is-protected tsd-is-inherited">
@@ -217,25 +258,42 @@ list each object&#39;s unique key first in its properties.</p>
 <li>
 <h5><span class="tsd-kind-parameter">value</span>: <span class="tsd-signature-type">unknown</span></h5></li></ul></div>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4><aside class="tsd-sources">
-<p>Inherited from AbstractTypedUnionValidator.cleanValue</p>
+<p>Inherited from <a href="AbstractTypedUnionValidator.html">AbstractTypedUnionValidator</a>.<a href="AbstractTypedUnionValidator.html#cleanValue">cleanValue</a></p>
 <ul>
-<li>Defined in <a href="https://github.com/jtlapp/typebox-validators/blob/4f58afe/src/abstract/abstract-validator.ts#L245">abstract/abstract-validator.ts:245</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/jtlapp/typebox-validators/blob/ff7f5cc/src/abstract/abstract-validator.ts#L245">abstract/abstract-validator.ts:245</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member"><a id="errors" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>errors</span><a href="#errors" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures">
 <li class="tsd-signature tsd-anchor-link" id="errors.errors-1"><span class="tsd-kind-call-signature">errors</span><span class="tsd-signature-symbol">(</span><span class="tsd-kind-parameter">value</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type ">Iterable</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type ">ValueError</span><span class="tsd-signature-symbol">&gt;</span><a href="#errors.errors-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
 <li class="tsd-description">
-<div class="tsd-comment tsd-typography">
-<h3>Inherit Doc</h3></div>
+<div class="tsd-comment tsd-typography"><p>Validates a value against the schema and returns an iteratable whose
+iterator yields the validation errors. The iterator tests the value for the
+next error on each call to <code>next()</code>, returning a <code>ValueError</code> for the error
+until done. It does not evaluate errors in advance of their being
+requested, allowing you to short-circuit validation by stopping iteration
+early. For performance reasons, it is best to call <code>test()</code> before calling
+this method. This method does not throw <code>ValidationException</code> and does not
+clean values of unrecognized properties.</p>
+</div>
 <div class="tsd-parameters">
 <h4 class="tsd-parameters-title">Parameters</h4>
 <ul class="tsd-parameter-list">
 <li>
-<h5><span class="tsd-kind-parameter">value</span>: <span class="tsd-signature-type ">Readonly</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">unknown</span><span class="tsd-signature-symbol">&gt;</span></h5></li></ul></div>
-<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type ">Iterable</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type ">ValueError</span><span class="tsd-signature-symbol">&gt;</span></h4><aside class="tsd-sources">
-<p>Overrides AbstractTypedUnionValidator.errors</p>
+<h5><span class="tsd-kind-parameter">value</span>: <span class="tsd-signature-type ">Readonly</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">unknown</span><span class="tsd-signature-symbol">&gt;</span></h5>
+<div class="tsd-comment tsd-typography"><p>Value to validate against the schema.</p>
+</div></li></ul></div>
+<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type ">Iterable</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type ">ValueError</span><span class="tsd-signature-symbol">&gt;</span></h4><p>An iteratable yielding all validation errors. Upon detecting one
+ or more errors for a particular schema (possibly a nested schema), if the
+ schema provides an <code>errorMessage</code> property, only a single error is
+ reported for the schema, and the <code>message</code> property of this error is set
+ to <code>errorMessage</code>&#39;s value. Also, the TypeBox error &quot;Expected required
+ property&quot; is dropped when at least one other error is reported for the
+ property. Consequently, only the <code>Type.Any</code> and <code>Type.Unknown</code> schemas can
+ yield &quot;Expected required property&quot; errors.</p>
+<aside class="tsd-sources">
+<p>Overrides <a href="AbstractTypedUnionValidator.html">AbstractTypedUnionValidator</a>.<a href="AbstractTypedUnionValidator.html#errors">errors</a></p>
 <ul>
-<li>Defined in <a href="https://github.com/jtlapp/typebox-validators/blob/4f58afe/src/heterogeneous/heterogeneous-union-validator.ts#L40">heterogeneous/heterogeneous-union-validator.ts:40</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/jtlapp/typebox-validators/blob/ff7f5cc/src/heterogeneous/heterogeneous-union-validator.ts#L40">heterogeneous/heterogeneous-union-validator.ts:40</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-is-inherited"><a id="firstError" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>first<wbr/>Error</span><a href="#firstError" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-is-inherited">
@@ -260,25 +318,32 @@ only as a convenience method. For performance reasons, it is best to call
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">null</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type ">ValueError</span></h4><p>The first validation error, if there is a validation error,
  otherwise <code>null</code>.</p>
 <aside class="tsd-sources">
-<p>Inherited from AbstractTypedUnionValidator.firstError</p>
+<p>Inherited from <a href="AbstractTypedUnionValidator.html">AbstractTypedUnionValidator</a>.<a href="AbstractTypedUnionValidator.html#firstError">firstError</a></p>
 <ul>
-<li>Defined in <a href="https://github.com/jtlapp/typebox-validators/blob/4f58afe/src/abstract/abstract-validator.ts#L225">abstract/abstract-validator.ts:225</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/jtlapp/typebox-validators/blob/ff7f5cc/src/abstract/abstract-validator.ts#L225">abstract/abstract-validator.ts:225</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member"><a id="test" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>test</span><a href="#test" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures">
 <li class="tsd-signature tsd-anchor-link" id="test.test-1"><span class="tsd-kind-call-signature">test</span><span class="tsd-signature-symbol">(</span><span class="tsd-kind-parameter">value</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span><a href="#test.test-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
 <li class="tsd-description">
-<div class="tsd-comment tsd-typography">
-<h3>Inherit Doc</h3></div>
+<div class="tsd-comment tsd-typography"><p>Tests whether a value conforms to the schema. For performance reasons, it
+is best to call this method before calling <code>errors()</code> or <code>firstError()</code>,
+should you also need to information about the errors. This method does not
+throw <code>ValidationException</code> and does not clean values of unrecognized
+properties.</p>
+</div>
 <div class="tsd-parameters">
 <h4 class="tsd-parameters-title">Parameters</h4>
 <ul class="tsd-parameter-list">
 <li>
-<h5><span class="tsd-kind-parameter">value</span>: <span class="tsd-signature-type ">Readonly</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">unknown</span><span class="tsd-signature-symbol">&gt;</span></h5></li></ul></div>
-<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4><aside class="tsd-sources">
-<p>Overrides AbstractTypedUnionValidator.test</p>
+<h5><span class="tsd-kind-parameter">value</span>: <span class="tsd-signature-type ">Readonly</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">unknown</span><span class="tsd-signature-symbol">&gt;</span></h5>
+<div class="tsd-comment tsd-typography"><p>Value to validate against the schema.</p>
+</div></li></ul></div>
+<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4><p><code>true</code> when the value conforms to the schema, <code>false</code> otherwise.</p>
+<aside class="tsd-sources">
+<p>Overrides <a href="AbstractTypedUnionValidator.html">AbstractTypedUnionValidator</a>.<a href="AbstractTypedUnionValidator.html#test">test</a></p>
 <ul>
-<li>Defined in <a href="https://github.com/jtlapp/typebox-validators/blob/4f58afe/src/heterogeneous/heterogeneous-union-validator.ts#L31">heterogeneous/heterogeneous-union-validator.ts:31</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/jtlapp/typebox-validators/blob/ff7f5cc/src/heterogeneous/heterogeneous-union-validator.ts#L31">heterogeneous/heterogeneous-union-validator.ts:31</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-is-inherited"><a id="testReturningErrors" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>test<wbr/>Returning<wbr/>Errors</span><a href="#testReturningErrors" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-is-inherited">
@@ -307,9 +372,9 @@ validation errors. This method is equivalent to calling <code>test()</code> and 
  <code>Type.Any</code> and <code>Type.Unknown</code> schemas can yield &quot;Expected required
  property&quot; errors.</p>
 <aside class="tsd-sources">
-<p>Inherited from AbstractTypedUnionValidator.testReturningErrors</p>
+<p>Inherited from <a href="AbstractTypedUnionValidator.html">AbstractTypedUnionValidator</a>.<a href="AbstractTypedUnionValidator.html#testReturningErrors">testReturningErrors</a></p>
 <ul>
-<li>Defined in <a href="https://github.com/jtlapp/typebox-validators/blob/4f58afe/src/abstract/abstract-validator.ts#L65">abstract/abstract-validator.ts:65</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/jtlapp/typebox-validators/blob/ff7f5cc/src/abstract/abstract-validator.ts#L65">abstract/abstract-validator.ts:65</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-is-inherited"><a id="testReturningFirstError" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>test<wbr/>Returning<wbr/>First<wbr/>Error</span><a href="#testReturningFirstError" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-is-inherited">
@@ -331,9 +396,9 @@ of unrecognized properties.</p>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">null</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type ">ValueError</span></h4><p>The first validation error, if there is a validation error,
  otherwise <code>null</code>.</p>
 <aside class="tsd-sources">
-<p>Inherited from AbstractTypedUnionValidator.testReturningFirstError</p>
+<p>Inherited from <a href="AbstractTypedUnionValidator.html">AbstractTypedUnionValidator</a>.<a href="AbstractTypedUnionValidator.html#testReturningFirstError">testReturningFirstError</a></p>
 <ul>
-<li>Defined in <a href="https://github.com/jtlapp/typebox-validators/blob/4f58afe/src/abstract/abstract-validator.ts#L80">abstract/abstract-validator.ts:80</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/jtlapp/typebox-validators/blob/ff7f5cc/src/abstract/abstract-validator.ts#L80">abstract/abstract-validator.ts:80</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-is-protected tsd-is-inherited"><a id="toValueKeyDereference" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagProtected">Protected</code> <span>to<wbr/>Value<wbr/>Key<wbr/>Dereference</span><a href="#toValueKeyDereference" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-is-protected tsd-is-inherited">
@@ -345,9 +410,9 @@ of unrecognized properties.</p>
 <li>
 <h5><span class="tsd-kind-parameter">key</span>: <span class="tsd-signature-type">string</span></h5></li></ul></div>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">string</span></h4><aside class="tsd-sources">
-<p>Inherited from AbstractTypedUnionValidator.toValueKeyDereference</p>
+<p>Inherited from <a href="AbstractTypedUnionValidator.html">AbstractTypedUnionValidator</a>.<a href="AbstractTypedUnionValidator.html#toValueKeyDereference">toValueKeyDereference</a></p>
 <ul>
-<li>Defined in <a href="https://github.com/jtlapp/typebox-validators/blob/4f58afe/src/abstract/abstract-typed-union-validator.ts#L67">abstract/abstract-typed-union-validator.ts:67</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/jtlapp/typebox-validators/blob/ff7f5cc/src/abstract/abstract-typed-union-validator.ts#L71">abstract/abstract-typed-union-validator.ts:71</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-is-protected tsd-is-inherited"><a id="uncompiledAssert" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagProtected">Protected</code> <span>uncompiled<wbr/>Assert</span><a href="#uncompiledAssert" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-is-protected tsd-is-inherited">
@@ -363,9 +428,9 @@ of unrecognized properties.</p>
 <li>
 <h5><code class="tsd-tag ts-flagOptional">Optional</code> <span class="tsd-kind-parameter">overallError</span>: <span class="tsd-signature-type">string</span></h5></li></ul></div>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4><aside class="tsd-sources">
-<p>Inherited from AbstractTypedUnionValidator.uncompiledAssert</p>
+<p>Inherited from <a href="AbstractTypedUnionValidator.html">AbstractTypedUnionValidator</a>.<a href="AbstractTypedUnionValidator.html#uncompiledAssert">uncompiledAssert</a></p>
 <ul>
-<li>Defined in <a href="https://github.com/jtlapp/typebox-validators/blob/4f58afe/src/abstract/abstract-validator.ts#L259">abstract/abstract-validator.ts:259</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/jtlapp/typebox-validators/blob/ff7f5cc/src/abstract/abstract-validator.ts#L259">abstract/abstract-validator.ts:259</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-is-protected tsd-is-inherited"><a id="uncompiledValidate" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagProtected">Protected</code> <span>uncompiled<wbr/>Validate</span><a href="#uncompiledValidate" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-is-protected tsd-is-inherited">
@@ -381,63 +446,98 @@ of unrecognized properties.</p>
 <li>
 <h5><code class="tsd-tag ts-flagOptional">Optional</code> <span class="tsd-kind-parameter">overallError</span>: <span class="tsd-signature-type">string</span></h5></li></ul></div>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4><aside class="tsd-sources">
-<p>Inherited from AbstractTypedUnionValidator.uncompiledValidate</p>
+<p>Inherited from <a href="AbstractTypedUnionValidator.html">AbstractTypedUnionValidator</a>.<a href="AbstractTypedUnionValidator.html#uncompiledValidate">uncompiledValidate</a></p>
 <ul>
-<li>Defined in <a href="https://github.com/jtlapp/typebox-validators/blob/4f58afe/src/abstract/abstract-validator.ts#L269">abstract/abstract-validator.ts:269</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/jtlapp/typebox-validators/blob/ff7f5cc/src/abstract/abstract-validator.ts#L269">abstract/abstract-validator.ts:269</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-is-inherited"><a id="validate" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>validate</span><a href="#validate" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-is-inherited">
 <li class="tsd-signature tsd-anchor-link" id="validate.validate-1"><span class="tsd-kind-call-signature">validate</span><span class="tsd-signature-symbol">(</span><span class="tsd-kind-parameter">value</span>, <span class="tsd-kind-parameter">overallError</span><span class="tsd-signature-symbol">?</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span><a href="#validate.validate-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
 <li class="tsd-description">
-<div class="tsd-comment tsd-typography">
-<h3>Inherit Doc</h3></div>
+<div class="tsd-comment tsd-typography"><p>Validates a value against the schema, detecting all validation errors
+and reporting them by throwing <code>ValidationException</code>. Does not clean
+values of unrecognized properties.</p>
+
+<h3>Throws</h3><p>ValidationException when the value is invalid, reporting all
+ validation errors in the <code>details</code> property. The <code>errorMessage</code>
+ parameter provides the exception&#39;s overall error message.</p>
+</div>
 <div class="tsd-parameters">
 <h4 class="tsd-parameters-title">Parameters</h4>
 <ul class="tsd-parameter-list">
 <li>
-<h5><span class="tsd-kind-parameter">value</span>: <span class="tsd-signature-type ">Readonly</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">unknown</span><span class="tsd-signature-symbol">&gt;</span></h5></li>
+<h5><span class="tsd-kind-parameter">value</span>: <span class="tsd-signature-type ">Readonly</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">unknown</span><span class="tsd-signature-symbol">&gt;</span></h5>
+<div class="tsd-comment tsd-typography"><p>Value to validate against the schema.</p>
+</div></li>
 <li>
-<h5><code class="tsd-tag ts-flagOptional">Optional</code> <span class="tsd-kind-parameter">overallError</span>: <span class="tsd-signature-type">string</span></h5></li></ul></div>
+<h5><code class="tsd-tag ts-flagOptional">Optional</code> <span class="tsd-kind-parameter">overallError</span>: <span class="tsd-signature-type">string</span></h5>
+<div class="tsd-comment tsd-typography"><p>Overall error message to report in the exception.</p>
+</div></li></ul></div>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4><aside class="tsd-sources">
-<p>Inherited from AbstractTypedUnionValidator.validate</p>
+<p>Inherited from <a href="AbstractTypedUnionValidator.html">AbstractTypedUnionValidator</a>.<a href="AbstractTypedUnionValidator.html#validate">validate</a></p>
 <ul>
-<li>Defined in <a href="https://github.com/jtlapp/typebox-validators/blob/4f58afe/src/abstract/abstract-typed-union-validator.ts#L38">abstract/abstract-typed-union-validator.ts:38</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/jtlapp/typebox-validators/blob/ff7f5cc/src/abstract/abstract-typed-union-validator.ts#L42">abstract/abstract-typed-union-validator.ts:42</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-is-inherited"><a id="validateAndClean" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>validate<wbr/>And<wbr/>Clean</span><a href="#validateAndClean" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-is-inherited">
 <li class="tsd-signature tsd-anchor-link" id="validateAndClean.validateAndClean-1"><span class="tsd-kind-call-signature">validate<wbr/>And<wbr/>Clean</span><span class="tsd-signature-symbol">(</span><span class="tsd-kind-parameter">value</span>, <span class="tsd-kind-parameter">overallError</span><span class="tsd-signature-symbol">?</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span><a href="#validateAndClean.validateAndClean-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
 <li class="tsd-description">
-<div class="tsd-comment tsd-typography">
-<h3>Inherit Doc</h3></div>
+<div class="tsd-comment tsd-typography"><p>Validates a value against the schema, detecting all validation errors
+and reporting them by throwing <code>ValidationException</code>. On successful
+validation, removes unrecognized properties from the provided value.</p>
+
+<h3>Throws</h3><p>ValidationException when the value is invalid, reporting all
+ validation errors in the <code>details</code> property. The <code>errorMessage</code>
+ parameter provides the exception&#39;s overall error message.</p>
+</div>
 <div class="tsd-parameters">
 <h4 class="tsd-parameters-title">Parameters</h4>
 <ul class="tsd-parameter-list">
 <li>
-<h5><span class="tsd-kind-parameter">value</span>: <span class="tsd-signature-type">unknown</span></h5></li>
+<h5><span class="tsd-kind-parameter">value</span>: <span class="tsd-signature-type">unknown</span></h5>
+<div class="tsd-comment tsd-typography"><p>Value to validate against the schema.</p>
+</div></li>
 <li>
-<h5><code class="tsd-tag ts-flagOptional">Optional</code> <span class="tsd-kind-parameter">overallError</span>: <span class="tsd-signature-type">string</span></h5></li></ul></div>
+<h5><code class="tsd-tag ts-flagOptional">Optional</code> <span class="tsd-kind-parameter">overallError</span>: <span class="tsd-signature-type">string</span></h5>
+<div class="tsd-comment tsd-typography"><p>Overall error message to report in the exception.=</p>
+</div></li></ul></div>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4><aside class="tsd-sources">
-<p>Inherited from AbstractTypedUnionValidator.validateAndClean</p>
+<p>Inherited from <a href="AbstractTypedUnionValidator.html">AbstractTypedUnionValidator</a>.<a href="AbstractTypedUnionValidator.html#validateAndClean">validateAndClean</a></p>
 <ul>
-<li>Defined in <a href="https://github.com/jtlapp/typebox-validators/blob/4f58afe/src/abstract/abstract-typed-union-validator.ts#L43">abstract/abstract-typed-union-validator.ts:43</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/jtlapp/typebox-validators/blob/ff7f5cc/src/abstract/abstract-typed-union-validator.ts#L47">abstract/abstract-typed-union-validator.ts:47</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-is-inherited"><a id="validateAndCleanCopy" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>validate<wbr/>And<wbr/>Clean<wbr/>Copy</span><a href="#validateAndCleanCopy" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-is-inherited">
 <li class="tsd-signature tsd-anchor-link" id="validateAndCleanCopy.validateAndCleanCopy-1"><span class="tsd-kind-call-signature">validate<wbr/>And<wbr/>Clean<wbr/>Copy</span><span class="tsd-signature-symbol">(</span><span class="tsd-kind-parameter">value</span>, <span class="tsd-kind-parameter">overallError</span><span class="tsd-signature-symbol">?</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type ">Static</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type tsd-kind-type-parameter">S</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-symbol">[</span><span class="tsd-signature-symbol">]</span><span class="tsd-signature-symbol">&gt;</span><a href="#validateAndCleanCopy.validateAndCleanCopy-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
 <li class="tsd-description">
-<div class="tsd-comment tsd-typography">
-<h3>Inherit Doc</h3></div>
+<div class="tsd-comment tsd-typography"><p>Validates a value against the schema, detecting all validation errors
+and reporting them with a <code>ValidationException</code>. On successful validation,
+returns a copy of the value with unrecognized properties removed, but
+returns the original value if there are no unrecognized properties.</p>
+
+<h3>Throws</h3><p>ValidationException when the value is invalid, reporting all
+ validation errors in the <code>details</code> property. The <code>errorMessage</code>
+ parameter provides the exception&#39;s overall error message.</p>
+</div>
 <div class="tsd-parameters">
 <h4 class="tsd-parameters-title">Parameters</h4>
 <ul class="tsd-parameter-list">
 <li>
-<h5><span class="tsd-kind-parameter">value</span>: <span class="tsd-signature-type ">Readonly</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">unknown</span><span class="tsd-signature-symbol">&gt;</span></h5></li>
+<h5><span class="tsd-kind-parameter">value</span>: <span class="tsd-signature-type ">Readonly</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">unknown</span><span class="tsd-signature-symbol">&gt;</span></h5>
+<div class="tsd-comment tsd-typography"><p>Value to validate against the schema.</p>
+</div></li>
 <li>
-<h5><code class="tsd-tag ts-flagOptional">Optional</code> <span class="tsd-kind-parameter">overallError</span>: <span class="tsd-signature-type">string</span></h5></li></ul></div>
-<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type ">Static</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type tsd-kind-type-parameter">S</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-symbol">[</span><span class="tsd-signature-symbol">]</span><span class="tsd-signature-symbol">&gt;</span></h4><aside class="tsd-sources">
-<p>Inherited from AbstractTypedUnionValidator.validateAndCleanCopy</p>
+<h5><code class="tsd-tag ts-flagOptional">Optional</code> <span class="tsd-kind-parameter">overallError</span>: <span class="tsd-signature-type">string</span></h5>
+<div class="tsd-comment tsd-typography"><p>Overall error message to report in the exception.</p>
+</div></li></ul></div>
+<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type ">Static</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type tsd-kind-type-parameter">S</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-symbol">[</span><span class="tsd-signature-symbol">]</span><span class="tsd-signature-symbol">&gt;</span></h4><p>The provided value itself if the value is not an object or if
+ the value is an object having no unrecognized properties. If the value
+ is an object having at least one unrecognized property, returns a copy
+ of the value with unrecognized properties removed.</p>
+<aside class="tsd-sources">
+<p>Inherited from <a href="AbstractTypedUnionValidator.html">AbstractTypedUnionValidator</a>.<a href="AbstractTypedUnionValidator.html#validateAndCleanCopy">validateAndCleanCopy</a></p>
 <ul>
-<li>Defined in <a href="https://github.com/jtlapp/typebox-validators/blob/4f58afe/src/abstract/abstract-typed-union-validator.ts#L49">abstract/abstract-typed-union-validator.ts:49</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/jtlapp/typebox-validators/blob/ff7f5cc/src/abstract/abstract-typed-union-validator.ts#L53">abstract/abstract-typed-union-validator.ts:53</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member"><a id="validateReturningSchema" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>validate<wbr/>Returning<wbr/>Schema</span><a href="#validateReturningSchema" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures">
@@ -451,9 +551,9 @@ of unrecognized properties.</p>
 <li>
 <h5><code class="tsd-tag ts-flagOptional">Optional</code> <span class="tsd-kind-parameter">overallError</span>: <span class="tsd-signature-type">string</span></h5></li></ul></div>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type ">TObject</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type ">TProperties</span><span class="tsd-signature-symbol">&gt;</span></h4><aside class="tsd-sources">
-<p>Overrides AbstractTypedUnionValidator.validateReturningSchema</p>
+<p>Overrides <a href="AbstractTypedUnionValidator.html">AbstractTypedUnionValidator</a>.<a href="AbstractTypedUnionValidator.html#validateReturningSchema">validateReturningSchema</a></p>
 <ul>
-<li>Defined in <a href="https://github.com/jtlapp/typebox-validators/blob/4f58afe/src/heterogeneous/heterogeneous-union-validator.ts#L62">heterogeneous/heterogeneous-union-validator.ts:62</a></li></ul></aside></li></ul></section></section></div>
+<li>Defined in <a href="https://github.com/jtlapp/typebox-validators/blob/ff7f5cc/src/heterogeneous/heterogeneous-union-validator.ts#L62">heterogeneous/heterogeneous-union-validator.ts:62</a></li></ul></aside></li></ul></section></section></div>
 <div class="col-sidebar">
 <div class="page-menu">
 <div class="tsd-navigation settings">
@@ -494,7 +594,9 @@ of unrecognized properties.</p>
 <div class="site-menu">
 <nav class="tsd-navigation"><a href="../index.html"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><rect fill="var(--color-icon-background)" stroke="var(--color-ts-namespace)" stroke-width="1.5" x="1" y="1" width="22" height="22" rx="6" id="icon-4-path"></rect><path d="M9.33 16V7.24H10.77L13.446 14.74C13.43 14.54 13.41 14.296 13.386 14.008C13.37 13.712 13.354 13.404 13.338 13.084C13.33 12.756 13.326 12.448 13.326 12.16V7.24H14.37V16H12.93L10.266 8.5C10.282 8.692 10.298 8.936 10.314 9.232C10.33 9.52 10.342 9.828 10.35 10.156C10.366 10.476 10.374 10.784 10.374 11.08V16H9.33Z" fill="var(--color-text)" id="icon-4-text"></path></svg><span>typebox-<wbr/>validators</span></a>
 <ul class="tsd-small-nested-navigation">
-<li><a href="AbstractValidator.html"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><rect fill="var(--color-icon-background)" stroke="var(--color-ts-class)" stroke-width="1.5" x="1" y="1" width="22" height="22" rx="6" id="icon-128-path"></rect><path d="M11.898 16.1201C11.098 16.1201 10.466 15.8961 10.002 15.4481C9.53803 15.0001 9.30603 14.3841 9.30603 13.6001V9.64012C9.30603 8.85612 9.53803 8.24012 10.002 7.79212C10.466 7.34412 11.098 7.12012 11.898 7.12012C12.682 7.12012 13.306 7.34812 13.77 7.80412C14.234 8.25212 14.466 8.86412 14.466 9.64012H13.386C13.386 9.14412 13.254 8.76412 12.99 8.50012C12.734 8.22812 12.37 8.09212 11.898 8.09212C11.426 8.09212 11.054 8.22412 10.782 8.48812C10.518 8.75212 10.386 9.13212 10.386 9.62812V13.6001C10.386 14.0961 10.518 14.4801 10.782 14.7521C11.054 15.0161 11.426 15.1481 11.898 15.1481C12.37 15.1481 12.734 15.0161 12.99 14.7521C13.254 14.4801 13.386 14.0961 13.386 13.6001H14.466C14.466 14.3761 14.234 14.9921 13.77 15.4481C13.306 15.8961 12.682 16.1201 11.898 16.1201Z" fill="var(--color-text)" id="icon-128-text"></path></svg><span>Abstract<wbr/>Validator</span></a></li>
+<li><a href="AbstractStandardValidator.html"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><rect fill="var(--color-icon-background)" stroke="var(--color-ts-class)" stroke-width="1.5" x="1" y="1" width="22" height="22" rx="6" id="icon-128-path"></rect><path d="M11.898 16.1201C11.098 16.1201 10.466 15.8961 10.002 15.4481C9.53803 15.0001 9.30603 14.3841 9.30603 13.6001V9.64012C9.30603 8.85612 9.53803 8.24012 10.002 7.79212C10.466 7.34412 11.098 7.12012 11.898 7.12012C12.682 7.12012 13.306 7.34812 13.77 7.80412C14.234 8.25212 14.466 8.86412 14.466 9.64012H13.386C13.386 9.14412 13.254 8.76412 12.99 8.50012C12.734 8.22812 12.37 8.09212 11.898 8.09212C11.426 8.09212 11.054 8.22412 10.782 8.48812C10.518 8.75212 10.386 9.13212 10.386 9.62812V13.6001C10.386 14.0961 10.518 14.4801 10.782 14.7521C11.054 15.0161 11.426 15.1481 11.898 15.1481C12.37 15.1481 12.734 15.0161 12.99 14.7521C13.254 14.4801 13.386 14.0961 13.386 13.6001H14.466C14.466 14.3761 14.234 14.9921 13.77 15.4481C13.306 15.8961 12.682 16.1201 11.898 16.1201Z" fill="var(--color-text)" id="icon-128-text"></path></svg><span>Abstract<wbr/>Standard<wbr/>Validator</span></a></li>
+<li><a href="AbstractTypedUnionValidator.html"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-128-path"></use><use href="#icon-128-text"></use></svg><span>Abstract<wbr/>Typed<wbr/>Union<wbr/>Validator</span></a></li>
+<li><a href="AbstractValidator.html"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-128-path"></use><use href="#icon-128-text"></use></svg><span>Abstract<wbr/>Validator</span></a></li>
 <li><a href="CompilingDiscriminatedUnionValidator.html"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-128-path"></use><use href="#icon-128-text"></use></svg><span>Compiling<wbr/>Discriminated<wbr/>Union<wbr/>Validator</span></a></li>
 <li><a href="CompilingHeterogeneousUnionValidator.html"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-128-path"></use><use href="#icon-128-text"></use></svg><span>Compiling<wbr/>Heterogeneous<wbr/>Union<wbr/>Validator</span></a></li>
 <li><a href="CompilingStandardValidator.html"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-128-path"></use><use href="#icon-128-text"></use></svg><span>Compiling<wbr/>Standard<wbr/>Validator</span></a></li>
@@ -502,6 +604,7 @@ of unrecognized properties.</p>
 <li><a href="HeterogeneousUnionValidator.html" class="current"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-128-path"></use><use href="#icon-128-text"></use></svg><span>Heterogeneous<wbr/>Union<wbr/>Validator</span></a></li>
 <li><a href="StandardValidator.html"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-128-path"></use><use href="#icon-128-text"></use></svg><span>Standard<wbr/>Validator</span></a></li>
 <li><a href="ValidationException.html"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-128-path"></use><use href="#icon-128-text"></use></svg><span>Validation<wbr/>Exception</span></a></li>
+<li><a href="../variables/DEFAULT_DISCRIMINANT_KEY.html"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><rect fill="var(--color-icon-background)" stroke="var(--color-ts-variable)" stroke-width="1.5" x="1" y="1" width="22" height="22" rx="6" id="icon-32-path"></rect><path d="M11.106 16L8.85 7.24H9.966L11.454 13.192C11.558 13.608 11.646 13.996 11.718 14.356C11.79 14.708 11.842 14.976 11.874 15.16C11.906 14.976 11.954 14.708 12.018 14.356C12.09 13.996 12.178 13.608 12.282 13.192L13.758 7.24H14.85L12.582 16H11.106Z" fill="var(--color-text)" id="icon-32-text"></path></svg><span>DEFAULT_<wbr/>DISCRIMINANT_<wbr/>KEY</span></a></li>
 <li><a href="../functions/TypeIdentifyingKey.html"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><rect fill="var(--color-icon-background)" stroke="var(--color-ts-function)" stroke-width="1.5" x="1" y="1" width="22" height="22" rx="6" id="icon-64-path"></rect><path d="M9.39 16V7.24H14.55V8.224H10.446V11.128H14.238V12.112H10.47V16H9.39Z" fill="var(--color-text)" id="icon-64-text"></path></svg><span>Type<wbr/>Identifying<wbr/>Key</span></a></li></ul></nav></div></div></div>
 <div class="tsd-generator">
 <p>Generated using <a href="https://typedoc.org/" target="_blank">TypeDoc</a></p></div>

@@ -25,6 +25,7 @@ Tested for Node.js and Chrome.
 
 ## Updates
 
+- **v0.3.1** - Exported `AbstractStandardValidator` and `AbstractTypedUnionValidator`.
 - **v0.3.0** - Upgraded to latest version of TypeBox, requiring TypeBox >= 0.30.0.
 
 ## Installation
@@ -46,6 +47,8 @@ Select the validator or validators you want to use. The validators are split int
 Imported from `typebox-validators`:
 
 - `AbstractValidator` &mdash; Abstract base class of all validators, should you need to abstractly represent a validator.
+- `AbstractStandardValidator` &mdash; Abstract base class for standard validators, not supporting discriminated or heterogeneous unions.
+- `AbstractTypedUnionValidator` &mdash; Abstract base class for discriminated union and heterogeneous union validators.
 - `ValidationException` &mdash; Exception reporting validation failure, for methods that throw an exception on failure. Does not includes a stack trace.
 
 Imported from `typebox-validators/standard`:

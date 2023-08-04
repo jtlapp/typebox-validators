@@ -1,4 +1,4 @@
-<!DOCTYPE html><html class="default" lang="en"><head><meta charSet="utf-8"/><meta http-equiv="x-ua-compatible" content="IE=edge"/><title>AbstractValidator | typebox-validators</title><meta name="description" content="Documentation for typebox-validators"/><meta name="viewport" content="width=device-width, initial-scale=1"/><link rel="stylesheet" href="../assets/style.css"/><link rel="stylesheet" href="../assets/highlight.css"/><script defer src="../assets/main.js"></script><script async src="../assets/search.js" id="tsd-search-script"></script></head><body><script>document.documentElement.dataset.theme = localStorage.getItem("tsd-theme") || "os"</script><header class="tsd-page-toolbar">
+<!DOCTYPE html><html class="default" lang="en"><head><meta charSet="utf-8"/><meta http-equiv="x-ua-compatible" content="IE=edge"/><title>AbstractStandardValidator | typebox-validators</title><meta name="description" content="Documentation for typebox-validators"/><meta name="viewport" content="width=device-width, initial-scale=1"/><link rel="stylesheet" href="../assets/style.css"/><link rel="stylesheet" href="../assets/highlight.css"/><script defer src="../assets/main.js"></script><script async src="../assets/search.js" id="tsd-search-script"></script></head><body><script>document.documentElement.dataset.theme = localStorage.getItem("tsd-theme") || "os"</script><header class="tsd-page-toolbar">
 <div class="tsd-toolbar-contents container">
 <div class="table-cell" id="tsd-search" data-base="..">
 <div class="field"><label for="tsd-search-field" class="tsd-widget tsd-toolbar-icon search no-caption"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M15.7824 13.833L12.6666 10.7177C12.5259 10.5771 12.3353 10.499 12.1353 10.499H11.6259C12.4884 9.39596 13.001 8.00859 13.001 6.49937C13.001 2.90909 10.0914 0 6.50048 0C2.90959 0 0 2.90909 0 6.49937C0 10.0896 2.90959 12.9987 6.50048 12.9987C8.00996 12.9987 9.39756 12.4863 10.5008 11.6239V12.1332C10.5008 12.3332 10.5789 12.5238 10.7195 12.6644L13.8354 15.7797C14.1292 16.0734 14.6042 16.0734 14.8948 15.7797L15.7793 14.8954C16.0731 14.6017 16.0731 14.1267 15.7824 13.833ZM6.50048 10.499C4.29094 10.499 2.50018 8.71165 2.50018 6.49937C2.50018 4.29021 4.28781 2.49976 6.50048 2.49976C8.71001 2.49976 10.5008 4.28708 10.5008 6.49937C10.5008 8.70852 8.71314 10.499 6.50048 10.499Z" fill="var(--color-text)"></path></svg></label><input type="text" id="tsd-search-field" aria-label="Search"/></div>
@@ -13,38 +13,27 @@
 <div class="tsd-page-title">
 <ul class="tsd-breadcrumb">
 <li><a href="../index.html">typebox-validators</a></li>
-<li><a href="AbstractValidator.html">AbstractValidator</a></li></ul>
-<h1>Class AbstractValidator&lt;S&gt;<code class="tsd-tag ts-flagAbstract">Abstract</code> </h1></div>
+<li><a href="AbstractStandardValidator.html">AbstractStandardValidator</a></li></ul>
+<h1>Class AbstractStandardValidator&lt;S&gt;<code class="tsd-tag ts-flagAbstract">Abstract</code> </h1></div>
 <section class="tsd-panel tsd-comment">
-<div class="tsd-comment tsd-typography"><p>Abstract base class for validators, providing validation services for a
-JSON schema, offering both short-circuting and full validation, supporting
-custom error messages, and optionally removing unrecognized properties.</p>
-<p>As of TypeBox version 0.28.13, when validating any given value, TypeBox
-checks the value&#39;s <code>maxItems</code> and <code>maxLength</code> constraints before testing
-any other constraints. An API endpoint can therefore protect itself from
-faulty and malicious clients by short-circuting validation after the
-first validation error. The <code>test</code> method does this, but it does not
-return any errors. If you want to short-circuit validation and return the
-first error, use one of the <code>assert</code> methods. These methods protect the
-server from running regex checks on excessively long strings and from
-running regex checks on all the items of excessively long arrays.</p>
+<div class="tsd-comment tsd-typography"><p>Abstract validator for standard TypeBox values.</p>
 </div></section> 
 <section class="tsd-panel">
 <h4>Type Parameters</h4>
 <ul class="tsd-type-parameter-list">
 <li>
-<h4><span class="tsd-kind-type-parameter">S</span><span class="tsd-signature-symbol"> extends </span><span class="tsd-signature-type ">TSchema</span></h4>
-<div class="tsd-comment tsd-typography"><p>Type for a JSON schema, expressed as a TypeBox type.</p>
-</div></li></ul></section> 
+<h4><span class="tsd-kind-type-parameter">S</span><span class="tsd-signature-symbol"> extends </span><span class="tsd-signature-type ">TSchema</span></h4></li></ul></section> 
 <section class="tsd-panel tsd-hierarchy">
 <h4>Hierarchy</h4>
 <ul class="tsd-hierarchy">
-<li><span class="target">AbstractValidator</span>
+<li><a href="AbstractValidator.html" class="tsd-signature-type tsd-kind-class">AbstractValidator</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type tsd-kind-type-parameter">S</span><span class="tsd-signature-symbol">&gt;</span>
 <ul class="tsd-hierarchy">
-<li><a href="AbstractStandardValidator.html" class="tsd-signature-type tsd-kind-class">AbstractStandardValidator</a></li>
-<li><a href="AbstractTypedUnionValidator.html" class="tsd-signature-type tsd-kind-class">AbstractTypedUnionValidator</a></li></ul></li></ul></section><aside class="tsd-sources">
+<li><span class="target">AbstractStandardValidator</span>
+<ul class="tsd-hierarchy">
+<li><a href="StandardValidator.html" class="tsd-signature-type tsd-kind-class">StandardValidator</a></li>
+<li><a href="CompilingStandardValidator.html" class="tsd-signature-type tsd-kind-class">CompilingStandardValidator</a></li></ul></li></ul></li></ul></section><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/jtlapp/typebox-validators/blob/ff7f5cc/src/abstract/abstract-validator.ts#L23">abstract/abstract-validator.ts:23</a></li></ul></aside>
+<li>Defined in <a href="https://github.com/jtlapp/typebox-validators/blob/ff7f5cc/src/abstract/abstract-standard-validator.ts#L8">abstract/abstract-standard-validator.ts:8</a></li></ul></aside>
 <section class="tsd-panel-group tsd-index-group">
 <section class="tsd-panel tsd-index-panel">
 <details class="tsd-index-content tsd-index-accordion" open><summary class="tsd-accordion-summary tsd-index-summary">
@@ -52,37 +41,39 @@ running regex checks on all the items of excessively long arrays.</p>
 <div class="tsd-accordion-details">
 <section class="tsd-index-section">
 <h3 class="tsd-index-heading">Constructors</h3>
-<div class="tsd-index-list"><a href="AbstractValidator.html#constructor" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><rect fill="var(--color-icon-background)" stroke="#4D7FFF" stroke-width="1.5" x="1" y="1" width="22" height="22" rx="12" id="icon-512-path"></rect><path d="M11.898 16.1201C11.098 16.1201 10.466 15.8961 10.002 15.4481C9.53803 15.0001 9.30603 14.3841 9.30603 13.6001V9.64012C9.30603 8.85612 9.53803 8.24012 10.002 7.79212C10.466 7.34412 11.098 7.12012 11.898 7.12012C12.682 7.12012 13.306 7.34812 13.77 7.80412C14.234 8.25212 14.466 8.86412 14.466 9.64012H13.386C13.386 9.14412 13.254 8.76412 12.99 8.50012C12.734 8.22812 12.37 8.09212 11.898 8.09212C11.426 8.09212 11.054 8.22412 10.782 8.48812C10.518 8.75212 10.386 9.13212 10.386 9.62812V13.6001C10.386 14.0961 10.518 14.4801 10.782 14.7521C11.054 15.0161 11.426 15.1481 11.898 15.1481C12.37 15.1481 12.734 15.0161 12.99 14.7521C13.254 14.4801 13.386 14.0961 13.386 13.6001H14.466C14.466 14.3761 14.234 14.9921 13.77 15.4481C13.306 15.8961 12.682 16.1201 11.898 16.1201Z" fill="var(--color-text)" id="icon-512-text"></path></svg><span>constructor</span></a>
+<div class="tsd-index-list"><a href="AbstractStandardValidator.html#constructor" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><rect fill="var(--color-icon-background)" stroke="#4D7FFF" stroke-width="1.5" x="1" y="1" width="22" height="22" rx="12" id="icon-512-path"></rect><path d="M11.898 16.1201C11.098 16.1201 10.466 15.8961 10.002 15.4481C9.53803 15.0001 9.30603 14.3841 9.30603 13.6001V9.64012C9.30603 8.85612 9.53803 8.24012 10.002 7.79212C10.466 7.34412 11.098 7.12012 11.898 7.12012C12.682 7.12012 13.306 7.34812 13.77 7.80412C14.234 8.25212 14.466 8.86412 14.466 9.64012H13.386C13.386 9.14412 13.254 8.76412 12.99 8.50012C12.734 8.22812 12.37 8.09212 11.898 8.09212C11.426 8.09212 11.054 8.22412 10.782 8.48812C10.518 8.75212 10.386 9.13212 10.386 9.62812V13.6001C10.386 14.0961 10.518 14.4801 10.782 14.7521C11.054 15.0161 11.426 15.1481 11.898 15.1481C12.37 15.1481 12.734 15.0161 12.99 14.7521C13.254 14.4801 13.386 14.0961 13.386 13.6001H14.466C14.466 14.3761 14.234 14.9921 13.77 15.4481C13.306 15.8961 12.682 16.1201 11.898 16.1201Z" fill="var(--color-text)" id="icon-512-text"></path></svg><span>constructor</span></a>
 </div></section>
 <section class="tsd-index-section">
 <h3 class="tsd-index-heading">Properties</h3>
-<div class="tsd-index-list"><a href="AbstractValidator.html#schema" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><rect fill="var(--color-icon-background)" stroke="#FF984D" stroke-width="1.5" x="1" y="1" width="22" height="22" rx="12" id="icon-1024-path"></rect><path d="M9.354 16V7.24H12.174C12.99 7.24 13.638 7.476 14.118 7.948C14.606 8.412 14.85 9.036 14.85 9.82C14.85 10.604 14.606 11.232 14.118 11.704C13.638 12.168 12.99 12.4 12.174 12.4H10.434V16H9.354ZM10.434 11.428H12.174C12.646 11.428 13.022 11.284 13.302 10.996C13.59 10.7 13.734 10.308 13.734 9.82C13.734 9.324 13.59 8.932 13.302 8.644C13.022 8.356 12.646 8.212 12.174 8.212H10.434V11.428Z" fill="var(--color-text)" id="icon-1024-text"></path></svg><span>schema</span></a>
+<div class="tsd-index-list"><a href="AbstractStandardValidator.html#schema" class="tsd-index-link tsd-is-inherited"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><rect fill="var(--color-icon-background)" stroke="#FF984D" stroke-width="1.5" x="1" y="1" width="22" height="22" rx="12" id="icon-1024-path"></rect><path d="M9.354 16V7.24H12.174C12.99 7.24 13.638 7.476 14.118 7.948C14.606 8.412 14.85 9.036 14.85 9.82C14.85 10.604 14.606 11.232 14.118 11.704C13.638 12.168 12.99 12.4 12.174 12.4H10.434V16H9.354ZM10.434 11.428H12.174C12.646 11.428 13.022 11.284 13.302 10.996C13.59 10.7 13.734 10.308 13.734 9.82C13.734 9.324 13.59 8.932 13.302 8.644C13.022 8.356 12.646 8.212 12.174 8.212H10.434V11.428Z" fill="var(--color-text)" id="icon-1024-text"></path></svg><span>schema</span></a>
 </div></section>
 <section class="tsd-index-section">
 <h3 class="tsd-index-heading">Methods</h3>
-<div class="tsd-index-list"><a href="AbstractValidator.html#assert" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><rect fill="var(--color-icon-background)" stroke="#FF4DB8" stroke-width="1.5" x="1" y="1" width="22" height="22" rx="12" id="icon-2048-path"></rect><path d="M9.162 16V7.24H10.578L11.514 10.072C11.602 10.328 11.674 10.584 11.73 10.84C11.794 11.088 11.842 11.28 11.874 11.416C11.906 11.28 11.954 11.088 12.018 10.84C12.082 10.584 12.154 10.324 12.234 10.06L13.122 7.24H14.538V16H13.482V12.82C13.482 12.468 13.49 12.068 13.506 11.62C13.53 11.172 13.558 10.716 13.59 10.252C13.622 9.78 13.654 9.332 13.686 8.908C13.726 8.476 13.762 8.1 13.794 7.78L12.366 12.16H11.334L9.894 7.78C9.934 8.092 9.97 8.456 10.002 8.872C10.042 9.28 10.078 9.716 10.11 10.18C10.142 10.636 10.166 11.092 10.182 11.548C10.206 12.004 10.218 12.428 10.218 12.82V16H9.162Z" fill="var(--color-text)" id="icon-2048-text"></path></svg><span>assert</span></a>
-<a href="AbstractValidator.html#assertAndClean" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>assert<wbr/>And<wbr/>Clean</span></a>
-<a href="AbstractValidator.html#assertAndCleanCopy" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>assert<wbr/>And<wbr/>Clean<wbr/>Copy</span></a>
-<a href="AbstractValidator.html#cleanCopyOfValue" class="tsd-index-link tsd-is-protected"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>clean<wbr/>Copy<wbr/>Of<wbr/>Value</span></a>
-<a href="AbstractValidator.html#cleanValue" class="tsd-index-link tsd-is-protected"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>clean<wbr/>Value</span></a>
-<a href="AbstractValidator.html#errors" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>errors</span></a>
-<a href="AbstractValidator.html#firstError" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>first<wbr/>Error</span></a>
-<a href="AbstractValidator.html#test" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>test</span></a>
-<a href="AbstractValidator.html#testReturningErrors" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>test<wbr/>Returning<wbr/>Errors</span></a>
-<a href="AbstractValidator.html#testReturningFirstError" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>test<wbr/>Returning<wbr/>First<wbr/>Error</span></a>
-<a href="AbstractValidator.html#uncompiledAssert" class="tsd-index-link tsd-is-protected"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>uncompiled<wbr/>Assert</span></a>
-<a href="AbstractValidator.html#uncompiledValidate" class="tsd-index-link tsd-is-protected"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>uncompiled<wbr/>Validate</span></a>
-<a href="AbstractValidator.html#validate" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>validate</span></a>
-<a href="AbstractValidator.html#validateAndClean" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>validate<wbr/>And<wbr/>Clean</span></a>
-<a href="AbstractValidator.html#validateAndCleanCopy" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>validate<wbr/>And<wbr/>Clean<wbr/>Copy</span></a>
+<div class="tsd-index-list"><a href="AbstractStandardValidator.html#assert" class="tsd-index-link tsd-is-inherited"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><rect fill="var(--color-icon-background)" stroke="#FF4DB8" stroke-width="1.5" x="1" y="1" width="22" height="22" rx="12" id="icon-2048-path"></rect><path d="M9.162 16V7.24H10.578L11.514 10.072C11.602 10.328 11.674 10.584 11.73 10.84C11.794 11.088 11.842 11.28 11.874 11.416C11.906 11.28 11.954 11.088 12.018 10.84C12.082 10.584 12.154 10.324 12.234 10.06L13.122 7.24H14.538V16H13.482V12.82C13.482 12.468 13.49 12.068 13.506 11.62C13.53 11.172 13.558 10.716 13.59 10.252C13.622 9.78 13.654 9.332 13.686 8.908C13.726 8.476 13.762 8.1 13.794 7.78L12.366 12.16H11.334L9.894 7.78C9.934 8.092 9.97 8.456 10.002 8.872C10.042 9.28 10.078 9.716 10.11 10.18C10.142 10.636 10.166 11.092 10.182 11.548C10.206 12.004 10.218 12.428 10.218 12.82V16H9.162Z" fill="var(--color-text)" id="icon-2048-text"></path></svg><span>assert</span></a>
+<a href="AbstractStandardValidator.html#assertAndClean" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>assert<wbr/>And<wbr/>Clean</span></a>
+<a href="AbstractStandardValidator.html#assertAndCleanCopy" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>assert<wbr/>And<wbr/>Clean<wbr/>Copy</span></a>
+<a href="AbstractStandardValidator.html#cleanCopyOfValue" class="tsd-index-link tsd-is-protected tsd-is-inherited"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>clean<wbr/>Copy<wbr/>Of<wbr/>Value</span></a>
+<a href="AbstractStandardValidator.html#cleanValue" class="tsd-index-link tsd-is-protected tsd-is-inherited"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>clean<wbr/>Value</span></a>
+<a href="AbstractStandardValidator.html#errors" class="tsd-index-link tsd-is-inherited"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>errors</span></a>
+<a href="AbstractStandardValidator.html#firstError" class="tsd-index-link tsd-is-inherited"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>first<wbr/>Error</span></a>
+<a href="AbstractStandardValidator.html#test" class="tsd-index-link tsd-is-inherited"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>test</span></a>
+<a href="AbstractStandardValidator.html#testReturningErrors" class="tsd-index-link tsd-is-inherited"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>test<wbr/>Returning<wbr/>Errors</span></a>
+<a href="AbstractStandardValidator.html#testReturningFirstError" class="tsd-index-link tsd-is-inherited"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>test<wbr/>Returning<wbr/>First<wbr/>Error</span></a>
+<a href="AbstractStandardValidator.html#uncompiledAssert" class="tsd-index-link tsd-is-protected tsd-is-inherited"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>uncompiled<wbr/>Assert</span></a>
+<a href="AbstractStandardValidator.html#uncompiledValidate" class="tsd-index-link tsd-is-protected tsd-is-inherited"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>uncompiled<wbr/>Validate</span></a>
+<a href="AbstractStandardValidator.html#validate" class="tsd-index-link tsd-is-inherited"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>validate</span></a>
+<a href="AbstractStandardValidator.html#validateAndClean" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>validate<wbr/>And<wbr/>Clean</span></a>
+<a href="AbstractStandardValidator.html#validateAndCleanCopy" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>validate<wbr/>And<wbr/>Clean<wbr/>Copy</span></a>
 </div></section></div></details></section></section>
 <section class="tsd-panel-group tsd-member-group">
 <h2>Constructors</h2>
 <section class="tsd-panel tsd-member"><a id="constructor" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>constructor</span><a href="#constructor" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none" id="icon-anchor-a"></path><path d="M10 14a3.5 3.5 0 0 0 5 0l4 -4a3.5 3.5 0 0 0 -5 -5l-.5 .5" id="icon-anchor-b"></path><path d="M14 10a3.5 3.5 0 0 0 -5 0l-4 4a3.5 3.5 0 0 0 5 5l.5 -.5" id="icon-anchor-c"></path></svg></a></h3>
 <ul class="tsd-signatures">
-<li class="tsd-signature tsd-anchor-link" id="constructor.new_AbstractValidator"><span class="tsd-kind-constructor-signature">new <wbr/>Abstract<wbr/>Validator</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type tsd-kind-type-parameter">S</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">(</span><span class="tsd-kind-parameter">schema</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="AbstractValidator.html" class="tsd-signature-type tsd-kind-class">AbstractValidator</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type tsd-kind-type-parameter">S</span><span class="tsd-signature-symbol">&gt;</span><a href="#constructor.new_AbstractValidator" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
+<li class="tsd-signature tsd-anchor-link" id="constructor.new_AbstractStandardValidator"><span class="tsd-kind-constructor-signature">new <wbr/>Abstract<wbr/>Standard<wbr/>Validator</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type tsd-kind-type-parameter">S</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">(</span><span class="tsd-kind-parameter">schema</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="AbstractStandardValidator.html" class="tsd-signature-type tsd-kind-class">AbstractStandardValidator</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type tsd-kind-type-parameter">S</span><span class="tsd-signature-symbol">&gt;</span><a href="#constructor.new_AbstractStandardValidator" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
 <li class="tsd-description">
+<div class="tsd-comment tsd-typography">
+<h3>Inherit Doc</h3></div>
 <section class="tsd-panel">
 <h4>Type Parameters</h4>
 <ul class="tsd-type-parameter-list">
@@ -92,21 +83,14 @@ running regex checks on all the items of excessively long arrays.</p>
 <h4 class="tsd-parameters-title">Parameters</h4>
 <ul class="tsd-parameter-list">
 <li>
-<h5><span class="tsd-kind-parameter">schema</span>: <span class="tsd-signature-type ">Readonly</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type tsd-kind-type-parameter">S</span><span class="tsd-signature-symbol">&gt;</span></h5>
-<div class="tsd-comment tsd-typography"><p>JSON schema against which to validate values. When a schema
- provides an <code>errorMessage</code> string option, all errors occurring for that
- schema (but not for nested schemas) collapse into a single error having
- this message. The <code>errorMessage</code> option allows you to provide a custom
- error message for a schema. For example, an <code>errorMessage</code> on a schema
- for a property of an object replaces TypeBox&#39;s built-in error messages
- for errors that occur on that property.</p>
-</div></li></ul></div>
-<h4 class="tsd-returns-title">Returns <a href="AbstractValidator.html" class="tsd-signature-type tsd-kind-class">AbstractValidator</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type tsd-kind-type-parameter">S</span><span class="tsd-signature-symbol">&gt;</span></h4><aside class="tsd-sources">
+<h5><span class="tsd-kind-parameter">schema</span>: <span class="tsd-signature-type ">Readonly</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type tsd-kind-type-parameter">S</span><span class="tsd-signature-symbol">&gt;</span></h5></li></ul></div>
+<h4 class="tsd-returns-title">Returns <a href="AbstractStandardValidator.html" class="tsd-signature-type tsd-kind-class">AbstractStandardValidator</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type tsd-kind-type-parameter">S</span><span class="tsd-signature-symbol">&gt;</span></h4><aside class="tsd-sources">
+<p>Overrides <a href="AbstractValidator.html">AbstractValidator</a>.<a href="AbstractValidator.html#constructor">constructor</a></p>
 <ul>
-<li>Defined in <a href="https://github.com/jtlapp/typebox-validators/blob/ff7f5cc/src/abstract/abstract-validator.ts#L33">abstract/abstract-validator.ts:33</a></li></ul></aside></li></ul></section></section>
+<li>Defined in <a href="https://github.com/jtlapp/typebox-validators/blob/ff7f5cc/src/abstract/abstract-standard-validator.ts#L12">abstract/abstract-standard-validator.ts:12</a></li></ul></aside></li></ul></section></section>
 <section class="tsd-panel-group tsd-member-group">
 <h2>Properties</h2>
-<section class="tsd-panel tsd-member"><a id="schema" class="tsd-anchor"></a>
+<section class="tsd-panel tsd-member tsd-is-inherited"><a id="schema" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagReadonly">Readonly</code> <span>schema</span><a href="#schema" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <div class="tsd-signature"><span class="tsd-kind-property">schema</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type ">Readonly</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type tsd-kind-type-parameter">S</span><span class="tsd-signature-symbol">&gt;</span></div>
 <div class="tsd-comment tsd-typography"><p>JSON schema against which to validate values. When a schema
@@ -117,13 +101,14 @@ running regex checks on all the items of excessively long arrays.</p>
  for a property of an object replaces TypeBox&#39;s built-in error messages
  for errors that occur on that property.</p>
 </div><aside class="tsd-sources">
+<p>Inherited from <a href="AbstractValidator.html">AbstractValidator</a>.<a href="AbstractValidator.html#schema">schema</a></p>
 <ul>
 <li>Defined in <a href="https://github.com/jtlapp/typebox-validators/blob/ff7f5cc/src/abstract/abstract-validator.ts#L33">abstract/abstract-validator.ts:33</a></li></ul></aside></section></section>
 <section class="tsd-panel-group tsd-member-group">
 <h2>Methods</h2>
-<section class="tsd-panel tsd-member"><a id="assert" class="tsd-anchor"></a>
+<section class="tsd-panel tsd-member tsd-is-inherited"><a id="assert" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagAbstract">Abstract</code> <span>assert</span><a href="#assert" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
-<ul class="tsd-signatures">
+<ul class="tsd-signatures tsd-is-inherited">
 <li class="tsd-signature tsd-anchor-link" id="assert.assert-1"><span class="tsd-kind-call-signature">assert</span><span class="tsd-signature-symbol">(</span><span class="tsd-kind-parameter">value</span>, <span class="tsd-kind-parameter">errorMessage</span><span class="tsd-signature-symbol">?</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span><a href="#assert.assert-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
 <li class="tsd-description">
 <div class="tsd-comment tsd-typography"><p>Validates a value against the schema, halting validation at the first
@@ -148,12 +133,13 @@ unrecognized properties.</p>
  representation of the error. Defaults to &quot;Invalid value&quot;.</p>
 </div></li></ul></div>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4><aside class="tsd-sources">
+<p>Inherited from <a href="AbstractValidator.html">AbstractValidator</a>.<a href="AbstractValidator.html#assert">assert</a></p>
 <ul>
 <li>Defined in <a href="https://github.com/jtlapp/typebox-validators/blob/ff7f5cc/src/abstract/abstract-validator.ts#L102">abstract/abstract-validator.ts:102</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member"><a id="assertAndClean" class="tsd-anchor"></a>
-<h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagAbstract">Abstract</code> <span>assert<wbr/>And<wbr/>Clean</span><a href="#assertAndClean" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
+<h3 class="tsd-anchor-link"><span>assert<wbr/>And<wbr/>Clean</span><a href="#assertAndClean" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures">
-<li class="tsd-signature tsd-anchor-link" id="assertAndClean.assertAndClean-1"><span class="tsd-kind-call-signature">assert<wbr/>And<wbr/>Clean</span><span class="tsd-signature-symbol">(</span><span class="tsd-kind-parameter">value</span>, <span class="tsd-kind-parameter">errorMessage</span><span class="tsd-signature-symbol">?</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span><a href="#assertAndClean.assertAndClean-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
+<li class="tsd-signature tsd-anchor-link" id="assertAndClean.assertAndClean-1"><span class="tsd-kind-call-signature">assert<wbr/>And<wbr/>Clean</span><span class="tsd-signature-symbol">(</span><span class="tsd-kind-parameter">value</span>, <span class="tsd-kind-parameter">overallError</span><span class="tsd-signature-symbol">?</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span><a href="#assertAndClean.assertAndClean-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
 <li class="tsd-description">
 <div class="tsd-comment tsd-typography"><p>Validates a value against the schema, halting validation at the first
 validation error with a <code>ValidationException</code>. On successful validation,
@@ -171,18 +157,19 @@ removes unrecognized properties from the provided value.</p>
 <div class="tsd-comment tsd-typography"><p>Value to validate against the schema.</p>
 </div></li>
 <li>
-<h5><code class="tsd-tag ts-flagOptional">Optional</code> <span class="tsd-kind-parameter">errorMessage</span>: <span class="tsd-signature-type">string</span></h5>
+<h5><code class="tsd-tag ts-flagOptional">Optional</code> <span class="tsd-kind-parameter">overallError</span>: <span class="tsd-signature-type">string</span></h5>
 <div class="tsd-comment tsd-typography"><p>Overall eror message to report in the exception.
  The substring <code>{error}</code>, if present, will be replaced with a string
  representation of the error. Defaults to &quot;Invalid value&quot;.</p>
 </div></li></ul></div>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4><aside class="tsd-sources">
+<p>Overrides <a href="AbstractValidator.html">AbstractValidator</a>.<a href="AbstractValidator.html#assertAndClean">assertAndClean</a></p>
 <ul>
-<li>Defined in <a href="https://github.com/jtlapp/typebox-validators/blob/ff7f5cc/src/abstract/abstract-validator.ts#L117">abstract/abstract-validator.ts:117</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/jtlapp/typebox-validators/blob/ff7f5cc/src/abstract/abstract-standard-validator.ts#L17">abstract/abstract-standard-validator.ts:17</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member"><a id="assertAndCleanCopy" class="tsd-anchor"></a>
-<h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagAbstract">Abstract</code> <span>assert<wbr/>And<wbr/>Clean<wbr/>Copy</span><a href="#assertAndCleanCopy" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
+<h3 class="tsd-anchor-link"><span>assert<wbr/>And<wbr/>Clean<wbr/>Copy</span><a href="#assertAndCleanCopy" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures">
-<li class="tsd-signature tsd-anchor-link" id="assertAndCleanCopy.assertAndCleanCopy-1"><span class="tsd-kind-call-signature">assert<wbr/>And<wbr/>Clean<wbr/>Copy</span><span class="tsd-signature-symbol">(</span><span class="tsd-kind-parameter">value</span>, <span class="tsd-kind-parameter">errorMessage</span><span class="tsd-signature-symbol">?</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type ">Static</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type tsd-kind-type-parameter">S</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-symbol">[</span><span class="tsd-signature-symbol">]</span><span class="tsd-signature-symbol">&gt;</span><a href="#assertAndCleanCopy.assertAndCleanCopy-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
+<li class="tsd-signature tsd-anchor-link" id="assertAndCleanCopy.assertAndCleanCopy-1"><span class="tsd-kind-call-signature">assert<wbr/>And<wbr/>Clean<wbr/>Copy</span><span class="tsd-signature-symbol">(</span><span class="tsd-kind-parameter">value</span>, <span class="tsd-kind-parameter">overallError</span><span class="tsd-signature-symbol">?</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type ">Static</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type tsd-kind-type-parameter">S</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-symbol">[</span><span class="tsd-signature-symbol">]</span><span class="tsd-signature-symbol">&gt;</span><a href="#assertAndCleanCopy.assertAndCleanCopy-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
 <li class="tsd-description">
 <div class="tsd-comment tsd-typography"><p>Validates a value against the schema, halting validation at the first
 validation error with a <code>ValidationException</code>. On successful validation,
@@ -201,7 +188,7 @@ returns the original value if there are no unrecognized properties.</p>
 <div class="tsd-comment tsd-typography"><p>Value to validate against the schema.</p>
 </div></li>
 <li>
-<h5><code class="tsd-tag ts-flagOptional">Optional</code> <span class="tsd-kind-parameter">errorMessage</span>: <span class="tsd-signature-type">string</span></h5>
+<h5><code class="tsd-tag ts-flagOptional">Optional</code> <span class="tsd-kind-parameter">overallError</span>: <span class="tsd-signature-type">string</span></h5>
 <div class="tsd-comment tsd-typography"><p>Overall eror message to report in the exception.
  The substring <code>{error}</code>, if present, will be replaced with a string
  representation of the error. Defaults to &quot;Invalid value&quot;.</p>
@@ -211,11 +198,12 @@ returns the original value if there are no unrecognized properties.</p>
  is an object having at least one unrecognized property, returns a copy
  of the value with unrecognized properties removed.</p>
 <aside class="tsd-sources">
+<p>Overrides <a href="AbstractValidator.html">AbstractValidator</a>.<a href="AbstractValidator.html#assertAndCleanCopy">assertAndCleanCopy</a></p>
 <ul>
-<li>Defined in <a href="https://github.com/jtlapp/typebox-validators/blob/ff7f5cc/src/abstract/abstract-validator.ts#L137">abstract/abstract-validator.ts:137</a></li></ul></aside></li></ul></section>
-<section class="tsd-panel tsd-member tsd-is-protected"><a id="cleanCopyOfValue" class="tsd-anchor"></a>
+<li>Defined in <a href="https://github.com/jtlapp/typebox-validators/blob/ff7f5cc/src/abstract/abstract-standard-validator.ts#L23">abstract/abstract-standard-validator.ts:23</a></li></ul></aside></li></ul></section>
+<section class="tsd-panel tsd-member tsd-is-protected tsd-is-inherited"><a id="cleanCopyOfValue" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagProtected">Protected</code> <span>clean<wbr/>Copy<wbr/>Of<wbr/>Value</span><a href="#cleanCopyOfValue" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
-<ul class="tsd-signatures tsd-is-protected">
+<ul class="tsd-signatures tsd-is-protected tsd-is-inherited">
 <li class="tsd-signature tsd-anchor-link" id="cleanCopyOfValue.cleanCopyOfValue-1"><span class="tsd-kind-call-signature">clean<wbr/>Copy<wbr/>Of<wbr/>Value</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type tsd-kind-type-parameter">VS</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">(</span><span class="tsd-kind-parameter">schema</span>, <span class="tsd-kind-parameter">value</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type ">Static</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type tsd-kind-type-parameter">VS</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-symbol">[</span><span class="tsd-signature-symbol">]</span><span class="tsd-signature-symbol">&gt;</span><a href="#cleanCopyOfValue.cleanCopyOfValue-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
 <li class="tsd-description">
 <section class="tsd-panel">
@@ -231,11 +219,12 @@ returns the original value if there are no unrecognized properties.</p>
 <li>
 <h5><span class="tsd-kind-parameter">value</span>: <span class="tsd-signature-type ">Readonly</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">unknown</span><span class="tsd-signature-symbol">&gt;</span></h5></li></ul></div>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type ">Static</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type tsd-kind-type-parameter">VS</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-symbol">[</span><span class="tsd-signature-symbol">]</span><span class="tsd-signature-symbol">&gt;</span></h4><aside class="tsd-sources">
+<p>Inherited from <a href="AbstractValidator.html">AbstractValidator</a>.<a href="AbstractValidator.html#cleanCopyOfValue">cleanCopyOfValue</a></p>
 <ul>
 <li>Defined in <a href="https://github.com/jtlapp/typebox-validators/blob/ff7f5cc/src/abstract/abstract-validator.ts#L231">abstract/abstract-validator.ts:231</a></li></ul></aside></li></ul></section>
-<section class="tsd-panel tsd-member tsd-is-protected"><a id="cleanValue" class="tsd-anchor"></a>
+<section class="tsd-panel tsd-member tsd-is-protected tsd-is-inherited"><a id="cleanValue" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagProtected">Protected</code> <span>clean<wbr/>Value</span><a href="#cleanValue" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
-<ul class="tsd-signatures tsd-is-protected">
+<ul class="tsd-signatures tsd-is-protected tsd-is-inherited">
 <li class="tsd-signature tsd-anchor-link" id="cleanValue.cleanValue-1"><span class="tsd-kind-call-signature">clean<wbr/>Value</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type tsd-kind-type-parameter">VS</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">(</span><span class="tsd-kind-parameter">schema</span>, <span class="tsd-kind-parameter">value</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span><a href="#cleanValue.cleanValue-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
 <li class="tsd-description">
 <section class="tsd-panel">
@@ -251,11 +240,12 @@ returns the original value if there are no unrecognized properties.</p>
 <li>
 <h5><span class="tsd-kind-parameter">value</span>: <span class="tsd-signature-type">unknown</span></h5></li></ul></div>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4><aside class="tsd-sources">
+<p>Inherited from <a href="AbstractValidator.html">AbstractValidator</a>.<a href="AbstractValidator.html#cleanValue">cleanValue</a></p>
 <ul>
 <li>Defined in <a href="https://github.com/jtlapp/typebox-validators/blob/ff7f5cc/src/abstract/abstract-validator.ts#L245">abstract/abstract-validator.ts:245</a></li></ul></aside></li></ul></section>
-<section class="tsd-panel tsd-member"><a id="errors" class="tsd-anchor"></a>
+<section class="tsd-panel tsd-member tsd-is-inherited"><a id="errors" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagAbstract">Abstract</code> <span>errors</span><a href="#errors" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
-<ul class="tsd-signatures">
+<ul class="tsd-signatures tsd-is-inherited">
 <li class="tsd-signature tsd-anchor-link" id="errors.errors-1"><span class="tsd-kind-call-signature">errors</span><span class="tsd-signature-symbol">(</span><span class="tsd-kind-parameter">value</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type ">Iterable</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type ">ValueError</span><span class="tsd-signature-symbol">&gt;</span><a href="#errors.errors-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
 <li class="tsd-description">
 <div class="tsd-comment tsd-typography"><p>Validates a value against the schema and returns an iteratable whose
@@ -283,11 +273,12 @@ clean values of unrecognized properties.</p>
  property. Consequently, only the <code>Type.Any</code> and <code>Type.Unknown</code> schemas can
  yield &quot;Expected required property&quot; errors.</p>
 <aside class="tsd-sources">
+<p>Inherited from <a href="AbstractValidator.html">AbstractValidator</a>.<a href="AbstractValidator.html#errors">errors</a></p>
 <ul>
 <li>Defined in <a href="https://github.com/jtlapp/typebox-validators/blob/ff7f5cc/src/abstract/abstract-validator.ts#L209">abstract/abstract-validator.ts:209</a></li></ul></aside></li></ul></section>
-<section class="tsd-panel tsd-member"><a id="firstError" class="tsd-anchor"></a>
+<section class="tsd-panel tsd-member tsd-is-inherited"><a id="firstError" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>first<wbr/>Error</span><a href="#firstError" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
-<ul class="tsd-signatures">
+<ul class="tsd-signatures tsd-is-inherited">
 <li class="tsd-signature tsd-anchor-link" id="firstError.firstError-1"><span class="tsd-kind-call-signature">first<wbr/>Error</span><span class="tsd-signature-symbol">(</span><span class="tsd-kind-parameter">value</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">null</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type ">ValueError</span><a href="#firstError.firstError-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
 <li class="tsd-description">
 <div class="tsd-comment tsd-typography"><p>Validates a value against the schema and returns the first error,
@@ -309,11 +300,12 @@ only as a convenience method. For performance reasons, it is best to call
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">null</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type ">ValueError</span></h4><p>The first validation error, if there is a validation error,
  otherwise <code>null</code>.</p>
 <aside class="tsd-sources">
+<p>Inherited from <a href="AbstractValidator.html">AbstractValidator</a>.<a href="AbstractValidator.html#firstError">firstError</a></p>
 <ul>
 <li>Defined in <a href="https://github.com/jtlapp/typebox-validators/blob/ff7f5cc/src/abstract/abstract-validator.ts#L225">abstract/abstract-validator.ts:225</a></li></ul></aside></li></ul></section>
-<section class="tsd-panel tsd-member"><a id="test" class="tsd-anchor"></a>
+<section class="tsd-panel tsd-member tsd-is-inherited"><a id="test" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagAbstract">Abstract</code> <span>test</span><a href="#test" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
-<ul class="tsd-signatures">
+<ul class="tsd-signatures tsd-is-inherited">
 <li class="tsd-signature tsd-anchor-link" id="test.test-1"><span class="tsd-kind-call-signature">test</span><span class="tsd-signature-symbol">(</span><span class="tsd-kind-parameter">value</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span><a href="#test.test-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
 <li class="tsd-description">
 <div class="tsd-comment tsd-typography"><p>Tests whether a value conforms to the schema. For performance reasons, it
@@ -331,11 +323,12 @@ properties.</p>
 </div></li></ul></div>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4><p><code>true</code> when the value conforms to the schema, <code>false</code> otherwise.</p>
 <aside class="tsd-sources">
+<p>Inherited from <a href="AbstractValidator.html">AbstractValidator</a>.<a href="AbstractValidator.html#test">test</a></p>
 <ul>
 <li>Defined in <a href="https://github.com/jtlapp/typebox-validators/blob/ff7f5cc/src/abstract/abstract-validator.ts#L45">abstract/abstract-validator.ts:45</a></li></ul></aside></li></ul></section>
-<section class="tsd-panel tsd-member"><a id="testReturningErrors" class="tsd-anchor"></a>
+<section class="tsd-panel tsd-member tsd-is-inherited"><a id="testReturningErrors" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>test<wbr/>Returning<wbr/>Errors</span><a href="#testReturningErrors" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
-<ul class="tsd-signatures">
+<ul class="tsd-signatures tsd-is-inherited">
 <li class="tsd-signature tsd-anchor-link" id="testReturningErrors.testReturningErrors-1"><span class="tsd-kind-call-signature">test<wbr/>Returning<wbr/>Errors</span><span class="tsd-signature-symbol">(</span><span class="tsd-kind-parameter">value</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">null</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type ">Iterable</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type ">ValueError</span><span class="tsd-signature-symbol">&gt;</span><a href="#testReturningErrors.testReturningErrors-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
 <li class="tsd-description">
 <div class="tsd-comment tsd-typography"><p>Tests whether a value conforms to the schema, returning an iterable whose
@@ -361,11 +354,12 @@ validation errors. This method is equivalent to calling <code>test()</code> and 
  <code>Type.Any</code> and <code>Type.Unknown</code> schemas can yield &quot;Expected required
  property&quot; errors.</p>
 <aside class="tsd-sources">
+<p>Inherited from <a href="AbstractValidator.html">AbstractValidator</a>.<a href="AbstractValidator.html#testReturningErrors">testReturningErrors</a></p>
 <ul>
 <li>Defined in <a href="https://github.com/jtlapp/typebox-validators/blob/ff7f5cc/src/abstract/abstract-validator.ts#L65">abstract/abstract-validator.ts:65</a></li></ul></aside></li></ul></section>
-<section class="tsd-panel tsd-member"><a id="testReturningFirstError" class="tsd-anchor"></a>
+<section class="tsd-panel tsd-member tsd-is-inherited"><a id="testReturningFirstError" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>test<wbr/>Returning<wbr/>First<wbr/>Error</span><a href="#testReturningFirstError" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
-<ul class="tsd-signatures">
+<ul class="tsd-signatures tsd-is-inherited">
 <li class="tsd-signature tsd-anchor-link" id="testReturningFirstError.testReturningFirstError-1"><span class="tsd-kind-call-signature">test<wbr/>Returning<wbr/>First<wbr/>Error</span><span class="tsd-signature-symbol">(</span><span class="tsd-kind-parameter">value</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">null</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type ">ValueError</span><a href="#testReturningFirstError.testReturningFirstError-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
 <li class="tsd-description">
 <div class="tsd-comment tsd-typography"><p>Tests whether a value conforms to the schema, returning the first error,
@@ -384,11 +378,12 @@ of unrecognized properties.</p>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">null</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type ">ValueError</span></h4><p>The first validation error, if there is a validation error,
  otherwise <code>null</code>.</p>
 <aside class="tsd-sources">
+<p>Inherited from <a href="AbstractValidator.html">AbstractValidator</a>.<a href="AbstractValidator.html#testReturningFirstError">testReturningFirstError</a></p>
 <ul>
 <li>Defined in <a href="https://github.com/jtlapp/typebox-validators/blob/ff7f5cc/src/abstract/abstract-validator.ts#L80">abstract/abstract-validator.ts:80</a></li></ul></aside></li></ul></section>
-<section class="tsd-panel tsd-member tsd-is-protected"><a id="uncompiledAssert" class="tsd-anchor"></a>
+<section class="tsd-panel tsd-member tsd-is-protected tsd-is-inherited"><a id="uncompiledAssert" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagProtected">Protected</code> <span>uncompiled<wbr/>Assert</span><a href="#uncompiledAssert" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
-<ul class="tsd-signatures tsd-is-protected">
+<ul class="tsd-signatures tsd-is-protected tsd-is-inherited">
 <li class="tsd-signature tsd-anchor-link" id="uncompiledAssert.uncompiledAssert-1"><span class="tsd-kind-call-signature">uncompiled<wbr/>Assert</span><span class="tsd-signature-symbol">(</span><span class="tsd-kind-parameter">schema</span>, <span class="tsd-kind-parameter">value</span>, <span class="tsd-kind-parameter">overallError</span><span class="tsd-signature-symbol">?</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span><a href="#uncompiledAssert.uncompiledAssert-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
 <li class="tsd-description">
 <div class="tsd-parameters">
@@ -401,11 +396,12 @@ of unrecognized properties.</p>
 <li>
 <h5><code class="tsd-tag ts-flagOptional">Optional</code> <span class="tsd-kind-parameter">overallError</span>: <span class="tsd-signature-type">string</span></h5></li></ul></div>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4><aside class="tsd-sources">
+<p>Inherited from <a href="AbstractValidator.html">AbstractValidator</a>.<a href="AbstractValidator.html#uncompiledAssert">uncompiledAssert</a></p>
 <ul>
 <li>Defined in <a href="https://github.com/jtlapp/typebox-validators/blob/ff7f5cc/src/abstract/abstract-validator.ts#L259">abstract/abstract-validator.ts:259</a></li></ul></aside></li></ul></section>
-<section class="tsd-panel tsd-member tsd-is-protected"><a id="uncompiledValidate" class="tsd-anchor"></a>
+<section class="tsd-panel tsd-member tsd-is-protected tsd-is-inherited"><a id="uncompiledValidate" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagProtected">Protected</code> <span>uncompiled<wbr/>Validate</span><a href="#uncompiledValidate" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
-<ul class="tsd-signatures tsd-is-protected">
+<ul class="tsd-signatures tsd-is-protected tsd-is-inherited">
 <li class="tsd-signature tsd-anchor-link" id="uncompiledValidate.uncompiledValidate-1"><span class="tsd-kind-call-signature">uncompiled<wbr/>Validate</span><span class="tsd-signature-symbol">(</span><span class="tsd-kind-parameter">schema</span>, <span class="tsd-kind-parameter">value</span>, <span class="tsd-kind-parameter">overallError</span><span class="tsd-signature-symbol">?</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span><a href="#uncompiledValidate.uncompiledValidate-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
 <li class="tsd-description">
 <div class="tsd-parameters">
@@ -418,11 +414,12 @@ of unrecognized properties.</p>
 <li>
 <h5><code class="tsd-tag ts-flagOptional">Optional</code> <span class="tsd-kind-parameter">overallError</span>: <span class="tsd-signature-type">string</span></h5></li></ul></div>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4><aside class="tsd-sources">
+<p>Inherited from <a href="AbstractValidator.html">AbstractValidator</a>.<a href="AbstractValidator.html#uncompiledValidate">uncompiledValidate</a></p>
 <ul>
 <li>Defined in <a href="https://github.com/jtlapp/typebox-validators/blob/ff7f5cc/src/abstract/abstract-validator.ts#L269">abstract/abstract-validator.ts:269</a></li></ul></aside></li></ul></section>
-<section class="tsd-panel tsd-member"><a id="validate" class="tsd-anchor"></a>
+<section class="tsd-panel tsd-member tsd-is-inherited"><a id="validate" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagAbstract">Abstract</code> <span>validate</span><a href="#validate" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
-<ul class="tsd-signatures">
+<ul class="tsd-signatures tsd-is-inherited">
 <li class="tsd-signature tsd-anchor-link" id="validate.validate-1"><span class="tsd-kind-call-signature">validate</span><span class="tsd-signature-symbol">(</span><span class="tsd-kind-parameter">value</span>, <span class="tsd-kind-parameter">errorMessage</span><span class="tsd-signature-symbol">?</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span><a href="#validate.validate-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
 <li class="tsd-description">
 <div class="tsd-comment tsd-typography"><p>Validates a value against the schema, detecting all validation errors
@@ -445,12 +442,13 @@ values of unrecognized properties.</p>
 <div class="tsd-comment tsd-typography"><p>Overall error message to report in the exception.</p>
 </div></li></ul></div>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4><aside class="tsd-sources">
+<p>Inherited from <a href="AbstractValidator.html">AbstractValidator</a>.<a href="AbstractValidator.html#validate">validate</a></p>
 <ul>
 <li>Defined in <a href="https://github.com/jtlapp/typebox-validators/blob/ff7f5cc/src/abstract/abstract-validator.ts#L153">abstract/abstract-validator.ts:153</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member"><a id="validateAndClean" class="tsd-anchor"></a>
-<h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagAbstract">Abstract</code> <span>validate<wbr/>And<wbr/>Clean</span><a href="#validateAndClean" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
+<h3 class="tsd-anchor-link"><span>validate<wbr/>And<wbr/>Clean</span><a href="#validateAndClean" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures">
-<li class="tsd-signature tsd-anchor-link" id="validateAndClean.validateAndClean-1"><span class="tsd-kind-call-signature">validate<wbr/>And<wbr/>Clean</span><span class="tsd-signature-symbol">(</span><span class="tsd-kind-parameter">value</span>, <span class="tsd-kind-parameter">errorMessage</span><span class="tsd-signature-symbol">?</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span><a href="#validateAndClean.validateAndClean-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
+<li class="tsd-signature tsd-anchor-link" id="validateAndClean.validateAndClean-1"><span class="tsd-kind-call-signature">validate<wbr/>And<wbr/>Clean</span><span class="tsd-signature-symbol">(</span><span class="tsd-kind-parameter">value</span>, <span class="tsd-kind-parameter">overallError</span><span class="tsd-signature-symbol">?</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span><a href="#validateAndClean.validateAndClean-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
 <li class="tsd-description">
 <div class="tsd-comment tsd-typography"><p>Validates a value against the schema, detecting all validation errors
 and reporting them by throwing <code>ValidationException</code>. On successful
@@ -468,16 +466,17 @@ validation, removes unrecognized properties from the provided value.</p>
 <div class="tsd-comment tsd-typography"><p>Value to validate against the schema.</p>
 </div></li>
 <li>
-<h5><code class="tsd-tag ts-flagOptional">Optional</code> <span class="tsd-kind-parameter">errorMessage</span>: <span class="tsd-signature-type">string</span></h5>
+<h5><code class="tsd-tag ts-flagOptional">Optional</code> <span class="tsd-kind-parameter">overallError</span>: <span class="tsd-signature-type">string</span></h5>
 <div class="tsd-comment tsd-typography"><p>Overall error message to report in the exception.=</p>
 </div></li></ul></div>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4><aside class="tsd-sources">
+<p>Overrides <a href="AbstractValidator.html">AbstractValidator</a>.<a href="AbstractValidator.html#validateAndClean">validateAndClean</a></p>
 <ul>
-<li>Defined in <a href="https://github.com/jtlapp/typebox-validators/blob/ff7f5cc/src/abstract/abstract-validator.ts#L166">abstract/abstract-validator.ts:166</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/jtlapp/typebox-validators/blob/ff7f5cc/src/abstract/abstract-standard-validator.ts#L32">abstract/abstract-standard-validator.ts:32</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member"><a id="validateAndCleanCopy" class="tsd-anchor"></a>
-<h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagAbstract">Abstract</code> <span>validate<wbr/>And<wbr/>Clean<wbr/>Copy</span><a href="#validateAndCleanCopy" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
+<h3 class="tsd-anchor-link"><span>validate<wbr/>And<wbr/>Clean<wbr/>Copy</span><a href="#validateAndCleanCopy" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures">
-<li class="tsd-signature tsd-anchor-link" id="validateAndCleanCopy.validateAndCleanCopy-1"><span class="tsd-kind-call-signature">validate<wbr/>And<wbr/>Clean<wbr/>Copy</span><span class="tsd-signature-symbol">(</span><span class="tsd-kind-parameter">value</span>, <span class="tsd-kind-parameter">errorMessage</span><span class="tsd-signature-symbol">?</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type ">Static</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type tsd-kind-type-parameter">S</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-symbol">[</span><span class="tsd-signature-symbol">]</span><span class="tsd-signature-symbol">&gt;</span><a href="#validateAndCleanCopy.validateAndCleanCopy-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
+<li class="tsd-signature tsd-anchor-link" id="validateAndCleanCopy.validateAndCleanCopy-1"><span class="tsd-kind-call-signature">validate<wbr/>And<wbr/>Clean<wbr/>Copy</span><span class="tsd-signature-symbol">(</span><span class="tsd-kind-parameter">value</span>, <span class="tsd-kind-parameter">overallError</span><span class="tsd-signature-symbol">?</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type ">Static</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type tsd-kind-type-parameter">S</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-symbol">[</span><span class="tsd-signature-symbol">]</span><span class="tsd-signature-symbol">&gt;</span><a href="#validateAndCleanCopy.validateAndCleanCopy-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
 <li class="tsd-description">
 <div class="tsd-comment tsd-typography"><p>Validates a value against the schema, detecting all validation errors
 and reporting them with a <code>ValidationException</code>. On successful validation,
@@ -496,7 +495,7 @@ returns the original value if there are no unrecognized properties.</p>
 <div class="tsd-comment tsd-typography"><p>Value to validate against the schema.</p>
 </div></li>
 <li>
-<h5><code class="tsd-tag ts-flagOptional">Optional</code> <span class="tsd-kind-parameter">errorMessage</span>: <span class="tsd-signature-type">string</span></h5>
+<h5><code class="tsd-tag ts-flagOptional">Optional</code> <span class="tsd-kind-parameter">overallError</span>: <span class="tsd-signature-type">string</span></h5>
 <div class="tsd-comment tsd-typography"><p>Overall error message to report in the exception.</p>
 </div></li></ul></div>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type ">Static</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type tsd-kind-type-parameter">S</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-symbol">[</span><span class="tsd-signature-symbol">]</span><span class="tsd-signature-symbol">&gt;</span></h4><p>The provided value itself if the value is not an object or if
@@ -504,8 +503,9 @@ returns the original value if there are no unrecognized properties.</p>
  is an object having at least one unrecognized property, returns a copy
  of the value with unrecognized properties removed.</p>
 <aside class="tsd-sources">
+<p>Overrides <a href="AbstractValidator.html">AbstractValidator</a>.<a href="AbstractValidator.html#validateAndCleanCopy">validateAndCleanCopy</a></p>
 <ul>
-<li>Defined in <a href="https://github.com/jtlapp/typebox-validators/blob/ff7f5cc/src/abstract/abstract-validator.ts#L184">abstract/abstract-validator.ts:184</a></li></ul></aside></li></ul></section></section></div>
+<li>Defined in <a href="https://github.com/jtlapp/typebox-validators/blob/ff7f5cc/src/abstract/abstract-standard-validator.ts#L38">abstract/abstract-standard-validator.ts:38</a></li></ul></aside></li></ul></section></section></div>
 <div class="col-sidebar">
 <div class="page-menu">
 <div class="tsd-navigation settings">
@@ -524,28 +524,28 @@ returns the original value if there are no unrecognized properties.</p>
 <div class="tsd-accordion-details">
 <ul>
 <li><a href="#constructor" class=""><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-512-path"></use><use href="#icon-512-text"></use></svg><span>constructor</span></a></li>
-<li><a href="#schema" class=""><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-1024-path"></use><use href="#icon-1024-text"></use></svg><span>schema</span></a></li>
-<li><a href="#assert" class=""><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>assert</span></a></li>
+<li><a href="#schema" class="tsd-is-inherited"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-1024-path"></use><use href="#icon-1024-text"></use></svg><span>schema</span></a></li>
+<li><a href="#assert" class="tsd-is-inherited"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>assert</span></a></li>
 <li><a href="#assertAndClean" class=""><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>assert<wbr/>And<wbr/>Clean</span></a></li>
 <li><a href="#assertAndCleanCopy" class=""><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>assert<wbr/>And<wbr/>Clean<wbr/>Copy</span></a></li>
-<li><a href="#cleanCopyOfValue" class="tsd-is-protected"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>clean<wbr/>Copy<wbr/>Of<wbr/>Value</span></a></li>
-<li><a href="#cleanValue" class="tsd-is-protected"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>clean<wbr/>Value</span></a></li>
-<li><a href="#errors" class=""><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>errors</span></a></li>
-<li><a href="#firstError" class=""><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>first<wbr/>Error</span></a></li>
-<li><a href="#test" class=""><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>test</span></a></li>
-<li><a href="#testReturningErrors" class=""><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>test<wbr/>Returning<wbr/>Errors</span></a></li>
-<li><a href="#testReturningFirstError" class=""><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>test<wbr/>Returning<wbr/>First<wbr/>Error</span></a></li>
-<li><a href="#uncompiledAssert" class="tsd-is-protected"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>uncompiled<wbr/>Assert</span></a></li>
-<li><a href="#uncompiledValidate" class="tsd-is-protected"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>uncompiled<wbr/>Validate</span></a></li>
-<li><a href="#validate" class=""><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>validate</span></a></li>
+<li><a href="#cleanCopyOfValue" class="tsd-is-protected tsd-is-inherited"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>clean<wbr/>Copy<wbr/>Of<wbr/>Value</span></a></li>
+<li><a href="#cleanValue" class="tsd-is-protected tsd-is-inherited"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>clean<wbr/>Value</span></a></li>
+<li><a href="#errors" class="tsd-is-inherited"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>errors</span></a></li>
+<li><a href="#firstError" class="tsd-is-inherited"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>first<wbr/>Error</span></a></li>
+<li><a href="#test" class="tsd-is-inherited"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>test</span></a></li>
+<li><a href="#testReturningErrors" class="tsd-is-inherited"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>test<wbr/>Returning<wbr/>Errors</span></a></li>
+<li><a href="#testReturningFirstError" class="tsd-is-inherited"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>test<wbr/>Returning<wbr/>First<wbr/>Error</span></a></li>
+<li><a href="#uncompiledAssert" class="tsd-is-protected tsd-is-inherited"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>uncompiled<wbr/>Assert</span></a></li>
+<li><a href="#uncompiledValidate" class="tsd-is-protected tsd-is-inherited"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>uncompiled<wbr/>Validate</span></a></li>
+<li><a href="#validate" class="tsd-is-inherited"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>validate</span></a></li>
 <li><a href="#validateAndClean" class=""><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>validate<wbr/>And<wbr/>Clean</span></a></li>
 <li><a href="#validateAndCleanCopy" class=""><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>validate<wbr/>And<wbr/>Clean<wbr/>Copy</span></a></li></ul></div></details></div>
 <div class="site-menu">
 <nav class="tsd-navigation"><a href="../index.html"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><rect fill="var(--color-icon-background)" stroke="var(--color-ts-namespace)" stroke-width="1.5" x="1" y="1" width="22" height="22" rx="6" id="icon-4-path"></rect><path d="M9.33 16V7.24H10.77L13.446 14.74C13.43 14.54 13.41 14.296 13.386 14.008C13.37 13.712 13.354 13.404 13.338 13.084C13.33 12.756 13.326 12.448 13.326 12.16V7.24H14.37V16H12.93L10.266 8.5C10.282 8.692 10.298 8.936 10.314 9.232C10.33 9.52 10.342 9.828 10.35 10.156C10.366 10.476 10.374 10.784 10.374 11.08V16H9.33Z" fill="var(--color-text)" id="icon-4-text"></path></svg><span>typebox-<wbr/>validators</span></a>
 <ul class="tsd-small-nested-navigation">
-<li><a href="AbstractStandardValidator.html"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><rect fill="var(--color-icon-background)" stroke="var(--color-ts-class)" stroke-width="1.5" x="1" y="1" width="22" height="22" rx="6" id="icon-128-path"></rect><path d="M11.898 16.1201C11.098 16.1201 10.466 15.8961 10.002 15.4481C9.53803 15.0001 9.30603 14.3841 9.30603 13.6001V9.64012C9.30603 8.85612 9.53803 8.24012 10.002 7.79212C10.466 7.34412 11.098 7.12012 11.898 7.12012C12.682 7.12012 13.306 7.34812 13.77 7.80412C14.234 8.25212 14.466 8.86412 14.466 9.64012H13.386C13.386 9.14412 13.254 8.76412 12.99 8.50012C12.734 8.22812 12.37 8.09212 11.898 8.09212C11.426 8.09212 11.054 8.22412 10.782 8.48812C10.518 8.75212 10.386 9.13212 10.386 9.62812V13.6001C10.386 14.0961 10.518 14.4801 10.782 14.7521C11.054 15.0161 11.426 15.1481 11.898 15.1481C12.37 15.1481 12.734 15.0161 12.99 14.7521C13.254 14.4801 13.386 14.0961 13.386 13.6001H14.466C14.466 14.3761 14.234 14.9921 13.77 15.4481C13.306 15.8961 12.682 16.1201 11.898 16.1201Z" fill="var(--color-text)" id="icon-128-text"></path></svg><span>Abstract<wbr/>Standard<wbr/>Validator</span></a></li>
+<li><a href="AbstractStandardValidator.html" class="current"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><rect fill="var(--color-icon-background)" stroke="var(--color-ts-class)" stroke-width="1.5" x="1" y="1" width="22" height="22" rx="6" id="icon-128-path"></rect><path d="M11.898 16.1201C11.098 16.1201 10.466 15.8961 10.002 15.4481C9.53803 15.0001 9.30603 14.3841 9.30603 13.6001V9.64012C9.30603 8.85612 9.53803 8.24012 10.002 7.79212C10.466 7.34412 11.098 7.12012 11.898 7.12012C12.682 7.12012 13.306 7.34812 13.77 7.80412C14.234 8.25212 14.466 8.86412 14.466 9.64012H13.386C13.386 9.14412 13.254 8.76412 12.99 8.50012C12.734 8.22812 12.37 8.09212 11.898 8.09212C11.426 8.09212 11.054 8.22412 10.782 8.48812C10.518 8.75212 10.386 9.13212 10.386 9.62812V13.6001C10.386 14.0961 10.518 14.4801 10.782 14.7521C11.054 15.0161 11.426 15.1481 11.898 15.1481C12.37 15.1481 12.734 15.0161 12.99 14.7521C13.254 14.4801 13.386 14.0961 13.386 13.6001H14.466C14.466 14.3761 14.234 14.9921 13.77 15.4481C13.306 15.8961 12.682 16.1201 11.898 16.1201Z" fill="var(--color-text)" id="icon-128-text"></path></svg><span>Abstract<wbr/>Standard<wbr/>Validator</span></a></li>
 <li><a href="AbstractTypedUnionValidator.html"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-128-path"></use><use href="#icon-128-text"></use></svg><span>Abstract<wbr/>Typed<wbr/>Union<wbr/>Validator</span></a></li>
-<li><a href="AbstractValidator.html" class="current"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-128-path"></use><use href="#icon-128-text"></use></svg><span>Abstract<wbr/>Validator</span></a></li>
+<li><a href="AbstractValidator.html"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-128-path"></use><use href="#icon-128-text"></use></svg><span>Abstract<wbr/>Validator</span></a></li>
 <li><a href="CompilingDiscriminatedUnionValidator.html"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-128-path"></use><use href="#icon-128-text"></use></svg><span>Compiling<wbr/>Discriminated<wbr/>Union<wbr/>Validator</span></a></li>
 <li><a href="CompilingHeterogeneousUnionValidator.html"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-128-path"></use><use href="#icon-128-text"></use></svg><span>Compiling<wbr/>Heterogeneous<wbr/>Union<wbr/>Validator</span></a></li>
 <li><a href="CompilingStandardValidator.html"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-128-path"></use><use href="#icon-128-text"></use></svg><span>Compiling<wbr/>Standard<wbr/>Validator</span></a></li>
