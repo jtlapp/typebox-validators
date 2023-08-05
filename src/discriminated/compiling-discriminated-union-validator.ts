@@ -29,8 +29,7 @@ export class CompilingDiscriminatedUnionValidator<
   ): number | null {
     if (this.#compiledFindSchemaMemberIndex === undefined) {
       const codeParts: string[] = [
-        `(value) => {
-          if (typeof value !== 'object' || value === null || Array.isArray(value)) return null;
+        `if (typeof value !== 'object' || value === null || Array.isArray(value)) return null;
           switch (${this.toValueKeyDereference(this.#discriminantKey)}) {\n`,
       ];
       for (let i = 0; i < this.schema.anyOf.length; ++i) {
@@ -52,8 +51,11 @@ export class CompilingDiscriminatedUnionValidator<
           codeParts.push(`case ${literal}: return ${i};\n`);
         }
       }
-      const code = codeParts.join('') + 'default: return null; } }';
-      this.#compiledFindSchemaMemberIndex = eval(code) as FindSchemaMemberIndex;
+      const code = codeParts.join('') + 'default: return null; }';
+      this.#compiledFindSchemaMemberIndex = new Function(
+        'value',
+        code
+      ) as FindSchemaMemberIndex;
     }
     return this.#compiledFindSchemaMemberIndex(value);
   }

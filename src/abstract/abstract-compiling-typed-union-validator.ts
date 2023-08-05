@@ -109,9 +109,12 @@ export abstract class AbstractCompilingTypedUnionValidator<
       const startOfFunction = code.indexOf('function');
       const startOfReturn = code.indexOf('return', startOfFunction);
       code =
-        '(value) => ' +
+        'return ' +
         code.substring(code.indexOf('(', startOfReturn), code.length - 1);
-      this.#compiledSchemaMemberTests[memberIndex] = eval(code);
+      this.#compiledSchemaMemberTests[memberIndex] = new Function(
+        'value',
+        code
+      ) as SchemaMemberTest;
     }
     return this.#compiledSchemaMemberTests[memberIndex]!(value);
   }

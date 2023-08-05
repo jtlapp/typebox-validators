@@ -29,7 +29,7 @@ export class CompilingHeterogeneousUnionValidator<
     if (this.#compiledFindSchemaMemberIndex === undefined) {
       this.#typeIdentifyingKeyIndex.cacheKeys();
       const codeParts: string[] = [
-        `(value) => ((typeof value !== 'object' || value === null || Array.isArray(value)) ? null : `,
+        `return ((typeof value !== 'object' || value === null || Array.isArray(value)) ? null : `,
       ];
       for (let i = 0; i < this.schema.anyOf.length; ++i) {
         const uniqueKey = this.#typeIdentifyingKeyIndex.keyByMemberIndex![i];
@@ -37,7 +37,8 @@ export class CompilingHeterogeneousUnionValidator<
           `${this.toValueKeyDereference(uniqueKey)} !== undefined ? ${i} : `
         );
       }
-      this.#compiledFindSchemaMemberIndex = eval(
+      this.#compiledFindSchemaMemberIndex = new Function(
+        'value',
         codeParts.join('') + 'null)'
       ) as FindSchemaMemberIndex;
     }
