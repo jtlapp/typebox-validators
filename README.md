@@ -25,6 +25,7 @@ Tested for Node.js and Chrome.
 
 ## Updates
 
+- **v0.3.4** - Now requires that TypeBox be installed as a peer dependency.
 - **v0.3.2** - Replaced `eval()` with `new Function()` to eliminate bundler safety warnings.
 - **v0.3.1** - Exported `AbstractStandardValidator` and `AbstractTypedUnionValidator`.
 - **v0.3.0** - Upgraded to latest version of TypeBox, requiring TypeBox >= 0.30.0.
@@ -34,11 +35,11 @@ Tested for Node.js and Chrome.
 Install with your preferred dependency manager:
 
 ```
-npm install typebox-validators
+npm install typebox typebox-validators
 
-yarn add typebox-validators
+yarn add typebox typebox-validators
 
-pnpm add typebox-validators
+pnpm add typebox typebox-validators
 ```
 
 ## Usage
