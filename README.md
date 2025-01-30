@@ -6,6 +6,8 @@ TypeBox validators with lazy compilation, custom error messages, safe error hand
 
 ## Overview
 
+**PLEASE DO NOT USE THIS LIBRARY. I have been unable to keep up with the breaking changes in TypeBox. The library no longer works with TypeBox.**
+
 The [TypeBox](https://github.com/sinclairzx81/typebox) JSON Schema validator may be the [fastest JSON validator](https://moltar.github.io/typescript-runtime-type-benchmarks/) for JavaScript/TypeScript not requiring a development-time code generation step. TypeBox provides the ability to both construct and validate JSON, but it is strictly standards compliant and does not offer commonly needed additional functionality.
 
 This library provides JSON Schema validators having this additional functionality. It wraps TypeBox so you can get TypeBox validation performance and limit your use of TypeBox to just JSON Schema specification.
